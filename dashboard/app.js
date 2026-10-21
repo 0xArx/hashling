@@ -118,6 +118,8 @@ function toast(msg, action) {
   t.innerHTML = `<span>${esc(msg)}</span>${action ? `<button type="button" class="toast-btn">${esc(action.label)}</button>` : ''}`;
   t.classList.toggle('has-action', Boolean(action));
   if (action) t.querySelector('.toast-btn').onclick = () => { t.classList.remove('show'); action.fn(); };
+  // A new message replacing one already on screen: a soft blur-swap, so the change is noticed.
+  if (t.classList.contains('show') && !calm()) t.animate([{ filter: 'blur(3px)', opacity: 0.6 }, { filter: 'blur(0)', opacity: 1 }], { duration: 200, easing: 'ease-out' });
   t.classList.add('show');
   clearTimeout(toast.t);
   toast.t = setTimeout(() => t.classList.remove('show'), action ? 7000 : 4200);
@@ -565,6 +567,7 @@ const plainIds = (t) => String(t ?? '').replace(/\b(?:com|org|net|io|dev|us|co)\
 /** Plain words for the errors macOS hands back when a fix could not be done. */
 function plainResult(a) {
   const r = String(a.result ?? '');
+  if (a.status === 'expired') return 'Nobody decided within a day, so I dropped it. Ask me again if you still want it.';
   if (a.status !== 'failed') return plainIds(r);
   if (/No such bundle identifier/i.test(r)) return 'That app is no longer on this Mac, so there was nothing to take away.';
   if (/don.t have permission|not permitted|Operation not permitted|EPERM|EACCES/i.test(r)) return 'macOS would not let me touch it. It may be owned by the system or another user. Drag it to the Trash yourself if you still want it gone.';
@@ -595,7 +598,7 @@ views.approvals = async () => {
       <div class="row" style="margin-top:10px"><input class="input" id="block-domain" placeholder="tracker.example.com" style="flex:1"><button class="btn" data-act="block">Block domain…</button></div></div>
   </div>
   <div class="mt"><div class="section-head"><p class="h2">History</p></div><div class="tablewrap"><table class="table stack-sm"><thead><tr><th>Action</th><th>By</th><th>Status</th><th>Result</th><th>When</th></tr></thead><tbody>
-    ${done.map((a) => `<tr><td class="cell-title">${esc(plainIds(a.summary))}</td><td class="small muted" data-label="By">${esc(a.requested_by === 'Hashling assistant' ? 'Me' : a.requested_by)}</td><td><span class="chip ${a.status === 'failed' ? 'bad' : a.status === 'executed' ? 'ok' : ''}">${esc({ executed: 'Done', failed: 'Didn’t work', rejected: 'Rejected', approved: 'Approved' }[a.status] ?? a.status)}</span></td><td class="small muted wrap">${esc(plainResult(a))}</td><td class="small faint">${ago(a.decided_at ?? a.created_at)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">No history yet.</td></tr>'}
+    ${done.map((a) => `<tr><td class="cell-title">${esc(plainIds(a.summary))}</td><td class="small muted" data-label="By">${esc(a.requested_by === 'Hashling assistant' ? 'Me' : a.requested_by)}</td><td><span class="chip ${a.status === 'failed' ? 'bad' : a.status === 'executed' ? 'ok' : ''}">${esc({ executed: 'Done', failed: 'Didn’t work', rejected: 'Rejected', approved: 'Approved', expired: 'Expired' }[a.status] ?? a.status)}</span></td><td class="small muted wrap">${esc(plainResult(a))}</td><td class="small faint">${ago(a.decided_at ?? a.created_at)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">No history yet.</td></tr>'}
   </tbody></table></div></div>`;
 };
 
@@ -1127,6 +1130,7 @@ async function approve(id) {
   try {
     const r = await api(`/api/actions/${id}/approve`, { method: 'POST' });
     toast(r.status === 'executed' ? `Done. ${r.result}` : `Failed: ${r.result}`);
+    if (r.status === 'executed') await leaveRow(rowFor(id), 'ok');
     for (const m of chat.messages) for (const a of m.actions ?? []) if (a.id === id) a.status = r.status;
   } catch (e) { toast(e.message); }
   finally { state.busy.delete(id); render(); renderChat(); }
@@ -1175,7 +1179,7 @@ document.addEventListener('click', async (ev) => {
     }
     else if (act === 'approve') await approve(el.dataset.id);
     else if (act === 'approve-all' || act === 'reject-all') await bulk(act === 'approve-all');
-    else if (act === 'reject') { await api(`/api/actions/${el.dataset.id}/reject`, { method: 'POST' }); toast('Rejected.'); for (const m of chat.messages) for (const a of m.actions ?? []) if (a.id === el.dataset.id) a.status = 'rejected'; render(); renderChat(); }
+    else if (act === 'reject') { await api(`/api/actions/${el.dataset.id}/reject`, { method: 'POST' }); toast('Rejected.'); await leaveRow(el.closest("#main .item"), 'no'); for (const m of chat.messages) for (const a of m.actions ?? []) if (a.id === el.dataset.id) a.status = 'rejected'; render(); renderChat(); }
     else if (act === 'agent') { state.agentOpen = el.dataset.id; render(); }
     else if (act === 'net-all') { state.netAll = el.dataset.v === '1'; render(); }
     else if (act === 'net-system') { state.netSystem = true; render(); }
@@ -1251,9 +1255,115 @@ function renderNav() {
     const badge = id === 'approvals' ? '<span class="badge hot" id="n-approvals"></span>' : id === 'findings' ? '<span class="badge" id="n-findings"></span>' : id === 'ignored' ? '<span class="badge" id="n-ignored"></span>' : '';
     return `<a href="#/${id}" data-v="${id}" class="${state.view === id ? 'active' : ''}">${icon(ic)}${label}${flag}${badge}</a>`;
   }).join('')}`).join('');
+  placePill($('#nav'), state.pillView !== undefined && state.pillView !== state.view);
+  state.pillView = state.view;
 }
 
 let rendering = false, again = false;
+
+// ---------- Motion ----------
+function calm() { return matchMedia("(prefers-reduced-motion: reduce)").matches; }
+
+/** Page arrival: number the sections and the first rows of each list so CSS can cascade them in. */
+function enterView(root) {
+  [...root.children].forEach((el, i) => el.style.setProperty('--i', i));
+  for (const list of root.querySelectorAll('.list, .suggest, tbody')) {
+    [...list.children].slice(0, 8).forEach((el, j) => { el.classList.add('stagger'); el.style.setProperty('--j', j); });
+  }
+  root.classList.add('view-enter');
+}
+
+/**
+ * The one authored moment: the score ring draws itself in on arrival, and when the score
+ * changes while you watch, it slides from the old value to the new one and the number counts.
+ */
+let scoreRun = null;
+function animateScore(root) {
+  const wrap = root.querySelector('.ring[aria-label^="Security score"]');
+  if (!wrap) return;
+  const to = Number(wrap.getAttribute('aria-label').match(/\d+/)?.[0] ?? 0);
+  const arc = wrap.querySelector('svg circle:last-of-type');
+  if (!arc || calm()) { state.shownScore = to; return; }
+  const now = performance.now();
+  // A live refresh rebuilt the ring mid-count: carry on from where it was.
+  if (scoreRun && scoreRun.to === to && now < scoreRun.t0 + scoreRun.dur) return drawScore(arc, now - scoreRun.t0);
+  const from = state.shownScore ?? 0;
+  state.shownScore = to;
+  if (from === to) return;
+  scoreRun = { from, to, t0: now, dur: from === 0 ? 900 : 650, c: Number(arc.getAttribute('stroke-dasharray')) };
+  drawScore(arc, 0);
+  const ease = (x) => 1 - (1 - x) ** 4;
+  const run = scoreRun;
+  const tick = (t) => {
+    if (run !== scoreRun) return;
+    const k = Math.min(1, (t - run.t0) / run.dur);
+    const num = document.querySelector('#main .ring .num b');
+    if (num) num.textContent = Math.round(run.from + (run.to - run.from) * ease(k));
+    if (k < 1) requestAnimationFrame(tick);
+    else if (num) { num.classList.remove('settle'); void num.offsetWidth; num.classList.add('settle'); }
+  };
+  requestAnimationFrame(tick);
+}
+function drawScore(arc, elapsed) {
+  const r = scoreRun;
+  const a = arc.animate([{ strokeDashoffset: r.c * (1 - r.from / 100) }, { strokeDashoffset: r.c * (1 - r.to / 100) }], { duration: r.dur, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' });
+  a.currentTime = elapsed;
+  if (elapsed) { const num = arc.closest('.ring').querySelector('.num b'); if (num) num.textContent = Math.round(r.from + (r.to - r.from) * (1 - (1 - elapsed / r.dur) ** 4)); }
+}
+
+/** A decided row leaves: approve shows a tick, then the row folds shut; reject just slides off. */
+async function leaveRow(row, kind) {
+  if (!row || !row.isConnected) return;
+  row.classList.add('leaving', kind);
+  if (calm()) { await row.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: 'forwards' }).finished; return; }
+  if (kind === 'ok') {
+    row.insertAdjacentHTML('beforeend', '<span class="done-tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>');
+    await new Promise((r) => setTimeout(r, 520));
+  }
+  const h = row.offsetHeight;
+  await row.animate([
+    { opacity: 1, transform: 'translateX(0)', height: `${h}px` },
+    { opacity: 0, transform: `translateX(${kind === 'ok' ? 0 : 16}px)`, height: `${h}px`, offset: 0.45 },
+    { opacity: 0, transform: `translateX(${kind === 'ok' ? 0 : 16}px)`, height: '0px', paddingTop: '0px', paddingBottom: '0px', borderTopWidth: '0px' },
+  ], { duration: kind === 'ok' ? 340 : 280, easing: 'cubic-bezier(0.77, 0, 0.175, 1)', fill: 'forwards' }).finished;
+}
+const rowFor = (id) => document.querySelector(`#main [data-act="approve"][data-id="${CSS.escape(id)}"]`)?.closest('.item');
+
+/** The sidebar highlight: one pill that glides from the old page to the new one. */
+function placePill(nav, animate) {
+  const active = nav.querySelector('a.active');
+  let pill = nav.querySelector('.nav-pill');
+  if (!active) { pill?.remove(); nav.classList.remove('has-pill'); return; }
+  if (!pill) { pill = document.createElement('span'); pill.className = 'nav-pill'; nav.prepend(pill); }
+  nav.classList.add('has-pill');
+  const from = state.pillBox;
+  const box = { x: active.offsetLeft, y: active.offsetTop, w: active.offsetWidth, h: active.offsetHeight };
+  const set = (b) => { pill.style.transform = `translate(${b.x}px, ${b.y}px)`; pill.style.width = `${b.w}px`; pill.style.height = `${b.h}px`; };
+  if (animate && from && !calm()) {
+    pill.classList.add('instant'); set(from); void pill.offsetWidth; pill.classList.remove('instant');
+  } else pill.classList.add('instant');
+  requestAnimationFrame(() => { set(box); if (!animate) requestAnimationFrame(() => pill.classList.remove('instant')); });
+  state.pillBox = box;
+  // Phones show the sections as a sideways strip: keep the current one in view.
+  if (animate && innerWidth <= 760) active.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: calm() ? 'auto' : 'smooth' });
+}
+
+/** Badges pop when their number changes. */
+function setBadge(el, value) {
+  if (!el) return;
+  const next = String(value || '');
+  if (el.textContent !== next && next && el.dataset.seen && !calm()) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+  el.textContent = next;
+  el.dataset.seen = '1';
+}
+
+// Opening a fold plays its reveal once; live refreshes rebuild open folds without replaying it.
+document.addEventListener('toggle', (e) => {
+  const d = e.target;
+  if (!(d instanceof HTMLDetailsElement) || !d.open) return;
+  d.classList.add('just-opened');
+  setTimeout(() => d.classList.remove('just-opened'), 320);
+}, true);
 
 /**
  * Side-by-side columns: when one runs much longer than its neighbour, shorten its longest
@@ -1311,9 +1421,12 @@ async function render(keepFocus = false) {
       const tmp = document.createElement('div'); tmp.innerHTML = html;
       $('.threads')?.replaceWith(tmp.querySelector('.threads'));
     } else {
+      page.classList.remove('view-enter');
       page.innerHTML = html;
       window.W?.hydrate?.(page);
       balance(page);
+      if (state.entering) { state.entering = false; enterView(page); }
+      animateScore(page);
       if (state.view === 'assistant') renderChat();
     }
     window.scrollTo(0, y);
@@ -1336,10 +1449,15 @@ async function render(keepFocus = false) {
 async function updateBadges() {
   try {
     const o = await api('/api/overview');
-    const a = $('#n-approvals'); if (a) a.textContent = o.pendingActions || '';
     const n = (o.openFindings.critical ?? 0) + (o.openFindings.high ?? 0) + (o.openFindings.medium ?? 0);
-    const f = $('#n-findings'); if (f) f.textContent = n || '';
-    const ig = $('#n-ignored'); if (ig) ig.textContent = o.ignoredFindings || '';
+    // renderNav rebuilds the badges, so remember the last numbers to know when one changed.
+    for (const [id, v] of [['n-approvals', o.pendingActions], ['n-findings', n], ['n-ignored', o.ignoredFindings]]) {
+      const el = $(`#${id}`); if (!el) continue;
+      const before = state.badges?.[id];
+      el.textContent = before ? String(before) : ''; if (before !== undefined) el.dataset.seen = '1';
+      setBadge(el, v);
+      (state.badges ??= {})[id] = v || '';
+    }
     $('#side-score').innerHTML = `<span class="mini-ring">${ring(o.score, 38, 5)}</span><div><b>${o.score} / 100</b><span>${esc(o.verdict)}</span></div>`;
   } catch { /* ignore */ }
 }
@@ -1356,7 +1474,7 @@ function route() {
   document.title = `${t} · Hashling`;
   closeDrawer();
   if (state.view === 'assistant' && !$('#dock').hidden) setDock(false);
-  if (prev !== state.view) page.innerHTML = '<div class="loading">Loading…</div>';
+  if (prev !== state.view) { page.classList.remove('view-enter'); page.innerHTML = '<div class="loading">Loading…</div>'; state.entering = true; if (state.view !== 'overview') state.shownScore = undefined; }
   render();
   window.scrollTo(0, 0);
   // Notifications deep-link to #/findings?id=<finding id>.
@@ -1407,7 +1525,7 @@ function hashlingSvg(cls = '') {
 document.body.insertAdjacentHTML('afterbegin', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="hl-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B7DFB"/><stop offset="1" stop-color="#5F4FE0"/></linearGradient></defs></svg>');
 
 // Deeper views (dossiers, storylines, traffic, processes, downloads, storage) live in insights.js.
-window.W = { friendlyName, $, page, esc, attr, icon, P, NAV, TITLES, AREA_META, LIVE, CAT, views, state, api, ago, clock, day, rate, bytes, sev, plural, home, toast, askBtn, askIcons, quickChips, drawer, closeDrawer, findingItem, statusBar, propose, askAI, render, ring };
+window.W = { friendlyName, $, page, esc, attr, icon, P, NAV, TITLES, AREA_META, LIVE, CAT, views, state, api, ago, clock, day, rate, bytes, sev, plural, home, toast, askBtn, askIcons, quickChips, drawer, closeDrawer, findingItem, statusBar, propose, askAI, render, ring, leaveRow };
 window.W.openAssistant = openAssistant;
 window.W.hashlingSvg = hashlingSvg;
 try { await import('./insights.js'); } catch (e) { console.error('Hashling insights did not load', e); }

@@ -49,6 +49,7 @@
   --shadow-lg: 0 18px 48px -12px rgba(27, 22, 64, 0.18), 0 2px 6px rgba(27, 22, 64, 0.06);
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
   --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
@@ -416,7 +417,7 @@ button.cell:hover { outline: 2px solid var(--accent-soft); }
 details.fold { border-top: 1px solid var(--line); }
 details.fold > summary { list-style: none; cursor: pointer; padding: 14px 20px; font-weight: 550; display: flex; align-items: center; gap: 8px; }
 details.fold > summary::-webkit-details-marker { display: none; }
-details.fold > summary::after { content: ""; width: 7px; height: 7px; border-right: 1.8px solid var(--faint); border-bottom: 1.8px solid var(--faint); transform: rotate(-45deg); margin-left: auto; transition: transform 0.15s; }
+details.fold > summary::after { content: ""; width: 7px; height: 7px; border-right: 1.8px solid var(--faint); border-bottom: 1.8px solid var(--faint); transform: rotate(-45deg); margin-left: auto; transition: transform 200ms var(--ease-out); }
 details.fold[open] > summary::after { transform: rotate(45deg); }
 details.fold > .fold-body { padding: 0 20px 18px; }
 
@@ -515,8 +516,8 @@ details.fold > .fold-body { padding: 0 20px 18px; }
 .assistant-page .chat-card { display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
 .ai-off { border: 1px dashed var(--line-2); border-radius: 12px; padding: 16px; background: var(--surface-2); }
 
-.toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--ink); color: var(--on-ink); padding: 10px 16px; border-radius: 12px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease-out, transform 0.28s var(--ease-out); max-width: min(560px, 90vw); z-index: 40; font-size: 13px; box-shadow: var(--shadow-lg); }
-.toast.show { opacity: 1; transform: translateX(-50%); }
+.toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(14px) scale(0.98); background: var(--ink); color: var(--on-ink); padding: 10px 16px; border-radius: 12px; opacity: 0; pointer-events: none; transition: opacity 140ms ease-out, transform 180ms var(--ease-out); max-width: min(560px, 90vw); z-index: 40; font-size: 13px; box-shadow: var(--shadow-lg); }
+.toast.show { opacity: 1; transform: translateX(-50%); transition: opacity 200ms ease-out, transform 360ms var(--ease-drawer); }
 .toast.has-action { pointer-events: auto; display: flex; align-items: center; gap: 14px; }
 .toast-btn { border: 0; background: color-mix(in srgb, var(--on-ink) 14%, transparent); color: var(--on-ink); font-weight: 600; font-size: 12.5px; height: 26px; padding: 0 10px; border-radius: 7px; }
 .toast-btn:hover { background: color-mix(in srgb, var(--on-ink) 24%, transparent); }
@@ -794,7 +795,10 @@ html[data-text="large"] body { zoom: 1.15; }
   .setup-steps li { font-size: 0; padding: 4px; gap: 0; }
   .setup-steps li span { font-size: 11px; }
 }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+/* Reduce motion keeps fades and colour changes (they explain what changed) and drops movement. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-property: opacity, color, background-color, border-color, box-shadow, fill, stroke !important; }
+}
 
 .fix-panel { display: flex; align-items: center; gap: 16px; padding: 14px 16px; border-radius: 12px; background: var(--accent-soft); border: 1px solid var(--accent-line); }
 .fix-panel > div { flex: 1; min-width: 0; }
@@ -1128,3 +1132,56 @@ body[data-view="assistant"] .help, body[data-view="assistant"] .help-mini { disp
 }
 @media (max-width: 640px) { .section-head { flex-wrap: wrap; row-gap: 2px; } .section-head .h2 { flex: none; } }
 .table td.one-line { max-width: 0; width: 42%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- Motion ----------
+   One authored moment (the score ring drawing in), quick continuity between pages, and
+   feedback for every decision. Nothing here hides content by default: entrance classes are
+   added only on navigation and removed before the next live refresh. */
+
+/* Page arrival: sections rise in, rows follow in a short cascade. Only on navigation. */
+.view-enter > * { animation: view-in 280ms var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 6) * 40ms); }
+.view-enter .stagger { animation: row-in 260ms var(--ease-out) both; animation-delay: calc(90ms + var(--j, 0) * 28ms); }
+@keyframes view-in { from { opacity: 0; transform: translateY(8px); } }
+@keyframes row-in { from { opacity: 0; transform: translateY(5px); } }
+
+/* The sidebar highlight glides to the page you picked instead of jumping. */
+.nav { position: relative; }
+.nav a { position: relative; z-index: 1; }
+.nav-pill { position: absolute; left: 0; top: 0; z-index: 0; border-radius: 8px; background: var(--panel); box-shadow: var(--shadow), inset 0 0 0 1px var(--line); pointer-events: none; transition: transform 300ms var(--ease-drawer), width 300ms var(--ease-drawer), height 300ms var(--ease-drawer); }
+.nav-pill.instant { transition: none; }
+.nav.has-pill a.active { background: transparent; box-shadow: none; }
+.nav a:active { transform: scale(0.98); }
+.nav a { transition: transform 140ms var(--ease-out), background-color 150ms ease, color 150ms ease; }
+
+/* Count badges pop when the number changes, so a new approval is noticed. */
+.badge.pop { animation: badge-pop 360ms var(--ease-out); }
+@keyframes badge-pop { 30% { transform: scale(1.28); } }
+
+/* Opening a fold: the content settles in under its heading. Added on toggle only. */
+details.just-opened > :not(summary) { animation: fold-in 240ms var(--ease-out); }
+@keyframes fold-in { from { opacity: 0; transform: translateY(-4px); } }
+
+/* Approve: a green tick confirms it, then the row folds away. Reject: it slides off quietly. */
+.item.leaving { position: relative; overflow: hidden; pointer-events: none; }
+.item .done-tick { position: absolute; right: 16px; top: 50%; width: 30px; height: 30px; margin-top: -15px; border-radius: 50%; display: grid; place-items: center; background: var(--ok-soft); color: var(--ok); animation: tick-in 260ms var(--ease-out) both; }
+.item .done-tick svg { width: 16px; height: 16px; stroke-dasharray: 24; stroke-dashoffset: 24; animation: tick-draw 300ms 80ms var(--ease-out) forwards; }
+.item.leaving.ok { background: color-mix(in srgb, var(--ok-soft) 70%, transparent); transition: background-color 200ms ease; }
+.item.leaving.ok .side-r { opacity: 0; transition: opacity 120ms ease; }
+@keyframes tick-in { from { opacity: 0; transform: scale(0.8); } }
+@keyframes tick-draw { to { stroke-dashoffset: 0; } }
+
+/* The score settles once it has counted up. */
+.ring .num b.settle { animation: num-settle 420ms var(--ease-out); }
+@keyframes num-settle { 40% { transform: scale(1.06); } }
+
+/* Clickable rows and cards answer a press. */
+.item[data-act]:active, a.item:active, .watch .area:active, .now a:active, .thread:active, .mode-opt:active, .suggest button:active { transform: scale(0.99); }
+.item[data-act], a.item, .watch .area, .now a, .thread { transition: transform 140ms var(--ease-out), background-color 150ms ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .view-enter > *, .view-enter .stagger, details.just-opened > :not(summary) { animation-name: fade-only; }
+  .badge.pop, .ring .num b.settle, .item .done-tick { animation: fade-only 200ms ease-out both; }
+  .item .done-tick svg { animation: none; stroke-dashoffset: 0; }
+  .nav a:active, .item[data-act]:active, a.item:active, .watch .area:active, .now a:active, .thread:active { transform: none; }
+}
+@keyframes fade-only { from { opacity: 0; } }
