@@ -35,6 +35,7 @@ import { redFlags } from './lib/scamflags.ts';
 import { findUninstaller } from './lib/uninstaller.ts';
 import { PHONE_SECRET, phoneMayCall, phoneState, phoneOn, phoneOff, newPairing, forgetPhone, pairingDone } from './phone.ts';
 import { userPresence } from './actions.ts';
+import { phoneCheckState, askToTrust, startCheck, startDeepCheck, installPhoneTools, forgetReport } from './phonecheck.ts';
 
 export function loadToken(): string {
   if (existsSync(TOKEN_PATH)) return readFileSync(TOKEN_PATH, 'utf8').trim();
@@ -486,6 +487,16 @@ route('POST', '/api/phone/off', (_q, res) => send(res, 200, phoneOff()), true);
 route('POST', '/api/phone/pair', (_q, res) => { const r = newPairing(); send(res, 'error' in r ? 400 : 200, r); }, true);
 route('GET', '/api/phone/pair/:id', (_q, res, [id]) => send(res, 200, pairingDone(id)), true);
 route('DELETE', '/api/phone/devices/:id', (_q, res, [id]) => send(res, forgetPhone(id) ? 200 : 404, { ok: true }), true);
+// Phone check-up over a USB cable. Agents can read the reports; only the person at the Mac can start a check.
+route('GET', '/api/phonecheck', (_q, res) => send(res, 200, phoneCheckState()));
+route('POST', '/api/phonecheck/tools/:kind', (_q, res, [kind]) => {
+  if (!['ios', 'android', 'mvt'].includes(kind)) return send(res, 400, { error: 'Unknown tool' });
+  const r = installPhoneTools(kind as 'ios' | 'android' | 'mvt'); send(res, 'error' in r ? 409 : 202, r);
+}, true);
+route('POST', '/api/phonecheck/trust/:id', async (_q, res, [id]) => send(res, 200, await askToTrust(id)), true);
+route('POST', '/api/phonecheck/check/:id', (_q, res, [id]) => { const r = startCheck(id); send(res, 'error' in r ? 409 : 202, r); }, true);
+route('POST', '/api/phonecheck/deep/:id', async (req, res, [id]) => { const b = await body(req); const r = startDeepCheck(id, typeof b.password === 'string' && b.password ? b.password : undefined); send(res, 'error' in r ? 409 : 202, r); }, true);
+route('DELETE', '/api/phonecheck/reports/:id', (_q, res, [id]) => send(res, forgetReport(id) ? 200 : 404, { ok: true }), true);
 route('GET', '/api/quarantine', (_q, res) => send(res, 200, { items: listQuarantine(), blockedDomains: blockedDomains() }));
 route('POST', '/api/run/:name', async (_q, res, [name]) => {
   if (!collectorNames.includes(name)) return send(res, 404, { error: 'Unknown collector' });

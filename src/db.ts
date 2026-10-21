@@ -93,8 +93,8 @@ export type Severity = 'info' | 'low' | 'medium' | 'high' | 'critical';
  */
 export type Tier = 'suspicious' | 'risk' | 'hardening';
 
-const SUSPICIOUS_KEYS = /^(scan:|attack:|tracker:|intel:|beacon:|download-intel:|incident:|netsafe:gateway-changed:|net:risky-loc:|net:port:|persist:(dl|loc|sig|new|ext-sideload):|proc:(fake-password-prompt|dscl-authonly|keychain-dump|encoded-exec|reverse-shell|cookie-theft|security-off|unsigned-from-temp):)/;
-const HARDENING_KEYS = /^(tcc-leftover:|posture:(guest|stealth|os-updates|screen-lock|xprotect|mdm|profiles|remote-apps)$|persist:(orphan|ext-perm):|agent:mcp-unpinned:|tcc:input-monitoring-summary|location:|notarize:|secrets-perms:|storage:|outdated:)/;
+const SUSPICIOUS_KEYS = /^(scan:|attack:|tracker:|intel:|beacon:|download-intel:|incident:|netsafe:gateway-changed:|net:risky-loc:|net:port:|persist:(dl|loc|sig|new|ext-sideload):|phone:[^:]+:sus:|proc:(fake-password-prompt|dscl-authonly|keychain-dump|encoded-exec|reverse-shell|cookie-theft|security-off|unsigned-from-temp):)/;
+const HARDENING_KEYS = /^(tcc-leftover:|phone:[^:]+:tip:|posture:(guest|stealth|os-updates|screen-lock|xprotect|mdm|profiles|remote-apps)$|persist:(orphan|ext-perm):|agent:mcp-unpinned:|tcc:input-monitoring-summary|location:|notarize:|secrets-perms:|storage:|outdated:)/;
 
 export function tierOf(f: { key: string; severity: string; category: string }): Tier {
   if (SUSPICIOUS_KEYS.test(f.key)) return 'suspicious';
@@ -147,12 +147,13 @@ function rowToFinding(r: Record<string, unknown>): Finding {
  * New findings are inserted, existing ones refreshed, and ones no longer
  * observed are marked resolved. Acknowledged findings stay acknowledged.
  */
-export function syncFindings(category: string, inputs: FindingInput[]): void {
+export function syncFindings(category: string, inputs: FindingInput[], keyPrefix = ''): void {
   db.exec('BEGIN');
-  try { syncFindingsTx(category, inputs); db.exec('COMMIT'); } catch (e) { db.exec('ROLLBACK'); throw e; }
+  try { syncFindingsTx(category, inputs, keyPrefix); db.exec('COMMIT'); } catch (e) { db.exec('ROLLBACK'); throw e; }
 }
 
-function syncFindingsTx(category: string, inputs: FindingInput[]): void {
+/** keyPrefix limits what gets resolved to one part of a category (one phone among several). */
+function syncFindingsTx(category: string, inputs: FindingInput[], keyPrefix: string): void {
   const t = now();
   const keys = new Set(inputs.map((f) => f.key));
   const getByKey = db.prepare('SELECT * FROM findings WHERE key = ?');
@@ -174,7 +175,7 @@ function syncFindingsTx(category: string, inputs: FindingInput[]): void {
   const open = db.prepare(`SELECT key FROM findings WHERE category = ? AND status != 'resolved'`).all(category) as { key: string }[];
   // Ignored findings stay ignored even if they go away and come back later.
   const resolve = db.prepare(`UPDATE findings SET status = CASE WHEN status = 'acknowledged' THEN status ELSE 'resolved' END, resolved_at = ? WHERE key = ?`);
-  for (const { key } of open) if (!keys.has(key)) resolve.run(t, key);
+  for (const { key } of open) if (!keys.has(key) && key.startsWith(keyPrefix)) resolve.run(t, key);
   bus.emit('change', { type: 'findings', category });
 }
 

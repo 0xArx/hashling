@@ -1546,6 +1546,7 @@ window.W.openAssistant = openAssistant;
 window.W.hashlingSvg = hashlingSvg;
 try { await import('./insights.js'); } catch (e) { console.error('Hashling insights did not load', e); }
 try { await import('./protect.js'); } catch (e) { console.error('Hashling protection pages did not load', e); }
+try { await import('./phonecheck.js'); } catch (e) { console.error('Hashling phone check-up did not load', e); }
 try { await import('./guide.js'); } catch (e) { console.error('Hashling guide did not load', e); }
 try { await import('./buddy.js'); } catch (e) { console.error('Hashling helper did not load', e); }
 try { await import('./phonemode.js'); } catch (e) { console.error('Hashling phone mode did not load', e); }

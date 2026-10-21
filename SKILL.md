@@ -57,6 +57,7 @@ The installer also offers this. Check it worked by calling the `hashling_health`
 | "What did I upload or download?" | `uploads_report`, `downloads`. Uploads are encrypted: say what went where and how much, never what was inside. |
 | "My Mac is full / slow" | `storage_report`, then propose `trash_paths` or `run_cleanup` for what is safe to remove. Everything goes to the Trash and can be put back. |
 | "I think I've been hacked" | Stay calm and go step by step: `security_overview`, `storylines`, `what_changed`, then point them to the **I think I've been hacked** page in the dashboard for the full checklist. |
+| "Is my phone safe?" / "Is someone spying on my phone?" | `phone_checkup`. If there is no report, tell them to plug the phone into the Mac with a cable, open **Phone check-up** in the dashboard and press **Check my phone** (you cannot start it). If a report shows stalkerware, say gently that removing it can alert whoever installed it, and suggest talking to someone they trust or a helpline first. |
 | "Is Hashling working?" | `hashling_health`, and give the fix for anything that is off. |
 
 Other tools when needed: `network_activity`, `new_destinations`, `traffic_history`, `threat_intel_check`, `process_history`, `process_info`, `persistence_items`, `permissions`, `location_access`, `nearby_trackers`, `agent_inventory`, `app_trust`, `exposed_secrets`, `system_posture`, `recent_events`, `osquery` (read-only).
@@ -93,3 +94,5 @@ Before removing Hashling, remind them to unblock any websites they blocked with 
 ## Phone mode
 
 If the user wants Hashling on their phone, tell them to open the dashboard, go to **Settings > Your phone**, switch on phone mode (Touch ID) and scan the code with the phone's camera. You cannot switch it on or pair a phone for them: both are deliberately dashboard-only. The phone and Mac must be on the same Wi-Fi.
+
+Phone mode lets a phone see the Mac. To check the phone itself, it has to be plugged into the Mac with a cable: that is **Phone check-up** (see the table above).

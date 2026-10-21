@@ -82,6 +82,18 @@ Switch on **phone mode** in Settings (it asks for Touch ID), then scan the code 
 
 It works over your own Wi-Fi with no cloud. Each phone gets its own key from the code, and every message between the phone and the Mac is encrypted and signed with it (ChaCha20-Poly1305), so other devices on the Wi-Fi see nothing readable and cannot replay or change a request. Disconnect a phone, or switch phone mode off, in Settings.
 
+### Phone check-up (with a cable)
+
+Plug an iPhone, iPad or Android phone into the Mac and Hashling notices it and offers a check. It only reads: it never changes anything on the phone, and nothing it reads leaves the Mac. A check only runs when you press **Check my phone**.
+
+| Phone | What Hashling checks |
+|---|---|
+| **iPhone and iPad** (tap *Trust This Computer*) | iOS version against the newest Apple offers for that model, passcode, apps from outside the App Store (company or developer certificates), configuration profiles (VPN, certificates, proxies), remote management (MDM) and supervision, and known stalkerware. |
+| **Android** (switch on *USB debugging*) | Security patch age, apps from outside an app store, apps that hide their icon, apps with Accessibility, device admin or notification access, apps from outside a store that can use the microphone, texts or location, Play Protect, signs of root, and known stalkerware. |
+| **Deep check** (iPhone, optional) | Amnesty International's [Mobile Verification Toolkit](https://github.com/mvt-project/mvt) looks for traces of spyware like Pegasus in a backup made on the Mac. Hashling shows how much space it needs first, asks for your OK, and deletes the backup afterwards. |
+
+Built on free, open-source tools it installs when you first need them, with no password: [libimobiledevice](https://libimobiledevice.org) and [pymobiledevice3](https://github.com/doronz88/pymobiledevice3) for iPhone, Google's adb for Android, MVT for the deep check. Stalkerware is matched against the open [stalkerware indicators](https://github.com/AssoEchap/stalkerware-indicators) kept by Echap. Warnings show up on the page and in Findings, and do not change your Mac's score.
+
 ---
 
 ## What it watches
@@ -123,6 +135,7 @@ Any MCP client works: command `hashling`, args `["mcp"]`. The installer offers t
 | `process_info`, `process_history`, `osquery` | Process details and read-only SQL |
 | `scan_path`, `get_scan` | Malware scans |
 | `propose_action`, `list_actions` | Suggest a fix (quarantine, quit, turn off a startup item, remove access, block a site). It waits for your Touch ID. |
+| `phone_checkup` | Phones plugged in by cable and the latest check-up for each (only you can start a check) |
 | `hashling_health` | Whether Hashling itself is working, with fixes |
 
 The same data is available over HTTP on `127.0.0.1:5750` with `Authorization: Bearer $(cat ~/.hashling/token)`.
@@ -131,7 +144,7 @@ The same data is available over HTTP on `127.0.0.1:5750` with `Authorization: Be
 
 ## You stay in control
 
-- **No account, no cloud.** Hashling runs on your Mac and never uploads your files. It goes online only to download updates (malware signatures, scam and malware lists), to look up who owns an internet address (turn off with `HASHLING_ENRICH=0`), and to check fingerprints of new downloads, never the files.
+- **No account, no cloud.** Hashling runs on your Mac and never uploads your files. It goes online only to download updates (malware signatures, scam and malware lists), to look up who owns an internet address (turn off with `HASHLING_ENRICH=0`), and to check fingerprints of new downloads, never the files. Phone check-up downloads Apple's public list of iOS versions and the stalkerware list; nothing about your phone is sent.
 - **AI is your choice.** The built-in assistant uses your Claude sign-in; any MCP agent can connect instead. Your question and the data it looks up go to that AI only when you ask.
 - **Agents can look, never change.** They can propose fixes, but approving needs Touch ID or your password through macOS, so even an agent holding the token cannot approve its own proposal.
 - **Locked to this Mac.** The dashboard lives at `http://hashling.localhost:5750`, listens on this Mac's loopback only, refuses cross-site requests, and a new browser has to unlock with Touch ID. Phone mode is off until you switch it on; then only phones you paired with a code can reach Hashling, over encrypted messages, and only for a short list of things.

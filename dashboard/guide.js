@@ -27,7 +27,7 @@ const MODES = {
 const SIMPLE_NAV = [
   [null, [['overview', 'Home', 'home'], ['assistant', 'Ask Hashling', 'spark'], ['scamcheck', 'Scam check', 'shield'], ['approvals', 'Approvals', 'inbox']]],
   ['Check my Mac', [['network', 'Internet', 'globe', 'network'], ['agents', 'AI apps', 'bot', 'agents'], ['downloads', 'Apps & downloads', 'download', 'downloads'], ['permissions', 'Privacy', 'key', 'permissions'], ['tracking', 'Trackers & location', 'radar', 'tracking'], ['optimize', 'Storage & speed', 'gauge', 'optimize']]],
-  [null, [['accounts', 'Account safety', 'key'], ['hacked', 'I think I’ve been hacked', 'alert'], ['settings', 'Settings', 'gear']]],
+  [null, [['accounts', 'Account safety', 'key'], ['hacked', 'I think I’ve been hacked', 'alert'], ['phonecheck', 'Check my phone', 'mobile', 'phonecheck'], ['settings', 'Settings', 'gear']]],
 ];
 const SIMPLE_TITLES = {
   overview: ['Home', 'Is your Mac safe right now? Start here.'],
@@ -43,9 +43,10 @@ const SIMPLE_TITLES = {
   startup: ['Starts by itself', 'Things set to start when your Mac starts, where malware likes to hide'],
   system: ['Mac settings', 'The macOS settings that keep this Mac safe'],
   secrets: ['Saved passwords & keys', 'Passwords and keys left in files, where malware looks first'],
+  phonecheck: ['Check my phone', 'Plug your phone in with a cable and I’ll check it for spy apps and missing updates'],
 };
 // Simple mode names for warning labels and Home tiles.
-const SIMPLE_CAT = { agents: 'AI apps', processes: 'Running programs', network: 'Internet', behavior: 'Internet', netsafety: 'Wi-Fi and router', permissions: 'Privacy', trackers: 'Trackers', location: 'Location', persistence: 'Starts by itself', posture: 'Mac settings', notarization: 'Apps & downloads', downloads: 'Apps & downloads', secrets: 'Saved passwords & keys', storage: 'Storage' };
+const SIMPLE_CAT = { agents: 'AI apps', processes: 'Running programs', network: 'Internet', behavior: 'Internet', netsafety: 'Wi-Fi and router', permissions: 'Privacy', trackers: 'Trackers', location: 'Location', persistence: 'Starts by itself', posture: 'Mac settings', notarization: 'Apps & downloads', downloads: 'Apps & downloads', secrets: 'Saved passwords & keys', storage: 'Storage', phone: 'Your phone' };
 const FULL_CAT = { ...W.CAT };
 const FULL_NAV = W.NAV.map(([g, items]) => [g, items.slice()]);
 const FULL_TITLES = { ...W.TITLES };
@@ -94,6 +95,7 @@ const HELP = {
   approvals: ['Fixes that are waiting for your OK, and the history of ones you approved.', 'Nothing on your Mac changes without your Touch ID. Not even I can skip this.', 'Read each one. Approve, or reject if you are unsure.'],
   timeline: ['Everything I noticed, newest first.', 'Useful to answer “what happened while I was away?”', 'Click anything for details.'],
   query: ['A read-only console for osquery SQL, for people who know it.', 'It can answer almost any question about this Mac, but you never need it.', 'Easier: ask the Assistant in plain English and it writes the query for you.'],
+  phonecheck: ['A check-up of a phone you plug into this Mac with a cable: spy apps, hidden profiles, apps from outside the store and missing updates.', 'Stalkerware is usually installed by someone who had your phone in their hands. It hides well, but it leaves signs I can read over the cable.', 'Plug your phone in, say yes on the phone, then press Check my phone. I never change anything on it.'],
   settings: ['Your AI connection, how much detail I show, and what I can access.', 'I see more, and explain better, with the right access.', 'Grant Full Disk Access once, and pick the detail level you like.'],
 };
 

@@ -18,6 +18,7 @@ import { collectPups } from './collectors/pups.ts';
 import { collectVisits } from './collectors/visits.ts';
 import { collectNotarization } from './collectors/notarization.ts';
 import { collectStorage } from './collectors/storage.ts';
+import { watchPhones } from './phonecheck.ts';
 import { startDownloadWatch, refreshDownloadFindings } from './collectors/downloads.ts';
 import { updateFeeds, loadFeeds } from './intel/feeds.ts';
 import { updateYaraForge, updateElasticMacRules, collectOutdated } from './intel/extras.ts';
@@ -51,6 +52,8 @@ const COLLECTORS: Record<string, { every: number; fn: () => Promise<void> | void
   visits: { every: 2 * 60, fn: collectVisits },
   notarization: { every: SCHEDULE.notarization, fn: collectNotarization },
   storage: { every: SCHEDULE.storage, fn: collectStorage },
+  // Notices a phone plugged in by cable. It never checks one until you press the button.
+  phoneWatch: { every: 4, fn: watchPhones },
   yaraForge: { every: 7 * 86_400, fn: updateYaraForge },
   elasticRules: { every: 7 * 86_400, fn: updateElasticMacRules },
   correlate: { every: 60, fn: correlate },

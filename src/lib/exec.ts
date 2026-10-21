@@ -10,12 +10,12 @@ export interface RunResult {
 }
 
 /** Run a binary with arguments (never through a shell). */
-export function run(cmd: string, args: string[] = [], opts: { timeout?: number; maxBuffer?: number; input?: string } = {}): Promise<RunResult> {
+export function run(cmd: string, args: string[] = [], opts: { timeout?: number; maxBuffer?: number; input?: string; env?: Record<string, string> } = {}): Promise<RunResult> {
   return new Promise((resolve) => {
     const child = execFile(
       cmd,
       args,
-      { timeout: opts.timeout ?? 30_000, killSignal: 'SIGKILL', maxBuffer: opts.maxBuffer ?? 32 * 1024 * 1024, encoding: 'utf8' },
+      { timeout: opts.timeout ?? 30_000, killSignal: 'SIGKILL', maxBuffer: opts.maxBuffer ?? 32 * 1024 * 1024, encoding: 'utf8', env: opts.env ? { ...process.env, ...opts.env } : undefined },
       (err, stdout, stderr) => {
         const raw = (err as { code?: unknown } | null)?.code;
         const code = err ? (typeof raw === 'number' ? raw : 1) : 0;
@@ -30,9 +30,9 @@ export function run(cmd: string, args: string[] = [], opts: { timeout?: number; 
 }
 
 /** Run and stream stdout line by line. */
-export function runLines(cmd: string, args: string[], onLine: (line: string) => void, timeout = 600_000): Promise<RunResult> {
+export function runLines(cmd: string, args: string[], onLine: (line: string) => void, timeout = 600_000, env?: Record<string, string>): Promise<RunResult> {
   return new Promise((resolve) => {
-    const child = spawn(cmd, args, { stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn(cmd, args, { stdio: ['ignore', 'pipe', 'pipe'], env: env ? { ...process.env, ...env } : undefined });
     let buf = '';
     let stderr = '';
     const timer = setTimeout(() => child.kill('SIGKILL'), timeout);

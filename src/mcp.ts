@@ -74,7 +74,7 @@ tool('security_overview', 'One-call summary of this Mac\'s security: score and h
 
 tool('list_findings', 'List security findings. Each has id, tier, severity, category, title, summary. tier is how worried to be: "suspicious" = signs something bad may be happening (lead with these), "risk" = a real weakness worth fixing, "hardening" = an optional way to strengthen security (never call these suspicious). Use explain_finding for detail.', {
   status: z.enum(['active', 'open', 'acknowledged', 'resolved', 'all']).optional().describe('Default active (open + acknowledged). "acknowledged" means the user chose to ignore it: mention it only if it matters, do not nag.'),
-  category: z.enum(['network', 'posture', 'persistence', 'permissions', 'location', 'trackers', 'malware', 'malware-artifacts', 'agents', 'behavior', 'processes', 'downloads', 'netsafety', 'secrets', 'notarization', 'storage', 'updates', 'incidents']).optional(),
+  category: z.enum(['network', 'posture', 'persistence', 'permissions', 'location', 'trackers', 'malware', 'malware-artifacts', 'agents', 'behavior', 'processes', 'downloads', 'netsafety', 'secrets', 'notarization', 'storage', 'updates', 'incidents', 'phone']).optional(),
   min_severity: z.enum(['info', 'low', 'medium', 'high', 'critical']).optional(),
 }, async ({ status, category, min_severity }) => {
   const q = new URLSearchParams({ status: status ?? 'active', ...(category ? { category } : {}), ...(min_severity ? { min: min_severity } : {}) });
@@ -238,6 +238,9 @@ tool('app_trust', 'Gatekeeper verdict for every installed app: notarized by Appl
 
 tool('storage_report', 'Optimize this Mac: disk usage, biggest folders, safe-to-clear caches and developer junk (npm, Xcode DerivedData, simulators, Homebrew ...), apps not opened in 90+ days and their size, leftovers from uninstalled apps, files over 1 GB, exact duplicate files (verified by full hash), startup items with their CPU and memory cost, and total reclaimable space. To clean up, call propose_action with trash_paths or run_cleanup; the user approves with Touch ID.', {},
   async () => cap(await api('GET', '/api/storage'), 60));
+
+tool('phone_checkup', 'Phone check-up: phones plugged into this Mac with a USB cable and the latest read-only report for each. iPhone/iPad: iOS version vs the newest Apple offers, passcode, apps from outside the App Store (enterprise or developer signed), configuration profiles, remote management (MDM/supervision), known stalkerware, and the optional deep spyware check with Amnesty\'s MVT. Android: security patch age, apps from outside an app store, apps with Accessibility, device admin or notification access, apps that can watch you, Play Protect, root. You cannot start a check: the user presses Check my phone in the dashboard (Phone check-up page). If a report shows stalkerware, explain gently that removing it can alert the person who installed it, and suggest a helpline before acting.', {},
+  async () => cap(await api('GET', '/api/phonecheck'), 120));
 
 server.prompt('security_checkup', 'Walk the user through a full security check-up of this Mac.', async () => ({
   messages: [{ role: 'user', content: { type: 'text', text: 'Use Hashling to give me a security check-up of my Mac. Start with security_overview and storylines, then look at anything high or medium, check what my AI agents can do with agent_inventory, and check network_activity for anything unusual. Explain each issue simply, tell me what you recommend, and propose actions for the ones I should fix. Do not claim anything is fixed until I approve it.' } }],

@@ -19,18 +19,20 @@ export function overview() {
   // Optional hardening suggestions barely move the score; suspicious items weigh the most.
   const tierWeight = { suspicious: 1.5, risk: 1, hardening: 0.25 } as const;
   const cost = (f: (typeof open)[number]) => ({ critical: 25, high: 12, medium: 5, low: 1.5, info: 0 }[f.severity] ?? 0) * tierWeight[f.tier];
-  const penalty = open.reduce((n, f) => n + cost(f), 0);
+  // The score is this Mac's. A phone you checked over the cable has its own report and verdict.
+  const scored = open.filter((f) => f.category !== 'phone');
+  const penalty = scored.reduce((n, f) => n + cost(f), 0);
   const tiers = { suspicious: 0, risk: 0, hardening: 0 };
-  for (const f of open) tiers[f.tier]++;
+  for (const f of scored) tiers[f.tier]++;
   const postureScore = posture?.data?.score ?? 70;
   const score = Math.max(0, Math.min(100, Math.round(postureScore - penalty)));
   // What the score is made of, so the dashboard can explain it and point at the biggest gain.
   const byTier = { suspicious: 0, risk: 0, hardening: 0 };
-  for (const f of open) byTier[f.tier] += cost(f);
+  for (const f of scored) byTier[f.tier] += cost(f);
   const scoreBreakdown = {
     settings: postureScore,
     byTier: { suspicious: Math.round(byTier.suspicious), risk: Math.round(byTier.risk), hardening: Math.round(byTier.hardening) },
-    topGains: [...open].sort((a, b) => cost(b) - cost(a)).slice(0, 3).map((f) => ({ id: f.id, title: f.title, points: Math.round(cost(f) * 10) / 10 })),
+    topGains: [...scored].sort((a, b) => cost(b) - cost(a)).slice(0, 3).map((f) => ({ id: f.id, title: f.title, points: Math.round(cost(f) * 10) / 10 })),
   };
   const verdict = tiers.suspicious ? 'Something looks suspicious'
     : tiers.risk ? (tiers.risk === 1 ? 'One risk worth fixing' : `${tiers.risk} risks worth fixing`)
@@ -80,6 +82,7 @@ export const AREAS: Record<string, { label: string; categories: string[]; collec
   permissions: { label: 'permissions', categories: ['permissions', 'webnotify', 'browser', 'sensors'], collectors: ['permissions', 'webnotify', 'browserhijack', 'sensors'], clean: 'No suspicious permissions found' },
   tracking: { label: 'tracking', categories: ['trackers', 'location'], collectors: ['trackers', 'location'], clean: 'No one appears to be tracking you' },
   system: { label: 'system settings', categories: ['posture', 'updates'], collectors: ['posture', 'outdated'], clean: 'All important security settings are on' },
+  phonecheck: { label: 'phone check-up', categories: ['phone'], collectors: [], clean: 'Nothing worrying on the phones you checked' },
 };
 
 export function suspicious() {
