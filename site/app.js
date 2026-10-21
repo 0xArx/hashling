@@ -1,5 +1,5 @@
 /* =========================================================
-   Hashling — app.js
+   Hashling: app.js
    Copy buttons, theme toggle, FAQ animation, scroll reveal
    ========================================================= */
 
@@ -225,4 +225,33 @@
   btn.addEventListener('animationend', function (e) {
     if (e.animationName === 'hm-bounce-k') btn.classList.remove('hm-bounce');
   });
+})();
+
+/* Mac or Windows: the picker swaps the install content. Windows visitors start on Windows. */
+(function () {
+  var picks = document.querySelectorAll('[data-platform]');
+  if (!picks.length) return;
+  function choose(p, focus) {
+    document.body.setAttribute('data-platform', p);
+    picks.forEach(function (b) {
+      var on = b.getAttribute('data-platform') === p;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+  }
+  picks.forEach(function (b) {
+    b.addEventListener('click', function () { choose(b.getAttribute('data-platform')); });
+    b.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      choose(b.getAttribute('data-platform') === 'mac' ? 'windows' : 'mac', true);
+    });
+  });
+  document.querySelectorAll('[data-platform-link]').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); choose(a.getAttribute('data-platform-link')); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  });
+  var ua = navigator.userAgent || '';
+  choose(/Windows/i.test(ua) && !/Macintosh/i.test(ua) ? 'windows' : 'mac');
 })();

@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hashling: your personal AI cybersecurity agent</title>
-  <meta name="description" content="Hashling is your personal AI cybersecurity agent for Mac. It keeps watch around the clock, catches scams, malware and trackers, explains everything in plain words, and fixes things only when you say yes. Free and open source.">
+  <meta name="description" content="Hashling is a free, open-source AI security agent that lives on your computer. It watches for scams, malware, trackers and risky apps, tells you what it finds in plain words, and changes nothing until you say yes. On Mac now, Windows coming soon.">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Hashling: your personal AI cybersecurity agent">
-  <meta property="og:description" content="A personal AI cybersecurity agent for your Mac: it watches around the clock, explains what it finds in plain words, and fixes things only with your Touch ID. Free and open source.">
+  <meta property="og:description" content="A free, open-source AI security agent that lives on your computer, explains what it finds in plain words, and changes nothing until you say yes. On Mac now, Windows coming soon.">
   <meta property="og:image" content="/og.png">
   <meta property="og:url" content="https://hashling.vercel.app">
   <meta property="og:site_name" content="Hashling">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Hashling: your personal AI cybersecurity agent">
-  <meta name="twitter:description" content="A personal AI cybersecurity agent for your Mac: it watches around the clock, explains what it finds in plain words, and fixes things only with your Touch ID. Free and open source.">
+  <meta name="twitter:description" content="A free, open-source AI security agent that lives on your computer, explains what it finds in plain words, and changes nothing until you say yes. On Mac now, Windows coming soon.">
   <meta name="twitter:image" content="/og.png">
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -64,442 +64,95 @@
       <div class="wrap hero-content">
         <div class="hero-mascot-wrap"><p class="hero-say" id="hero-say" role="status" aria-live="polite" hidden></p><button type="button" class="hero-mascot" id="hero-mascot" aria-label="Say hi to Hashling"><svg viewBox="0 0 120 120"><g class="hm-body" fill="url(#hl-site)"><rect x="38" y="10" width="15" height="98" rx="7.5" transform="skewX(-10)" transform-origin="45.5 59"/><rect x="67" y="10" width="15" height="98" rx="7.5" transform="skewX(-10)" transform-origin="74.5 59"/><g class="hm-arm"><rect x="16" y="36" width="90" height="15" rx="7.5"/><rect x="24" y="39" width="34" height="4" rx="2" fill="#fff" opacity=".4"/></g><rect x="13" y="68" width="90" height="15" rx="7.5"/><rect x="21" y="71" width="34" height="4" rx="2" fill="#fff" opacity=".4"/></g></svg></button></div>
         <h1 class="hero-title">Your personal AI cybersecurity agent.</h1>
-        <p class="hero-sub">Hashling lives on your Mac and keeps watch day and night: scams, malware, trackers, risky apps and the AI tools you use. Ask it anything in plain words and it checks your Mac before it answers. It suggests fixes and makes them only when you say yes with Touch ID. Uses the AI you already have. Free and open source.</p>
-        <div class="hero-actions">
-          <a href="/start" class="btn btn-accent btn-lg hero-dl">
-            <svg width="15" height="18" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-42.4-155.5-127.4C46.7 790.7 0 663 0 541.8c0-207.5 135.4-317.3 270-317.3 71 0 130.5 46.4 175 46.4 42.5 0 109.2-49 191.5-49 30.8 0 159.8 2.9 243.4 112.4zm-188-123.3c33.8-40.8 58-96.8 58-152.8 0-7.7-.7-15.5-2.2-22.9-55.1 2.2-120.3 36.7-159.3 81.4-31.3 35.7-60.8 90.4-60.8 147.2 0 8.5 1.5 17 2.2 19.5 3.5.6 9.2 1.3 14.8 1.3 49.9 0 112.3-32.2 147.3-73.7z"/></svg>
-            Install on your Mac
-          </a>
-          <div class="hero-install-wrap">
-            <span class="hero-install-label">Already comfortable with Terminal? Paste this</span>
-            <div class="install-row">
-              <code class="install-cmd">curl -fsSL https://hashling.vercel.app/install.sh | sh</code>
-              <button class="copy-btn" data-copy="curl -fsSL https://hashling.vercel.app/install.sh | sh" aria-label="Copy install command">
-                <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                <span class="copy-label">Copy</span>
-              </button>
-            </div>
-          </div>
+        <p class="hero-sub">Hashling lives on your computer, watches for scams, malware, trackers and risky AI tools, and tells you in plain words what to do. Nothing changes until you say yes.</p>
+        <div class="platform-pick" role="tablist" aria-label="Choose your computer">
+          <button type="button" role="tab" class="pp-tab is-on" id="pp-mac" aria-selected="true" aria-controls="pp-mac-panel" data-platform="mac"><svg width="15" height="18" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-42.4-155.5-127.4C46.7 790.7 0 663 0 541.8c0-207.5 135.4-317.3 270-317.3 71 0 130.5 46.4 175 46.4 42.5 0 109.2-49 191.5-49 30.8 0 159.8 2.9 243.4 112.4zm-188-123.3c33.8-40.8 58-96.8 58-152.8 0-7.7-.7-15.5-2.2-22.9-55.1 2.2-120.3 36.7-159.3 81.4-31.3 35.7-60.8 90.4-60.8 147.2 0 8.5 1.5 17 2.2 19.5 3.5.6 9.2 1.3 14.8 1.3 49.9 0 112.3-32.2 147.3-73.7z"/></svg>Mac</button>
+          <button type="button" role="tab" class="pp-tab" id="pp-win" aria-selected="false" aria-controls="pp-win-panel" data-platform="windows"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.1 10.4 4v7.2H3zM11.3 3.9 21 2.5v8.7h-9.7zM3 12.1h7.4v7.2L3 18.2zM11.3 12.1H21v8.7l-9.7-1.4z"/></svg>Windows <span class="pp-soon">Soon</span></button>
         </div>
-        <p class="hero-fine">Free and open source. macOS 14+ on Apple silicon.</p>
-      </div>
-
-      <!-- Dashboard mock -->
-      <div class="wrap hero-mock-outer">
-        <div class="mock-scroll-wrap">
-          <figure class="mock" role="img" aria-label="Hashling security dashboard showing live network connections with a flagged unsigned application sending data to an unknown server, plus a security posture score of 91 out of 100">
-            <div aria-hidden="true">
-              <div class="mock-chrome">
-                <div class="mock-dots">
-                  <span class="mock-dot mock-dot--close"></span>
-                  <span class="mock-dot mock-dot--min"></span>
-                  <span class="mock-dot mock-dot--zoom"></span>
-                </div>
-                <span class="mock-title-bar">Hashling</span>
-                <span class="mock-live">
-                  <span class="mock-pulse"></span>
-                  Live
-                </span>
-              </div>
-              <div class="mock-tabs-row">
-                <button class="mock-tab mock-tab--active" tabindex="-1">Network</button>
-                <button class="mock-tab" tabindex="-1">Malware</button>
-                <button class="mock-tab" tabindex="-1">Persistence</button>
-                <button class="mock-tab" tabindex="-1">Agents</button>
-                <button class="mock-tab" tabindex="-1">Posture</button>
-              </div>
-              <div class="mock-body">
-                <div class="mock-main">
-                  <div class="mock-section-hd">
-                    <span class="mock-section-title">Network Activity</span>
-                    <span class="mock-count">24 active</span>
-                  </div>
-                  <table class="mock-table">
-                    <thead>
-                      <tr>
-                        <th>Process</th>
-                        <th>Destination</th>
-                        <th>Owner</th>
-                        <th class="mock-th-r">↑ kB/s</th>
-                        <th class="mock-th-r">↓ kB/s</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td class="mock-proc">Chrome</td>
-                        <td class="mock-dest">gstatic.com</td>
-                        <td class="mock-owner">Google LLC</td>
-                        <td class="mock-num">0.2</td>
-                        <td class="mock-num">3.1</td>
-                      </tr>
-                      <tr>
-                        <td class="mock-proc">Claude <span class="mock-badge mock-badge--ai">AI</span></td>
-                        <td class="mock-dest">api.anthropic.com</td>
-                        <td class="mock-owner">Anthropic PBC</td>
-                        <td class="mock-num">1.4</td>
-                        <td class="mock-num">4.8</td>
-                      </tr>
-                      <tr>
-                        <td class="mock-proc">Mail</td>
-                        <td class="mock-dest">courier.icloud.com</td>
-                        <td class="mock-owner">Apple Inc.</td>
-                        <td class="mock-num">0.0</td>
-                        <td class="mock-num">0.4</td>
-                      </tr>
-                      <tr class="mock-row--flag">
-                        <td class="mock-proc">
-                          <span class="mock-flag-glyph">⚑</span>
-                          App Helper
-                          <span class="mock-badge mock-badge--warn">unsigned</span>
-                        </td>
-                        <td class="mock-dest">52.94.236.40 <span class="mock-new-tag">new</span></td>
-                        <td class="mock-owner mock-owner--unk">Unknown ASN</td>
-                        <td class="mock-num mock-num--hi">8.4</td>
-                        <td class="mock-num">0.1</td>
-                      </tr>
-                      <tr>
-                        <td class="mock-proc">Finder</td>
-                        <td class="mock-dest">cds.apple.com</td>
-                        <td class="mock-owner">Apple Inc.</td>
-                        <td class="mock-num">0.0</td>
-                        <td class="mock-num">2.2</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div class="mock-finding">
-                    <div class="mock-finding-icon">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                    </div>
-                    <div class="mock-finding-body">
-                      <strong>App Helper is unsigned, running from ~/Downloads</strong>
-                      <span>Sending 8.4 kB/s to an IP your Mac has never contacted. No known owner.</span>
-                    </div>
-                    <div class="mock-finding-btns">
-                      <button class="mock-btn" tabindex="-1">Explain</button>
-                      <button class="mock-btn mock-btn--cta" tabindex="-1">Propose action</button>
-                    </div>
-                  </div>
-                </div>
-                <aside class="mock-aside">
-                  <span class="mock-aside-label">Posture</span>
-                  <div class="mock-score-wrap">
-                    <svg class="mock-score-ring" viewBox="0 0 80 80" width="80" height="80">
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="var(--border)" stroke-width="5"/>
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="var(--ok)" stroke-width="5"
-                        stroke-dasharray="193.7 19.8" stroke-linecap="round"
-                        transform="rotate(-90 40 40)"/>
-                    </svg>
-                    <span class="mock-score-num">91</span>
-                  </div>
-                  <ul class="mock-checks">
-                    <li class="mock-chk mock-chk--ok"><span class="mock-chk-dot"></span>FileVault</li>
-                    <li class="mock-chk mock-chk--ok"><span class="mock-chk-dot"></span>Firewall</li>
-                    <li class="mock-chk mock-chk--ok"><span class="mock-chk-dot"></span>SIP</li>
-                    <li class="mock-chk mock-chk--warn"><span class="mock-chk-dot"></span>XProtect</li>
-                    <li class="mock-chk mock-chk--ok"><span class="mock-chk-dot"></span>Gatekeeper</li>
-                  </ul>
-                </aside>
-              </div>
-            </div>
-          </figure>
+        <div class="hero-actions mac-only" id="pp-mac-panel" role="tabpanel" aria-labelledby="pp-mac">
+          <a href="/start" class="btn btn-accent btn-lg hero-dl"><svg width="15" height="18" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-42.4-155.5-127.4C46.7 790.7 0 663 0 541.8c0-207.5 135.4-317.3 270-317.3 71 0 130.5 46.4 175 46.4 42.5 0 109.2-49 191.5-49 30.8 0 159.8 2.9 243.4 112.4zm-188-123.3c33.8-40.8 58-96.8 58-152.8 0-7.7-.7-15.5-2.2-22.9-55.1 2.2-120.3 36.7-159.3 81.4-31.3 35.7-60.8 90.4-60.8 147.2 0 8.5 1.5 17 2.2 19.5 3.5.6 9.2 1.3 14.8 1.3 49.9 0 112.3-32.2 147.3-73.7z"/></svg>Get Hashling for Mac</a>
+          <a href="#how" class="hero-more">See how it works</a>
+          <p class="hero-fine">Free and open source. Needs a Mac with Apple silicon (M1 or newer) and macOS 14 or later.</p>
+        </div>
+        <div class="hero-actions pp-win-panel win-only" id="pp-win-panel" role="tabpanel" aria-labelledby="pp-win">
+          <p class="pp-win-lead"><b>Hashling for Windows is on the way.</b> It will watch the same things and work the same way: plain words, your own AI, and nothing changes without your OK.</p>
+          <a href="#windows" class="btn btn-ghost btn-lg"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.1 10.4 4v7.2H3zM11.3 3.9 21 2.5v8.7h-9.7zM3 12.1h7.4v7.2L3 18.2zM11.3 12.1H21v8.7l-9.7-1.4z"/></svg>What’s coming for Windows</a>
         </div>
       </div>
-    </section>
 
-    <!-- WHY NOW -->
-    <!-- THE AI THREAT: what Anthropic and the FBI report, and why you need your own AI on defence -->
-    <section class="threat-section" id="ai-threat" aria-labelledby="threat-h">
-      <div class="wrap threat-wrap">
-        <p class="why-eyebrow">The AI arms race</p>
-        <h2 id="threat-h" class="section-title">Hackers have AI now. Your Mac should too.</h2>
-        <p class="section-sub">As AI models get smarter, attacks get cheaper, faster and easier to run, and they are aimed at ordinary people, not just big companies. This is what the people building AI, and the FBI, are reporting.</p>
-
-        <figure class="threat-hero reveal">
-          <blockquote>“Sophisticated attacks no longer require sophisticated attackers.”</blockquote>
-          <figcaption>Anthropic, makers of Claude · <a href="https://www.anthropic.com/threat-intelligence-report-september-2026" target="_blank" rel="noopener">Detecting and countering misuse of AI, September 2026 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></figcaption>
+      <!-- The real dashboard -->
+      <div class="wrap hero-shot-outer">
+        <figure class="hero-shot">
+          <div class="hero-shot-bar" aria-hidden="true"><span></span><span></span><span></span><em>hashling.localhost</em></div>
+          <picture>
+            <source srcset="assets/screens/home-dark.png" media="(prefers-color-scheme: dark)">
+            <img src="assets/screens/home.png" width="1600" height="1000" alt="The Hashling home screen: a security score of 67 out of 100, a short to-do list, and what needs your attention first">
+          </picture>
         </figure>
+      </div>
+    </section>
 
-        <ol class="threat-timeline">
-          <li class="reveal"><span class="threat-when">May 2025 · FBI</span><div><h3>AI voices pretending to be officials</h3><p>The FBI warned that criminals were sending AI-generated voice messages posing as senior US officials to break into people’s accounts. Its advice: “do not assume it is authentic.”</p><a href="https://www.ic3.gov/PSA/2025/PSA250515" target="_blank" rel="noopener">FBI public service announcement <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div></li>
-          <li class="reveal"><span class="threat-when">Aug 2025 · Anthropic</span><div><h3>“Agentic AI has been weaponized.”</h3><p>One criminal used an AI coding agent to break into at least 17 organizations, including healthcare and emergency services, then demanded ransoms that sometimes exceeded $500,000.</p><a href="https://www.anthropic.com/news/detecting-countering-misuse-aug-2025" target="_blank" rel="noopener">Anthropic threat intelligence report <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div></li>
-          <li class="reveal"><span class="threat-when">Nov 2025 · Anthropic</span><div><h3>An attack run 80–90% by AI</h3><p>Anthropic stopped a spying campaign against roughly thirty targets that it calls “the first documented case of a large-scale cyberattack executed without substantial human intervention.”</p><a href="https://www.anthropic.com/news/disrupting-AI-espionage" target="_blank" rel="noopener">Anthropic report <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div></li>
-          <li class="reveal"><span class="threat-when">2025 · FBI</span><div><h3>$893 million lost to AI-linked crime</h3><p>The FBI’s yearly internet crime report now counts AI-linked crime on its own: 22,364 complaints in 2025. The FBI adds that many victims do not realize how much AI is involved, so the real number is likely higher.</p><a href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf" target="_blank" rel="noopener">FBI Internet Crime Report 2025 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div></li>
-          <li class="reveal"><span class="threat-when">Sep 2026 · Anthropic</span><div><h3>“AI has inverted the cost back onto defenders.”</h3><p>Lone attackers now have the same AI tools as state-backed teams, and can rewrite their malware as soon as a security product catches it.</p><a href="https://www.anthropic.com/threat-intelligence-report-september-2026" target="_blank" rel="noopener">Anthropic report, September 2026 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div></li>
-        </ol>
+    <!-- TRUST -->
+    <section class="trust-strip" aria-label="Why you can trust it">
+      <ul class="wrap trust-list">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Free and open source</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Runs on your computer, no cloud</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Every fix needs your Touch ID</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Works with Claude, Cursor and Codex</li>
+      </ul>
+    </section>
 
-        <div class="counter reveal">
-          <div class="counter-quote">
-            <p class="why-eyebrow">Fight AI with AI</p>
-            <blockquote>“The very abilities that allow Claude to be used in these attacks also make it crucial for cyber defense.”</blockquote>
-            <p class="counter-cite">Anthropic · <a href="https://www.anthropic.com/news/disrupting-AI-espionage" target="_blank" rel="noopener">November 2025 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></p>
+    <!-- WHY -->
+    <section class="why-lean" id="ai-threat" aria-labelledby="why-h">
+      <div class="wrap">
+        <h2 id="why-h" class="section-title">Scammers use AI now. You can too.</h2>
+        <figure class="why-quote reveal">
+          <blockquote>“Sophisticated attacks no longer require sophisticated attackers.”</blockquote>
+          <figcaption>Anthropic, the makers of Claude, September 2026</figcaption>
+        </figure>
+        <div class="why-stats">
+          <a class="why-stat reveal" href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf" target="_blank" rel="noopener"><b>$893M</b><span>lost to AI-linked crime in the US last year, by the FBI’s count</span><em>FBI, 2025 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></em></a>
+          <a class="why-stat reveal" href="https://www.anthropic.com/news/disrupting-AI-espionage" target="_blank" rel="noopener"><b>80 to 90%</b><span>of one large hacking campaign was carried out by AI on its own</span><em>Anthropic, Nov 2025 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></em></a>
+          <a class="why-stat reveal" href="https://www.anthropic.com/news/detecting-countering-misuse-aug-2025" target="_blank" rel="noopener"><b>17</b><span>organisations broken into by one person using an AI coding agent</span><em>Anthropic, Aug 2025 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></em></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT IT DOES -->
+    <section class="features-lean" id="how" aria-labelledby="features-h">
+      <div class="wrap">
+        <h2 id="features-h" class="section-title">What it does for you</h2>
+        <article class="feature-row reveal">
+          <div class="feature-text">
+            <h3>Is this a scam?</h3>
+            <p>Paste a text, email or link, or drop in a screenshot. Hashling points out the tricks before you click, call or pay.</p>
+            <ul class="feature-points"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Checks links against known scam sites</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Reads screenshots on your computer</li></ul>
           </div>
-          <div class="counter-answer">
-            <h3>So give every Mac its own AI cybersecurity agent.</h3>
-            <p>Hashling sits on your Mac and keeps watch over every app, download and network you join, day and night, and answers AI with AI:</p>
-            <ul>
-              <li><b>AI-written scams and deepfake texts</b><span>Paste anything into Scam check and I point out the tricks before you click, call or pay.</span></li>
-              <li><b>AI-built malware and fake apps</b><span>Three scanning engines plus behaviour rules catch what a single antivirus misses, and I explain it in plain words.</span></li>
-              <li><b>AI agents turned against you</b><span>I show what every AI app on your Mac can do, warn when one acts strangely, and nothing changes without your Touch ID.</span></li>
-            </ul>
-            <a class="btn btn-accent btn-lg" href="/start">Get your own AI security agent</a>
+          <div class="feature-media"><figure class="feature-shot"><img src="assets/screens/scam-check.png" width="1600" height="1000" alt="Hashling’s scam check pointing out four warning signs in a fake delivery text" loading="lazy"></figure></div>
+        </article>
+        <article class="feature-row feature-row--flip reveal">
+          <div class="feature-text">
+            <h3>Keeps your AI tools in check</h3>
+            <p>AI assistants can run programs and read your files. Hashling shows what each one is allowed to do and warns you when one acts strangely.</p>
+            <ul class="feature-points"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Claude, Codex, Cursor, VS Code and more</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Finds passwords left in their settings</li></ul>
           </div>
-        </div>
-        <p class="threat-note">Quotes and figures come from the public reports linked above. Hashling is an independent, open-source project and is not affiliated with or endorsed by Anthropic or the FBI.</p>
-      </div>
-    </section>
-
-    <section class="why-section" aria-labelledby="why-h">
-      <div class="wrap">
-        <p class="why-eyebrow">Why now</p>
-        <h2 id="why-h" class="section-title">We all have AI now. So do the people trying to scam us.</h2>
-        <p class="section-sub">AI agents now run on our laptops, read our files, browse and sign in for us. Almost nobody can see what those agents are allowed to do, or tell when they are being turned against us. Meanwhile scams rise every day, because the wrong people have the same AI and use it to find and exploit weak spots faster than ever.</p>
-        <div class="why-grid">
-          <article class="why-card reveal">
-            <span class="why-num" aria-hidden="true">01</span>
-            <h3 class="why-title">Your agents hold the keys</h3>
-            <p>They run commands, open your files, use your browser sessions and read the API keys in their config. Most people have never seen what their own agents are allowed to do.</p>
-          </article>
-          <article class="why-card reveal">
-            <span class="why-num" aria-hidden="true">02</span>
-            <h3 class="why-title">Scammers have AI too</h3>
-            <p>Fake apps, poisoned extensions, booby-trapped tools and pitch-perfect phishing are now cheap to make and easy to scale. The attacks get smarter while our defences stay the same.</p>
-          </article>
-          <article class="why-card reveal">
-            <span class="why-num" aria-hidden="true">03</span>
-            <h3 class="why-title">One hidden instruction is enough</h3>
-            <p>A web page, email or file can carry text that quietly hijacks an agent. It acts with your access, and nothing on screen looks wrong.</p>
-          </article>
-          <article class="why-card reveal">
-            <span class="why-num" aria-hidden="true">04</span>
-            <h3 class="why-title">Everyone builds. Few see the risks.</h3>
-            <p>People and companies with no security background now ship real software, carrying critical flaws nobody on the team knows how to spot.</p>
-          </article>
-        </div>
-        <p class="why-close reveal">The same AI that gives scammers an edge can give it back to you. <span>Hashling shows you what every agent on your Mac can do, flags the signs that something is being exploited, and lets your own AI explain what it found and help you fix it, with you approving every change.</span></p>
-      </div>
-    </section>
-
-    <!-- WATCHES / FEATURE GRID -->
-    <section class="watches" aria-labelledby="watches-h">
-      <div class="wrap">
-        <h2 id="watches-h" class="section-title">Everything it watches</h2>
-        <div class="watches-grid">
-
-          <article class="watch-item watch-item--wide reveal">
-            <span class="watch-tag watch-tag--accent" aria-hidden="true">COR</span>
-            <h3 class="watch-title">It connects the dots</h3>
-            <p>One odd signal is usually noise. Hashling links signals that involve the same program into one storyline: it arrived as a download, ran, set itself to start automatically, then started checking in with a server. Open any app for a dossier that combines its signature, Apple's verdict, malware databases, who launched it, every server it contacted this week and the permissions it holds, scored with the reasons shown. A daily briefing tells you what is new compared with what is normal for your Mac.</p>
-          </article>
-
-          <article class="watch-item reveal">
-            <span class="watch-tag" aria-hidden="true">ASK</span>
-            <h3 class="watch-title">Ask about anything, get a straight answer</h3>
-            <p>Every item in the dashboard has an Explain button. Your own AI checks the facts with Hashling, tells you in plain English whether it is dangerous and what to do, and can prepare the fix for you to approve with Touch ID. Each area also shows a clear "nothing suspicious found" or exactly what it found.</p>
-          </article>
-
-          <article class="watch-item reveal">
-            <span class="watch-tag" aria-hidden="true">NET</span>
-            <h3 class="watch-title">Live network connections</h3>
-            <p>Every app's active connections with upload and download rates, who owns each destination, and an alert when an app reaches a host it has never contacted before. Flags unsigned programs running from Downloads or temp folders that are talking to the internet, and warns when the Wi-Fi is open, your router's identity changes, or your DNS is switched.</p>
-          </article>
-
-          <article class="watch-item reveal">
-            <span class="watch-tag" aria-hidden="true">MAL</span>
-            <h3 class="watch-title">Malware scanning</h3>
-            <p>On-demand and routine scans using ClamAV with Cisco Talos signatures, YARA-X running Apple's own XProtect rules, and osquery packs built for known Mac malware. Scan any file, folder, or your whole Downloads directory on a schedule.</p>
-          </article>
-
-          <article class="watch-item reveal">
-            <span class="watch-tag" aria-hidden="true">PER</span>
-            <h3 class="watch-title">Persistence watch</h3>
-            <p>An alert the moment something new installs itself to run at startup. Launch agents, login items, launch daemons, and browser extensions, all watched in real time. Modeled on the approach used by KnockKnock and BlockBlock.</p>
-          </article>
-
-          <article class="watch-item reveal">
-            <span class="watch-tag" aria-hidden="true">TRK</span>
-            <h3 class="watch-title">Who's tracking you</h3>
-            <p>Nearby Bluetooth trackers that keep following you as you move, and a live view of which apps hold access to your location, camera, microphone, screen recording, accessibility, and full disk. Updated as permissions change.</p>
-          </article>
-
-          <article class="watch-item reveal">
-            <span class="watch-tag" aria-hidden="true">PST</span>
-            <h3 class="watch-title">Security posture score</h3>
-            <p>A scored review of the settings that matter most: FileVault, firewall, SIP, Gatekeeper, XProtect freshness, pending OS updates, auto-login, guest account, system proxies, custom root certificates, MDM profiles, and installed remote-access tools.</p>
-          </article>
-
-          <article class="watch-item reveal">
-            <span class="watch-tag watch-tag--accent" aria-hidden="true">AGT</span>
-            <h3 class="watch-title">AI agent capabilities</h3>
-            <p>Finds every AI agent on your Mac and shows, per agent, what it can actually do: its MCP servers and tools, whether it runs in auto-approve mode, its macOS permissions, API keys sitting in plain text in config files, and its live network activity.</p>
-          </article>
-
-          <article class="watch-item reveal">
-            <span class="watch-tag" aria-hidden="true">BEH</span>
-            <h3 class="watch-title">Behaviour over time</h3>
-            <p>Every program that runs, who started it, and whether it used a technique Mac stealers rely on, like fake password prompts, keychain dumps or reading browser cookies. Apps that check in with a server on a fixed clock, and sudden large uploads, are flagged against each app's own normal.</p>
-          </article>
-
-          <article class="watch-item reveal">
-            <span class="watch-tag" aria-hidden="true">DL</span>
-            <h3 class="watch-title">Downloads, apps and keys</h3>
-            <p>Where every new file and app came from, whether Apple notarized it, and whether its fingerprint is known malware. Live threat feeds check every connection. Hashling also finds API keys left in shell history and config files, and outdated software with known holes.</p>
-          </article>
-
-          <article class="watch-item reveal">
-            <span class="watch-tag" aria-hidden="true">OPT</span>
-            <h3 class="watch-title">Storage and speed</h3>
-            <p>What fills your disk, caches that rebuild themselves, apps you have not opened in months, leftovers from deleted apps, exact duplicate files, and what starts with your Mac and how much memory it costs. Your AI can draft a cleanup plan; files only ever go to the Trash, after Touch ID.</p>
-          </article>
-
-          <article class="watch-item watch-item--wide reveal">
-            <span class="watch-tag" aria-hidden="true">LOG</span>
-            <h3 class="watch-title">Live dashboard and timeline</h3>
-            <p>A dashboard at hashling.localhost, right on your Mac, explains every finding in plain English, not security jargon. A timeline shows what changed and when, so you can trace any event back to its source without digging through system logs. Accessible from any browser on your Mac.</p>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- AI AGENT CAPABILITIES SECTION -->
-    <section class="agents-section" aria-labelledby="agents-h">
-      <div class="wrap">
-        <h2 id="agents-h" class="section-title">See exactly what every agent can do</h2>
-        <p class="section-sub">AI coding agents are powerful tools with broad system access. Hashling finds Claude Code, Claude Desktop, Cursor, Codex, VS Code extensions, Gemini CLI, Windsurf, and others, and builds a capability card for each one. You see their permissions, their connected tools, and their live network traffic in one place.</p>
-
-        <div class="agent-cap-demo reveal">
-          <!-- Agent capability card mock -->
-          <figure class="agent-card" role="img" aria-label="Example Hashling capability card for Claude Code showing bypass-permissions mode enabled, three API keys found in plain text in config files, four connected MCP servers, full disk access and screen recording permissions, and 2.4 megabytes sent to Anthropic in the last five minutes">
-            <div aria-hidden="true">
-              <div class="agent-card-hd">
-                <div class="agent-card-identity">
-                  <span class="agent-card-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><polyline points="8 12 12 8 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
-                  </span>
-                  <div>
-                    <span class="agent-card-name">Claude Code</span>
-                    <span class="agent-card-ver">version 1.0.42</span>
-                  </div>
-                </div>
-                <span class="agent-card-status">
-                  <span class="agent-card-pulse"></span>
-                  Active
-                </span>
-              </div>
-
-              <div class="agent-card-alerts">
-                <div class="agent-alert agent-alert--danger">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                  Running in bypass-permissions mode. All file and command actions auto-approved.
-                </div>
-                <div class="agent-alert agent-alert--warn">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                  3 API keys found in plain text in config files.
-                </div>
-              </div>
-
-              <div class="agent-card-cols">
-                <div class="agent-card-col">
-                  <span class="agent-card-col-title">MCP Servers</span>
-                  <ul class="agent-mcp-list">
-                    <li class="agent-mcp-item">
-                      <span class="agent-mcp-name">hashling</span>
-                      <span class="agent-mcp-tools">shell</span>
-                      <span class="agent-mcp-dot agent-mcp-dot--ok"></span>
-                    </li>
-                    <li class="agent-mcp-item">
-                      <span class="agent-mcp-name">filesystem</span>
-                      <span class="agent-mcp-tools">files</span>
-                      <span class="agent-mcp-dot agent-mcp-dot--ok"></span>
-                    </li>
-                    <li class="agent-mcp-item">
-                      <span class="agent-mcp-name">github</span>
-                      <span class="agent-mcp-tools">code</span>
-                      <span class="agent-mcp-dot agent-mcp-dot--ok"></span>
-                    </li>
-                    <li class="agent-mcp-item agent-mcp-item--more">
-                      <span class="agent-mcp-name">+1 more</span>
-                    </li>
-                  </ul>
-                </div>
-                <div class="agent-card-col">
-                  <span class="agent-card-col-title">macOS Permissions</span>
-                  <ul class="agent-perm-list">
-                    <li class="agent-perm agent-perm--ok">
-                      <span class="agent-perm-check">✓</span>
-                      Full Disk Access
-                    </li>
-                    <li class="agent-perm agent-perm--ok">
-                      <span class="agent-perm-check">✓</span>
-                      Accessibility
-                    </li>
-                    <li class="agent-perm agent-perm--ok">
-                      <span class="agent-perm-check">✓</span>
-                      Screen Recording
-                    </li>
-                    <li class="agent-perm agent-perm--none">
-                      <span class="agent-perm-check">·</span>
-                      Camera, Microphone
-                    </li>
-                  </ul>
-                </div>
-                <div class="agent-card-col">
-                  <span class="agent-card-col-title">Hooks &amp; Skills</span>
-                  <ul class="agent-hook-list">
-                    <li class="agent-hook-item">PostToolUse: detect-secrets.sh</li>
-                    <li class="agent-hook-item">PreCommit: validate.sh</li>
-                    <li class="agent-hook-item agent-hook-item--dim">4 skills installed</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div class="agent-card-net">
-                <span class="agent-card-net-label">Network right now</span>
-                <div class="agent-net-bars">
-                  <div class="agent-net-bar-row">
-                    <span class="agent-net-dest">api.anthropic.com</span>
-                    <div class="agent-net-bar-track">
-                      <div class="agent-net-bar" style="width: 72%"></div>
-                    </div>
-                    <span class="agent-net-val">2.4 MB</span>
-                  </div>
-                  <div class="agent-net-bar-row">
-                    <span class="agent-net-dest">registry.npmjs.org</span>
-                    <div class="agent-net-bar-track">
-                      <div class="agent-net-bar" style="width: 28%"></div>
-                    </div>
-                    <span class="agent-net-val">0.9 MB</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </figure>
-
-          <div class="agent-cap-text">
-            <p>Hashling reads each agent's configuration files and correlates them with live network traffic and macOS permission grants. You get a clear picture of what each tool is capable of, what mode it's running in, and what it has actually been doing, without having to read config files yourself.</p>
-            <ul class="agent-cap-list">
-              <li>Detects auto-approve and bypass-permissions modes</li>
-              <li>Lists every connected MCP server and what it can do</li>
-              <li>Flags API keys stored in plain text in config files</li>
-              <li>Shows macOS permissions: Full Disk Access, Accessibility, Screen Recording</li>
-              <li>Maps live network traffic per agent</li>
-              <li>Reports installed skills, plugins, and hooks</li>
-            </ul>
+          <div class="feature-media"><figure class="feature-shot"><img src="assets/screens/ai-apps.png" width="1600" height="1000" alt="A table of what each AI app on the computer is able to do, with Claude Code and Codex marked high risk" loading="lazy"></figure></div>
+        </article>
+        <article class="feature-row reveal">
+          <div class="feature-text">
+            <h3>Ask it anything</h3>
+            <p>Is anyone tracking me? Why is my Mac slow? Hashling checks your computer first, then answers in plain words using the AI you already have.</p>
+            <ul class="feature-points"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Every warning has an Explain button</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Simple, Standard or Expert detail</li></ul>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PHONE CHECK-UP -->
-    <section class="phone-section" id="phone" aria-labelledby="phone-h">
-      <div class="wrap">
-        <p class="phone-kicker">New</p>
-        <h2 id="phone-h" class="section-title">Your phone, too</h2>
-        <p class="section-sub">Stalkerware is usually installed by someone who had your phone in their hands. It hides well, but it leaves signs. Plug your iPhone or Android phone into your Mac with a cable and Hashling looks for them, in plain words. It only reads: nothing on the phone changes, and nothing it finds leaves your Mac.</p>
-
-        <div class="phone-demo reveal">
-          <figure class="phone-card" role="img" aria-label="Example Hashling phone check-up for Sara’s iPhone: iOS is up to date, all 96 apps came from the App Store, one configuration profile is installed and worth a look, nobody manages the phone remotely, and no app matches known stalkerware">
+          <div class="feature-media"><figure class="feature-shot"><img src="assets/screens/ask-hashling.png" width="1600" height="1000" alt="Hashling’s assistant page with suggested questions like Am I safe right now" loading="lazy"></figure></div>
+        </article>
+        <article class="feature-row feature-row--flip reveal">
+          <div class="feature-text">
+            <h3>Your phone, too</h3>
+            <p>Plug a phone in by cable and Hashling checks it for stalkerware, hidden profiles and apps from outside the store. Or pair it over Wi-Fi to carry Hashling in your pocket.</p>
+            <ul class="feature-points"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>iPhone and Android</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Only reads, never changes the phone</li></ul>
+          </div>
+          <div class="feature-media"><div class="feature-phone"><figure class="phone-card" role="img" aria-label="Example Hashling phone check-up for Sara’s iPhone: iOS is up to date, all 96 apps came from the App Store, one configuration profile is installed and worth a look, nobody manages the phone remotely, and no app matches known stalkerware">
             <div aria-hidden="true">
               <div class="phone-card-hd">
                 <span class="phone-plug">
@@ -518,400 +171,53 @@
                 <li class="is-ok"><span class="phone-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17 19 7"/></svg></span><div><b>No known stalkerware</b><span>Checked against the open list kept by Echap.</span></div></li>
               </ul>
             </div>
-          </figure>
-
-          <div class="phone-text">
-            <ol class="phone-steps">
-              <li><span>1</span><div><b>Plug it in</b><p>Hashling notices the phone by itself and offers a check.</p></div></li>
-              <li><span>2</span><div><b>Say yes on the phone</b><p>Tap Trust on an iPhone, or allow USB debugging on Android. Hashling shows you how.</p></div></li>
-              <li><span>3</span><div><b>Press Check my phone</b><p>A minute later you get a clear report, with what to do on the phone for anything it finds.</p></div></li>
-            </ol>
-            <ul class="agent-cap-list">
-              <li>Known stalkerware, and apps from outside the App Store or Play Store</li>
-              <li>Hidden profiles, certificates and remote management that hand someone control</li>
-              <li>Location-sharing apps, keyboards that could read what you type, and apps that can follow you</li>
-              <li>On Android: apps that read your screen, your notifications or your texts, or made themselves hard to remove</li>
-              <li>Missing security updates, Developer Mode, wireless debugging and your last backup</li>
-              <li>Optional deep check with Amnesty International’s Mobile Verification Toolkit, for spyware like Pegasus</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="phone-modes">
-          <div class="phone-mode reveal">
-            <h3>Over a cable: check the phone</h3>
-            <p>Phone check-up looks inside the phone itself. Free, open-source tools Hashling sets up for you the first time, with no password.</p>
-          </div>
-          <div class="phone-mode reveal">
-            <h3>Over Wi-Fi: Hashling in your pocket</h3>
-            <p>Phone mode puts your Mac’s score, warnings, the scam check and Ask Hashling on your phone’s home screen. Pair it once with a QR code; every message is encrypted between the two.</p>
-          </div>
-        </div>
+          </figure></div></div>
+        </article>
+        <p class="features-more reveal">It also watches malware, startup items, trackers, downloads, uploads and your settings. <a href="https://github.com/0xArx/hashling#what-it-watches">See everything it checks</a></p>
       </div>
     </section>
 
-    <!-- MCP / YOUR AGENT WITH HASHLING -->
-    <section class="mcp-section" aria-labelledby="mcp-h">
+    <!-- HOW IT WORKS -->
+    <section class="steps-lean" aria-labelledby="steps-h">
       <div class="wrap">
-        <div class="mcp-header">
-          <h2 id="mcp-h" class="section-title">Your AI agent, now with security eyes</h2>
-          <p class="section-sub">Connect Hashling to any MCP-compatible agent. Claude, Cursor, Codex, or any other client. Once connected, your agent can read your Mac's security state, run scans, and propose actions, all within the tools your agent already knows how to use.</p>
-        </div>
-        <div class="mcp-demos">
-
-          <!-- Terminal mock -->
-          <figure class="terminal" role="img" aria-label="Terminal showing the claude mcp add hashling command and a list of twelve available Hashling tools including security_overview, network_activity, persistence_items, and propose_action">
-            <div aria-hidden="true">
-              <div class="terminal-bar">
-                <span class="terminal-dots">
-                  <span></span><span></span><span></span>
-                </span>
-                <span class="terminal-title">Terminal</span>
-              </div>
-              <div class="terminal-body">
-                <div class="t-line">
-                  <span class="t-prompt">$</span>
-                  <span class="t-cmd"> claude mcp add hashling -- hashling mcp</span>
-                </div>
-                <div class="t-line t-output">
-                  <span class="t-ok">✓</span> MCP server "hashling" added
-                </div>
-                <div class="t-line t-blank"></div>
-                <div class="t-line t-comment"># Available tools</div>
-                <div class="t-tools">
-                  <span class="t-tool">security_overview</span>
-                  <span class="t-tool">network_activity</span>
-                  <span class="t-tool">persistence_items</span>
-                  <span class="t-tool">list_findings</span>
-                  <span class="t-tool">nearby_trackers</span>
-                  <span class="t-tool">system_posture</span>
-                  <span class="t-tool">explain_finding</span>
-                  <span class="t-tool">permissions</span>
-                  <span class="t-tool">process_info</span>
-                  <span class="t-tool">scan_path</span>
-                  <span class="t-tool">osquery</span>
-                  <span class="t-tool">propose_action</span>
-                </div>
-              </div>
-            </div>
-          </figure>
-
-          <!-- Chat mock -->
-          <figure class="chat-mock" role="img" aria-label="Example conversation where a user asks if anything on their Mac is sending data somewhere weird, Claude uses the network_activity tool from Hashling, and reports that App Helper is an unsigned program sending 8.4 kilobytes per second to an unknown server from the Downloads folder">
-            <div aria-hidden="true">
-              <div class="chat-bar">
-                <span class="chat-dots">
-                  <span></span><span></span><span></span>
-                </span>
-                <span class="chat-title">Claude</span>
-              </div>
-              <div class="chat-body">
-                <div class="chat-msg chat-msg--user">
-                  <span class="chat-who">You</span>
-                  <p>Is anything on my Mac sending data somewhere weird?</p>
-                </div>
-                <div class="chat-msg chat-msg--agent">
-                  <span class="chat-who">Claude</span>
-                  <p>Let me check your current network activity.</p>
-                  <div class="chat-tool">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                    <span class="chat-tool-name">network_activity</span>
-                  </div>
-                  <p>Found something worth looking at. An app called <strong>App Helper</strong> is sending 8.4 kB/s to an IP your Mac has never contacted. It's unsigned and running from your Downloads folder, which is unusual for a background process.</p>
-                  <p>The destination resolves to an unassigned ASN with no clear owner. Want me to pull up the full connection history, or propose blocking the upload while you investigate?</p>
-                </div>
-              </div>
-            </div>
-          </figure>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- YOU STAY IN CONTROL -->
-    <section class="control-section" aria-labelledby="control-h">
-      <div class="wrap">
-        <h2 id="control-h" class="section-title">You stay in control</h2>
-        <p class="section-sub">The AI agent is strictly read-only. It can look, scan, and explain. When it wants to take action, it submits a proposal to the dashboard. Nothing happens until you approve it with Touch ID. Quarantined files can always be restored.</p>
-        <div class="control-flow">
-          <div class="flow-step reveal">
-            <div class="flow-step-icon flow-icon--read">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </div>
-            <h3>Agent reads</h3>
-            <p>Your agent calls Hashling tools to inspect network activity, run scans, and read findings. No changes, no side effects. It can query osquery directly with read-only SQL.</p>
-          </div>
-          <div class="flow-arrow" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </div>
-          <div class="flow-step reveal">
-            <div class="flow-step-icon flow-icon--propose">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            </div>
-            <h3>Hashling shows you a proposal</h3>
-            <p>If the agent wants to quarantine a file, block a domain, quit a process, or revoke a permission, it submits a proposal to the dashboard. You see exactly what would happen before anything runs.</p>
-          </div>
-          <div class="flow-arrow" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </div>
-          <div class="flow-step reveal">
-            <div class="flow-step-icon flow-icon--approve">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-            </div>
-            <h3>You approve with Touch ID</h3>
-            <p>The action only runs after your Touch ID confirmation. Quarantine is reversible. Blocked domains can be unblocked. Nothing is permanent without your say.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ENGINES -->
-    <section class="engines-section" aria-labelledby="engines-h">
-      <div class="wrap">
-        <h2 id="engines-h" class="section-title">Built on tools security professionals trust</h2>
-        <p class="section-sub">Hashling does not reinvent the wheel. It connects open-source engines already used in professional security work and adds the local context and plain-English explanations that make them usable day to day.</p>
-        <div class="engines-grid">
-          <div class="engine-item reveal">
-            <h3 class="engine-name">ClamAV</h3>
-            <p>Open-source antivirus engine maintained by Cisco Talos, with continuously updated signatures for malware, trojans, and exploits across Mac and other platforms.</p>
-          </div>
-          <div class="engine-item reveal">
-            <h3 class="engine-name">YARA-X</h3>
-            <p>Pattern-matching engine for identifying malware families. Hashling ships with Apple's own XProtect YARA rules from macOS, plus community packs targeting Mac-specific threats.</p>
-          </div>
-          <div class="engine-item reveal">
-            <h3 class="engine-name">Apple XProtect</h3>
-            <p>Apple's built-in malware signature system, expressed as YARA rules and shipped with every Mac. Hashling runs these rules directly so you get the same detection Apple uses.</p>
-          </div>
-          <div class="engine-item reveal">
-            <h3 class="engine-name">osquery</h3>
-            <p>Open-source tool for querying your operating system as a relational database. Hashling uses it for threat-hunting packs built around known Mac malware indicators of compromise.</p>
-          </div>
-          <div class="engine-item reveal">
-            <h3 class="engine-name">Open threat feeds</h3>
-            <p>Known-bad servers and domains from abuse.ch (Feodo Tracker, ThreatFox, URLhaus), Spamhaus DROP, Emerging Threats and FireHOL, refreshed every few hours and checked locally against every connection.</p>
-          </div>
-          <div class="engine-item reveal">
-            <h3 class="engine-name">libimobiledevice and adb</h3>
-            <p>The open-source way to talk to an iPhone over a cable (with pymobiledevice3), and Google’s own tool for Android. Hashling uses them read-only for Phone check-up.</p>
-          </div>
-          <div class="engine-item reveal">
-            <h3 class="engine-name">Amnesty MVT and Echap</h3>
-            <p>Amnesty International’s Mobile Verification Toolkit, used by researchers to find spyware like Pegasus, and the open stalkerware indicators kept by Echap, a member of the Coalition Against Stalkerware.</p>
-          </div>
-          <div class="engine-item reveal">
-            <h3 class="engine-name">Proven techniques</h3>
-            <p>Beacon timing from RITA, live startup-item watching in the style of BlockBlock, file reputation from Team Cymru and CIRCL, YARA-Forge community rules, and the safe-cleanup rules of Mole, Pearcleaner and czkawka.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PRIVACY -->
-    <section class="privacy-section" aria-labelledby="privacy-h">
-      <div class="wrap">
-        <h2 id="privacy-h" class="section-title">What stays on your Mac, and what does not</h2>
-        <div class="privacy-grid reveal">
-          <div class="privacy-col privacy-col--stays">
-            <h3 class="privacy-col-title">Stays on your Mac</h3>
-            <ul class="privacy-list">
-              <li>All monitoring data and event logs</li>
-              <li>Scan results and threat findings</li>
-              <li>Network connection history</li>
-              <li>Security posture readings</li>
-              <li>Agent capability records</li>
-              <li>Dashboard and timeline</li>
-              <li>Everything Phone check-up reads from your phone, and any backup it makes for the deep check (deleted as soon as the check ends)</li>
-            </ul>
-          </div>
-          <div class="privacy-col privacy-col--leaves">
-            <h3 class="privacy-col-title">May leave your Mac</h3>
-            <ul class="privacy-list privacy-list--caution">
-              <li>DNS lookups to resolve who owns an IP address (you can disable this)</li>
-              <li>Signature updates from ClamAV and YARA rule repositories, and threat-feed downloads from abuse.ch, Spamhaus and FireHOL</li>
-              <li>For new downloads and apps you investigate, a file fingerprint (SHA-1 hash, never the file) is checked with Team Cymru and CIRCL</li>
-              <li>For Phone check-up, Apple’s public list of iOS versions and the open stalkerware list are downloaded. Nothing about your phone is sent.</li>
-              <li><b>When you ask an AI for help</b>, your question and the Hashling data it looks up go to that AI’s company (for example Anthropic, OpenAI or Google), under their privacy terms. You pick the AI you trust, and nothing is sent unless you ask.</li>
-            </ul>
-          </div>
-        </div>
-        <p class="privacy-footer-note">Hashling has no account, no cloud backend and no telemetry. Your AI agent sees only what it requests through Hashling’s tools, and it can never change anything without your Touch ID.</p>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="faq-section" aria-labelledby="faq-h">
-      <div class="wrap">
-        <h2 id="faq-h" class="section-title">Questions</h2>
-        <div class="faq-list">
-
-          <details class="faq-item reveal">
-            <summary class="faq-q">
-              Does Hashling replace antivirus?
-              <span class="faq-chevron" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-              </span>
-            </summary>
-            <div class="faq-a">
-              <p>No. Hashling complements XProtect, the malware detection Apple ships with every Mac, by running ClamAV and YARA-X on top of it. It is not a kernel-level endpoint detection product and does not replace the on-access scanning a commercial EDR provides. If your threat model requires a commercial EDR, use one alongside Hashling.</p>
-            </div>
-          </details>
-
-          <details class="faq-item reveal">
-            <summary class="faq-q">
-              Can Hashling check my iPhone or Android phone?
-              <span class="faq-chevron" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-              </span>
-            </summary>
-            <div class="faq-a">
-              <p>Yes. Plug it into your Mac with a cable, tap Trust on an iPhone (or allow USB debugging on Android), then press Check my phone. Hashling looks for stalkerware, apps from outside the app stores, hidden profiles and remote management, apps that can watch you, and missing updates. It only reads and never changes anything on the phone. If a report finds stalkerware, it suggests talking to someone you trust or a helpline before removing it, because the person who installed it may notice.</p>
-            </div>
-          </details>
-
-          <details class="faq-item reveal">
-            <summary class="faq-q">
-              Does my data leave my Mac?
-              <span class="faq-chevron" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-              </span>
-            </summary>
-            <div class="faq-a">
-              <p>Hashling itself only downloads: malware signatures, lists of known bad servers, and lookups of who owns an internet address (you can turn those off). For new downloads it checks a file fingerprint, never the file. The one thing that sends your information somewhere is AI help: when you ask an AI, your question and the Hashling data it looks up go to that AI’s company. You choose which AI you trust, and nothing is sent unless you ask. Hashling sends no telemetry, crash reports or analytics.</p>
-            </div>
-          </details>
-
-          <details class="faq-item reveal">
-            <summary class="faq-q">
-              Which AI agents work with Hashling?
-              <span class="faq-chevron" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-              </span>
-            </summary>
-            <div class="faq-a">
-              <p>Any client that supports the Model Context Protocol. That includes Claude, Cursor, Codex, and anything else built on MCP. Hashling also exposes a local HTTP API if you want to call it directly from scripts or custom tooling.</p>
-            </div>
-          </details>
-
-          <details class="faq-item reveal">
-            <summary class="faq-q">
-              What can the AI agent actually do?
-              <span class="faq-chevron" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-              </span>
-            </summary>
-            <div class="faq-a">
-              <p>The agent is read-only. It can retrieve network activity, findings, persistence items, permissions, nearby trackers, system posture, process information, and run read-only osquery SQL. It can also submit a proposed action, but the proposal only appears in your dashboard. Nothing executes until you approve it with Touch ID.</p>
-            </div>
-          </details>
-
-          <details class="faq-item reveal">
-            <summary class="faq-q">
-              How does the AI agent capability monitoring work?
-              <span class="faq-chevron" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-              </span>
-            </summary>
-            <div class="faq-a">
-              <p>Hashling reads each agent's configuration files at known paths, parses them for MCP server declarations, permission mode flags, hooks, and plaintext credentials, then correlates that configuration with live network connections and macOS permission grants from the Privacy and Security settings database. Nothing is sent anywhere. The capability card is built entirely from local data.</p>
-            </div>
-          </details>
-
-          <details class="faq-item reveal">
-            <summary class="faq-q">
-              Is Hashling always running in the background?
-              <span class="faq-chevron" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-              </span>
-            </summary>
-            <div class="faq-a">
-              <p>Yes. Hashling installs a lightweight daemon that collects network events, watches for persistence changes, and keeps the dashboard up to date. You can pause or stop it from the dashboard or the menu bar icon.</p>
-            </div>
-          </details>
-
-          <details class="faq-item reveal">
-            <summary class="faq-q">
-              What macOS version do I need?
-              <span class="faq-chevron" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-              </span>
-            </summary>
-            <div class="faq-a">
-              <p>Hashling requires macOS 14 Sonoma or later on Apple silicon. Intel Mac support is not available in the current release.</p>
-            </div>
-          </details>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- INSTALL, STEP BY STEP -->
-    <section class="install-section" id="install" aria-labelledby="install-h">
-      <div class="wrap">
-        <h2 id="install-h" class="section-title">Install it in 5 minutes. No experience needed.</h2>
-        <p class="section-sub">Use an AI agent like Claude Code, Cursor or Codex? Give it this prompt and it does everything for you. Or type one line yourself, below. <a class="install-more" href="/start">See every way to install</a></p>
-        <div class="gs-prompt install-prompt reveal">
-          <div class="gs-prompt-bar">
-            <span class="gs-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="gs-prompt-label">Prompt for your AI agent</span>
-            <button class="copy-btn gs-copy" data-copy="Set up Hashling on my Mac. Hashling is a free, open-source personal AI cybersecurity agent for Macs: https://github.com/0xArx/hashling&#10;&#10;Read SKILL.md in that repo first and follow it. Check that my Mac can run Hashling, install it, and connect yourself to it. Explain each step in plain words, and tell me before anything needs me (like my Mac password or a switch in System Settings). When it is done, give me a short check-up of my Mac." aria-label="Copy the prompt">
-              <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-              <span class="copy-label">Copy prompt</span>
-            </button>
-          </div>
-          <div class="gs-prompt-body">
-            <p>Set up Hashling on my Mac. Hashling is a free, open-source personal AI cybersecurity agent for Macs: <span class="gs-link">https://github.com/0xArx/hashling</span></p>
-            <p>Read SKILL.md in that repo first and follow it. Check that my Mac can run Hashling, install it, and connect yourself to it. Explain each step in plain words, and tell me before anything needs me (like my Mac password or a switch in System Settings). When it is done, give me a short check-up of my Mac.</p>
-          </div>
-        </div>
-        <h3 class="install-self">Or do it yourself</h3>
-        <ol class="install-steps">
-          <li class="reveal"><span class="install-n">1</span><div><h3>Open Terminal</h3><p>Press <kbd>⌘</kbd> + <kbd>Space</kbd>, type <b>Terminal</b>, and press <kbd>Return</kbd>. A window with a text cursor opens. That is all Terminal is.</p></div></li>
-          <li class="reveal"><span class="install-n">2</span><div><h3>Paste this line and press Return</h3>
-            <div class="install-row"><code class="install-cmd">curl -fsSL https://hashling.vercel.app/install.sh | sh</code>
-              <button class="copy-btn" data-copy="curl -fsSL https://hashling.vercel.app/install.sh | sh" aria-label="Copy install command">
-                <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                <span class="copy-label">Copy</span>
-              </button>
-            </div></div></li>
-          <li class="reveal"><span class="install-n">3</span><div><h3>Follow the six steps on screen</h3><p>Hashling explains each step as it goes. If it asks for your Mac password, type it and press Return. You will not see the letters as you type; that is normal on a Mac.</p></div></li>
-          <li class="reveal"><span class="install-n">4</span><div><h3>Choose how much detail you want</h3><p>Your dashboard opens in the browser with a 2-minute setup. Pick a mode. You can switch any time.</p>
-            <div class="mode-strip">
-              <div><b>Simple</b><span>Tells you if anything is wrong, in plain words, and what to do. For most people.</span></div>
-              <div><b>Standard</b><span>Every check Hashling runs, each explained. For people comfortable with computers.</span></div>
-              <div><b>Expert</b><span>Every process, file path and signature, plus a SQL console. For developers.</span></div>
-            </div></div></li>
+        <h2 id="steps-h" class="section-title">You stay in control</h2>
+        <ol class="steps-row">
+          <li class="reveal"><span>1</span><h3>It looks</h3><p>Hashling checks your apps, network and files. Looking never changes anything.</p></li>
+          <li class="reveal"><span>2</span><h3>It suggests a fix</h3><p>You see exactly what would happen, and can ask why, before anything runs.</p></li>
+          <li class="reveal"><span>3</span><h3>You say yes</h3><p>Approve with Touch ID. Most fixes can be undone, and clean-ups go to the Trash.</p></li>
         </ol>
-        <p class="install-fine">Needs a Mac with Apple silicon (M1 or newer) and macOS 14 or later. Remove it any time with <code>hashling uninstall --all</code>.</p>
+        <p class="steps-privacy">No account, no cloud, no tracking. Your data stays on your computer unless you ask an AI for help.</p>
       </div>
     </section>
 
-    <!-- FINAL CTA -->
-    <section class="cta-section" aria-label="Download Hashling">
+    <!-- WINDOWS: COMING SOON -->
+    <section class="windows-band" id="windows" aria-labelledby="windows-h">
+      <div class="wrap windows-band-inner reveal">
+        <span class="windows-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.1 10.4 4v7.2H3zM11.3 3.9 21 2.5v8.7h-9.7zM3 12.1h7.4v7.2L3 18.2zM11.3 12.1H21v8.7l-9.7-1.4z"/></svg></span>
+        <div>
+          <h2 id="windows-h">Hashling for Windows is coming</h2>
+          <p>Same idea, same plain words. On GitHub, click <b>Watch</b>, then <b>Custom</b>, then <b>Releases</b> to hear when it’s out.</p>
+        </div>
+        <a class="btn btn-ghost" href="https://github.com/0xArx/hashling" target="_blank" rel="noopener">Follow on GitHub</a>
+      </div>
+    </section>
+
+    <!-- GET IT -->
+    <section class="cta-section" id="install" aria-labelledby="cta-h">
       <div class="wrap cta-wrap">
-        <h2 class="cta-title">Download Hashling</h2>
-        <p class="cta-sub">Free. Open source. Runs on your Mac and works with the AI you trust.</p>
-        <a href="/start" class="btn btn-accent btn-lg">
-          <svg width="15" height="18" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-42.4-155.5-127.4C46.7 790.7 0 663 0 541.8c0-207.5 135.4-317.3 270-317.3 71 0 130.5 46.4 175 46.4 42.5 0 109.2-49 191.5-49 30.8 0 159.8 2.9 243.4 112.4zm-188-123.3c33.8-40.8 58-96.8 58-152.8 0-7.7-.7-15.5-2.2-22.9-55.1 2.2-120.3 36.7-159.3 81.4-31.3 35.7-60.8 90.4-60.8 147.2 0 8.5 1.5 17 2.2 19.5 3.5.6 9.2 1.3 14.8 1.3 49.9 0 112.3-32.2 147.3-73.7z"/></svg>
-          Install on your Mac
-        </a>
-        <p class="cta-fine">Free and open source. macOS 14+ on Apple silicon. MIT License.</p>
+        <h2 class="cta-title" id="cta-h">Get Hashling</h2>
+        <p class="cta-sub">Free, about 10 minutes to set up, no experience needed.</p>
+        <a href="/start" class="btn btn-accent btn-lg">Get Hashling for Mac</a>
         <div class="cta-install">
-          <span class="cta-install-label">Or install with one command</span>
+          <span class="cta-install-label">Or paste this into Terminal</span>
           <div class="install-row">
             <code class="install-cmd">curl -fsSL https://hashling.vercel.app/install.sh | sh</code>
-            <button class="copy-btn" data-copy="curl -fsSL https://hashling.vercel.app/install.sh | sh" aria-label="Copy install command">
-              <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-              <span class="copy-label">Copy</span>
-            </button>
+            <button class="copy-btn" data-copy="curl -fsSL https://hashling.vercel.app/install.sh | sh" aria-label="Copy install command"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span class="copy-label">Copy</span></button>
           </div>
         </div>
+        <p class="cta-fine">Needs a Mac with Apple silicon and macOS 14 or later. <a href="#windows">Windows is coming soon.</a></p>
       </div>
     </section>
-
   </main>
 
   <footer class="footer" role="contentinfo">
@@ -922,7 +228,8 @@
       </a>
       <nav class="footer-nav" aria-label="Footer links">
         <a href="https://github.com/0xArx/hashling">GitHub</a>
-        <a href="https://github.com/0xArx/hashling/releases">Releases</a>
+        <a href="/start">Get started</a>
+        <a href="https://github.com/0xArx/hashling/blob/main/INSTALL.md">Install guide</a>
         <a href="https://github.com/0xArx/hashling/blob/main/LICENSE">MIT License</a>
       </nav>
     </div>
