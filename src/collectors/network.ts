@@ -1,3 +1,4 @@
+import { PHONE_PORT } from '../config.ts';
 import { plural } from '../lib/text.ts';
 import { run } from '../lib/exec.ts';
 import { listProcs, ancestry, bundleOf, type Proc } from '../lib/procs.ts';
@@ -237,7 +238,8 @@ export async function collectNetwork(): Promise<void> {
     }
 
     for (const l of listening.filter((x) => x.exposed)) markSeen('listen', `${proc.app}|${l.port}`, { app: proc.app, port: l.port, address: l.address });
-    const exposed = listening.filter((l) => l.exposed && l.proto.startsWith('tcp'));
+    // My own phone-mode door is opened on purpose (and only speaks sealed messages); it is not a finding.
+    const exposed = listening.filter((l) => l.exposed && l.proto.startsWith('tcp') && !(pid === process.pid && l.port === PHONE_PORT));
     const remoteSvc = exposed.find((l) => [22, 5900, 3283, 3389].includes(l.port));
     if (remoteSvc) {
       findings.push({

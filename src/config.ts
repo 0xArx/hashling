@@ -20,6 +20,8 @@ export const FRESHCLAM_CONF = join(DATA_DIR, 'freshclam.conf');
 
 export const HOST = '127.0.0.1';
 export const PORT = Number(process.env.HASHLING_PORT ?? 5750);
+/** Phone mode: only open while the user has it switched on, and only speaks sealed messages. */
+export const PHONE_PORT = Number(process.env.HASHLING_PHONE_PORT ?? PORT + 1);
 /** The dashboard's friendly address. Every name ending in .localhost means this Mac, so it never leaves it. */
 export const LOCAL_NAME = 'hashling.localhost';
 export const DASHBOARD_URL = `http://${LOCAL_NAME}:${PORT}`;

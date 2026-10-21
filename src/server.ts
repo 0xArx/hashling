@@ -33,6 +33,8 @@ import { clearRansomwareAlerts } from './intel/ransomware.ts';
 import { loadHelper, saveHelper, weeklySummary } from './summary.ts';
 import { redFlags } from './lib/scamflags.ts';
 import { findUninstaller } from './lib/uninstaller.ts';
+import { PHONE_SECRET, phoneMayCall, phoneState, phoneOn, phoneOff, newPairing, forgetPhone, pairingDone } from './phone.ts';
+import { userPresence } from './actions.ts';
 
 export function loadToken(): string {
   if (existsSync(TOKEN_PATH)) return readFileSync(TOKEN_PATH, 'utf8').trim();
@@ -142,10 +144,13 @@ async function unlock(req: IncomingMessage, res: ServerResponse): Promise<void> 
 
 const safeEq = (a: string, b: string) => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b));
 
-type Who = { kind: 'dashboard' | 'agent'; name: string } | null;
+type Who = { kind: 'dashboard' | 'agent' | 'phone'; name: string } | null;
 
 function who(req: IncomingMessage): Who {
   const auth = req.headers.authorization?.replace(/^Bearer\s+/i, '') ?? '';
+  const phone = String(req.headers['x-hashling-phone'] ?? '');
+  // Phone mode relays a paired phone's opened requests from this same Mac with a per-run secret.
+  if (auth && phone && safeEq(auth, TOKEN) && safeEq(phone, PHONE_SECRET) && (req.socket.remoteAddress === '127.0.0.1' || req.socket.remoteAddress === '::ffff:127.0.0.1')) return { kind: 'phone', name: String(req.headers['x-hashling-client'] ?? 'Your phone').slice(0, 60) };
   if (auth && safeEq(auth, TOKEN)) return { kind: 'agent', name: String(req.headers['x-hashling-client'] ?? 'AI agent').slice(0, 60) };
   const cookie = (req.headers.cookie ?? '').split(/;\s*/).find((c) => c.startsWith(COOKIE + '='))?.split('=')[1] ?? '';
   if (cookie && safeEq(cookie, TOKEN)) return { kind: 'dashboard', name: 'You' };
@@ -470,6 +475,17 @@ route('POST', '/api/ai/ask', async (req, res) => {
   await ask({ threadId: b.threadId, message, context: b.context }, (e) => { if (!res.writableEnded) res.write(JSON.stringify(e) + '\n'); }, ac.signal);
   res.end();
 }, true);
+// Phone mode. Switching it on opens a door on the Wi-Fi, so it asks for Touch ID first.
+route('GET', '/api/phone', (_q, res) => send(res, 200, phoneState()), true);
+route('POST', '/api/phone/on', async (_q, res) => {
+  const p = await userPresence('let your phone connect to Hashling over your Wi-Fi');
+  if (!p.ok) return send(res, 403, { error: `Not switched on: ${p.message}.` });
+  try { send(res, 200, await phoneOn()); } catch (e) { send(res, 500, { error: `I couldn’t open phone mode: ${(e as Error).message}` }); }
+}, true);
+route('POST', '/api/phone/off', (_q, res) => send(res, 200, phoneOff()), true);
+route('POST', '/api/phone/pair', (_q, res) => { const r = newPairing(); send(res, 'error' in r ? 400 : 200, r); }, true);
+route('GET', '/api/phone/pair/:id', (_q, res, [id]) => send(res, 200, pairingDone(id)), true);
+route('DELETE', '/api/phone/devices/:id', (_q, res, [id]) => send(res, forgetPhone(id) ? 200 : 404, { ok: true }), true);
 route('GET', '/api/quarantine', (_q, res) => send(res, 200, { items: listQuarantine(), blockedDomains: blockedDomains() }));
 route('POST', '/api/run/:name', async (_q, res, [name]) => {
   if (!collectorNames.includes(name)) return send(res, 404, { error: 'Unknown collector' });
@@ -538,7 +554,8 @@ export function startServer(): void {
       for (const r of routes) {
         const m = r.method === req.method && url.pathname.match(r.re);
         if (!m) continue;
-        if (r.dashboardOnly && w.kind !== 'dashboard') return send(res, 403, { error: 'Only the person using this Mac can do that, from the Hashling dashboard. Agents can propose actions with POST /api/actions.' });
+        if (w.kind === 'phone' && !phoneMayCall(req.method ?? 'GET', url.pathname + url.search)) return send(res, 403, { error: 'That can only be done on the Mac.' });
+        if (r.dashboardOnly && w.kind !== 'dashboard' && w.kind !== 'phone') return send(res, 403, { error: 'Only the person using this Mac can do that, from the Hashling dashboard. Agents can propose actions with POST /api/actions.' });
         return await r.h(req, res, m.slice(1).map(decodeURIComponent), w, url);
       }
       send(res, 404, { error: 'Not found' });

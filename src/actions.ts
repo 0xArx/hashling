@@ -244,7 +244,7 @@ export function rejectAction(id: string): Action | { error: string } {
 }
 
 /** Ask the person at the keyboard (Touch ID or login password) to confirm. */
-async function userPresence(reason: string): Promise<{ ok: boolean; message: string }> {
+export async function userPresence(reason: string): Promise<{ ok: boolean; message: string }> {
   if (!existsSync(BIN.auth)) return { ok: false, message: 'I’m missing the part that asks for Touch ID. Reinstalling Hashling fixes this.' };
   const r = await run(BIN.auth, [reason], { timeout: 120_000 });
   const raw = (r.stdout || r.stderr).trim();

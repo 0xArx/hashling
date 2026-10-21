@@ -76,6 +76,14 @@ Hashling lives in the corner of your dashboard, a little like Clippy used to. It
 
 ---
 
+## On your phone
+
+Switch on **phone mode** in Settings (it asks for Touch ID), then scan the code on your Mac screen with your phone's camera. Your phone gets Hashling as a home-screen app: your score and warnings, a scam check for texts, emails, links and screenshots, Ask Hashling, and your approvals. Approving a fix still needs Touch ID on the Mac.
+
+It works over your own Wi-Fi with no cloud. Each phone gets its own key from the code, and every message between the phone and the Mac is encrypted and signed with it (ChaCha20-Poly1305), so other devices on the Wi-Fi see nothing readable and cannot replay or change a request. Disconnect a phone, or switch phone mode off, in Settings.
+
+---
+
 ## What it watches
 
 | Area | What Hashling checks |
@@ -126,7 +134,7 @@ The same data is available over HTTP on `127.0.0.1:5750` with `Authorization: Be
 - **No account, no cloud.** Hashling runs on your Mac and never uploads your files. It goes online only to download updates (malware signatures, scam and malware lists), to look up who owns an internet address (turn off with `HASHLING_ENRICH=0`), and to check fingerprints of new downloads, never the files.
 - **AI is your choice.** The built-in assistant uses your Claude sign-in; any MCP agent can connect instead. Your question and the data it looks up go to that AI only when you ask.
 - **Agents can look, never change.** They can propose fixes, but approving needs Touch ID or your password through macOS, so even an agent holding the token cannot approve its own proposal.
-- **Locked to this Mac.** The dashboard lives at `http://hashling.localhost:5750`, listens on this Mac's loopback only, refuses cross-site requests, and a new browser has to unlock with Touch ID.
+- **Locked to this Mac.** The dashboard lives at `http://hashling.localhost:5750`, listens on this Mac's loopback only, refuses cross-site requests, and a new browser has to unlock with Touch ID. Phone mode is off until you switch it on; then only phones you paired with a code can reach Hashling, over encrypted messages, and only for a short list of things.
 - **Undo is built in.** Quarantined files can be restored, cleanups go to the Trash, and removed permissions can be granted again.
 - **Untrusted names stay data.** File, app and website names can be written by attackers, so agents are told to treat them as information, never instructions.
 

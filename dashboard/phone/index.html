@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#F6F5FB" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F0D1A" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Hashling">
+  <meta name="referrer" content="no-referrer">
+  <title>Hashling</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icon-180.png">
+  <link rel="stylesheet" href="/phone.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="top">
+      <div class="who"><span class="mark" id="mark"></span><div><b>Hashling</b><span id="mac">Your AI security agent</span></div></div>
+      <span class="live" id="live" hidden><i></i>Live</span>
+    </header>
+    <main id="view" class="view" tabindex="-1"></main>
+    <nav class="tabs" id="tabs" hidden aria-label="Sections">
+      <button data-tab="home" class="on"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></svg><span>Home</span></button>
+      <button data-tab="scam"><svg viewBox="0 0 24 24"><path d="M12 3.5 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6z"/><path d="m9.2 12 2 2 3.8-4"/></svg><span>Scam check</span></button>
+      <button data-tab="ask"><svg viewBox="0 0 24 24"><path d="M12 3.8 13.6 8l4.2 1.6-4.2 1.6L12 15.4l-1.6-4.2L6.2 9.6 10.4 8z"/><path d="M18 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg><span>Ask</span></button>
+      <button data-tab="approve"><svg viewBox="0 0 24 24"><path d="M4.5 13.5 7 5.5h10l2.5 8V18a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1z"/><path d="M4.5 13.5h4l1 2h5l1-2h4"/></svg><span>Approvals</span><em id="badge" hidden></em></button>
+    </nav>
+  </div>
+  <div class="sheet-bg" id="sheet-bg" hidden></div>
+  <section class="sheet" id="sheet" hidden role="dialog" aria-modal="true"></section>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/phone.js"></script>
+</body>
+</html>

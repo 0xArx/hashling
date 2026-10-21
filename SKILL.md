@@ -89,3 +89,7 @@ Before removing Hashling, remind them to unblock any websites they blocked with 
 - **No warnings arrive**: notifications are off. System Settings, Notifications, Hashling, Allow notifications.
 - **The built-in assistant says it is not connected**: it uses the Claude Code CLI. Run `claude` once in a terminal and sign in, or use any MCP agent instead.
 - Logs: `~/Library/Logs/hashling.log`. Data and settings: `~/.hashling`.
+
+## Phone mode
+
+If the user wants Hashling on their phone, tell them to open the dashboard, go to **Settings > Your phone**, switch on phone mode (Touch ID) and scan the code with the phone's camera. You cannot switch it on or pair a phone for them: both are deliberately dashboard-only. The phone and Mac must be on the same Wi-Fi.
