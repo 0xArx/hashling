@@ -1561,3 +1561,81 @@ h1, h2, h3, h4 { line-height: 1.1; }
 
 .install-note { margin: 22px 0 0; max-width: 860px; padding: 14px 18px; border: 1px solid var(--amber); background: var(--amber-dim); border-radius: var(--radius-lg); color: var(--text1); line-height: 1.55; }
 .install-note b { color: var(--amber); }
+
+/* ── PHONE CHECK-UP ───────────────────────────────────── */
+.phone-section {
+  padding: 100px 0;
+  background: radial-gradient(900px 420px at 15% 0%, var(--amber-dim), transparent 70%), var(--bg);
+  border-top: 1px solid var(--border);
+}
+.phone-kicker {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--amber-dim);
+  color: var(--amber);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.phone-demo { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: start; }
+@media (min-width: 880px) { .phone-demo { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); } }
+
+.phone-card {
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .phone-card { box-shadow: 0 18px 48px rgba(27,22,64,0.1); } }
+[data-theme="light"] .phone-card { box-shadow: 0 18px 48px rgba(27,22,64,0.1); }
+
+.phone-card-hd { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-bottom: 1px solid var(--border); }
+.phone-card-hd b { display: block; font-family: var(--font-display); font-size: 1.02rem; color: var(--text1); }
+.phone-card-hd span { font-size: 0.78rem; color: var(--text3); }
+.phone-plug { display: inline-flex; align-items: center; gap: 4px; color: var(--amber); flex: none; }
+.phone-plug svg:last-child { color: var(--text2); }
+.phone-wire {
+  width: 30px; height: 2px; border-radius: 1px;
+  background: repeating-linear-gradient(90deg, var(--amber) 0 6px, transparent 6px 11px);
+  background-size: 22px 2px;
+  animation: phone-flow 1.4s linear infinite;
+}
+@keyframes phone-flow { to { background-position: 22px 0; } }
+
+.phone-verdict { margin: 14px 18px 4px; padding: 11px 14px; border-radius: 10px; background: var(--warn-dim); border: 1px solid color-mix(in srgb, var(--warn) 28%, transparent); }
+.phone-verdict b { display: block; font-size: 0.92rem; color: var(--text1); }
+.phone-verdict span { font-size: 0.8rem; color: var(--text2); }
+
+.phone-checks { list-style: none; margin: 0; padding: 6px 0 8px; }
+.phone-checks li { display: flex; gap: 12px; align-items: flex-start; padding: 11px 18px; border-top: 1px solid var(--border); }
+.phone-checks li:first-child { border-top: 0; }
+.phone-checks b { display: block; font-size: 0.88rem; color: var(--text1); font-weight: 600; }
+.phone-checks span { display: block; font-size: 0.8rem; color: var(--text2); line-height: 1.5; }
+.phone-checks em { display: block; margin-top: 4px; font-style: normal; font-size: 0.78rem; color: var(--text1); }
+.phone-ico { width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center; flex: none; }
+.is-ok .phone-ico { background: var(--ok-dim); color: var(--ok); }
+.is-warn .phone-ico { background: var(--warn-dim); color: var(--warn); }
+
+.phone-steps { list-style: none; margin: 0 0 1.6rem; padding: 0; display: grid; gap: 16px; }
+.phone-steps li { display: flex; gap: 14px; align-items: flex-start; }
+.phone-steps li > span {
+  width: 28px; height: 28px; flex: none; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--amber-dim); color: var(--amber);
+  font-family: var(--font-display); font-weight: 700; font-size: 0.9rem;
+}
+.phone-steps b { display: block; color: var(--text1); font-size: 1rem; margin-bottom: 2px; }
+.phone-steps p { color: var(--text2); font-size: 0.92rem; line-height: 1.6; }
+
+.phone-modes { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 48px; }
+@media (min-width: 720px) { .phone-modes { grid-template-columns: 1fr 1fr; } }
+.phone-mode { padding: 22px 24px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border); }
+.phone-mode h3 { font-family: var(--font-display); font-size: 1.05rem; color: var(--text1); margin-bottom: 6px; }
+.phone-mode p { font-size: 0.9rem; color: var(--text2); line-height: 1.65; }
+.phone-modes .reveal:nth-child(2) { transition-delay: 0.08s; }
+@media (prefers-reduced-motion: reduce) { .phone-wire { animation: none; } }

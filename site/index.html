@@ -491,6 +491,65 @@
       </div>
     </section>
 
+    <!-- PHONE CHECK-UP -->
+    <section class="phone-section" id="phone" aria-labelledby="phone-h">
+      <div class="wrap">
+        <p class="phone-kicker">New</p>
+        <h2 id="phone-h" class="section-title">Your phone, too</h2>
+        <p class="section-sub">Stalkerware is usually installed by someone who had your phone in their hands. It hides well, but it leaves signs. Plug your iPhone or Android phone into your Mac with a cable and Hashling looks for them, in plain words. It only reads: nothing on the phone changes, and nothing it finds leaves your Mac.</p>
+
+        <div class="phone-demo reveal">
+          <figure class="phone-card" role="img" aria-label="Example Hashling phone check-up for Sara’s iPhone: iOS is up to date, all 96 apps came from the App Store, one configuration profile is installed and worth a look, nobody manages the phone remotely, and no app matches known stalkerware">
+            <div aria-hidden="true">
+              <div class="phone-card-hd">
+                <span class="phone-plug">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 18.5h3"/></svg>
+                  <span class="phone-wire"></span>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="12.5" rx="2"/><path d="M8 20h8M12 16.5V20"/></svg>
+                </span>
+                <div><b>Sara’s iPhone</b><span>iPhone 16 · iOS 27.0.1 · checked just now</span></div>
+              </div>
+              <div class="phone-verdict"><b>Mostly fine. One thing is worth a look</b><span>Nothing looks like spyware.</span></div>
+              <ul class="phone-checks">
+                <li class="is-ok"><span class="phone-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17 19 7"/></svg></span><div><b>iOS 27.0.1 is up to date</b><span>The newest iOS for this iPhone.</span></div></li>
+                <li class="is-ok"><span class="phone-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17 19 7"/></svg></span><div><b>All 96 apps came from the App Store</b><span>None from a company certificate or a sideloading tool.</span></div></li>
+                <li class="is-warn"><span class="phone-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 3 20h18z"/><line x1="12" y1="10" x2="12" y2="14"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><div><b>A configuration profile is installed</b><span>Profiles can route your traffic through someone else. Only keep ones you added yourself.</span><em>What to do: Settings &gt; General &gt; VPN &amp; Device Management</em></div></li>
+                <li class="is-ok"><span class="phone-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17 19 7"/></svg></span><div><b>Not managed by anyone else</b><span>No company or person has remote control.</span></div></li>
+                <li class="is-ok"><span class="phone-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17 19 7"/></svg></span><div><b>No known stalkerware</b><span>Checked against the open list kept by Echap.</span></div></li>
+              </ul>
+            </div>
+          </figure>
+
+          <div class="phone-text">
+            <ol class="phone-steps">
+              <li><span>1</span><div><b>Plug it in</b><p>Hashling notices the phone by itself and offers a check.</p></div></li>
+              <li><span>2</span><div><b>Say yes on the phone</b><p>Tap Trust on an iPhone, or allow USB debugging on Android. Hashling shows you how.</p></div></li>
+              <li><span>3</span><div><b>Press Check my phone</b><p>A minute later you get a clear report, with what to do on the phone for anything it finds.</p></div></li>
+            </ol>
+            <ul class="agent-cap-list">
+              <li>Known stalkerware, and apps from outside the App Store or Play Store</li>
+              <li>Hidden profiles, certificates and remote management that hand someone control</li>
+              <li>Location-sharing apps, keyboards that could read what you type, and apps that can follow you</li>
+              <li>On Android: apps that read your screen, your notifications or your texts, or made themselves hard to remove</li>
+              <li>Missing security updates, Developer Mode, wireless debugging and your last backup</li>
+              <li>Optional deep check with Amnesty International’s Mobile Verification Toolkit, for spyware like Pegasus</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="phone-modes">
+          <div class="phone-mode reveal">
+            <h3>Over a cable: check the phone</h3>
+            <p>Phone check-up looks inside the phone itself. Free, open-source tools Hashling sets up for you the first time, with no password.</p>
+          </div>
+          <div class="phone-mode reveal">
+            <h3>Over Wi-Fi: Hashling in your pocket</h3>
+            <p>Phone mode puts your Mac’s score, warnings, the scam check and Ask Hashling on your phone’s home screen. Pair it once with a QR code; every message is encrypted between the two.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- MCP / YOUR AGENT WITH HASHLING -->
     <section class="mcp-section" aria-labelledby="mcp-h">
       <div class="wrap">
@@ -633,6 +692,14 @@
             <p>Known-bad servers and domains from abuse.ch (Feodo Tracker, ThreatFox, URLhaus), Spamhaus DROP, Emerging Threats and FireHOL, refreshed every few hours and checked locally against every connection.</p>
           </div>
           <div class="engine-item reveal">
+            <h3 class="engine-name">libimobiledevice and adb</h3>
+            <p>The open-source way to talk to an iPhone over a cable (with pymobiledevice3), and Google’s own tool for Android. Hashling uses them read-only for Phone check-up.</p>
+          </div>
+          <div class="engine-item reveal">
+            <h3 class="engine-name">Amnesty MVT and Echap</h3>
+            <p>Amnesty International’s Mobile Verification Toolkit, used by researchers to find spyware like Pegasus, and the open stalkerware indicators kept by Echap, a member of the Coalition Against Stalkerware.</p>
+          </div>
+          <div class="engine-item reveal">
             <h3 class="engine-name">Proven techniques</h3>
             <p>Beacon timing from RITA, live startup-item watching in the style of BlockBlock, file reputation from Team Cymru and CIRCL, YARA-Forge community rules, and the safe-cleanup rules of Mole, Pearcleaner and czkawka.</p>
           </div>
@@ -654,6 +721,7 @@
               <li>Security posture readings</li>
               <li>Agent capability records</li>
               <li>Dashboard and timeline</li>
+              <li>Everything Phone check-up reads from your phone, and any backup it makes for the deep check (deleted as soon as the check ends)</li>
             </ul>
           </div>
           <div class="privacy-col privacy-col--leaves">
@@ -662,6 +730,7 @@
               <li>DNS lookups to resolve who owns an IP address (you can disable this)</li>
               <li>Signature updates from ClamAV and YARA rule repositories, and threat-feed downloads from abuse.ch, Spamhaus and FireHOL</li>
               <li>For new downloads and apps you investigate, a file fingerprint (SHA-1 hash, never the file) is checked with Team Cymru and CIRCL</li>
+              <li>For Phone check-up, Apple’s public list of iOS versions and the open stalkerware list are downloaded. Nothing about your phone is sent.</li>
               <li><b>When you ask an AI for help</b>, your question and the Hashling data it looks up go to that AI’s company (for example Anthropic, OpenAI or Google), under their privacy terms. You pick the AI you trust, and nothing is sent unless you ask.</li>
             </ul>
           </div>
@@ -685,6 +754,18 @@
             </summary>
             <div class="faq-a">
               <p>No. Hashling complements XProtect, the malware detection Apple ships with every Mac, by running ClamAV and YARA-X on top of it. It is not a kernel-level endpoint detection product and does not replace the on-access scanning a commercial EDR provides. If your threat model requires a commercial EDR, use one alongside Hashling.</p>
+            </div>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary class="faq-q">
+              Can Hashling check my iPhone or Android phone?
+              <span class="faq-chevron" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </summary>
+            <div class="faq-a">
+              <p>Yes. Plug it into your Mac with a cable, tap Trust on an iPhone (or allow USB debugging on Android), then press Check my phone. Hashling looks for stalkerware, apps from outside the app stores, hidden profiles and remote management, apps that can watch you, and missing updates. It only reads and never changes anything on the phone. If a report finds stalkerware, it suggests talking to someone you trust or a helpline before removing it, because the person who installed it may notice.</p>
             </div>
           </details>
 

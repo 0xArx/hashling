@@ -25,7 +25,7 @@ from pymobiledevice3.services.mobile_config import MobileConfigService
 
 APP_ATTRS = [
     'CFBundleIdentifier', 'CFBundleDisplayName', 'CFBundleName', 'CFBundleShortVersionString',
-    'SignerIdentity', 'ApplicationType', 'ProfileValidated', 'IsAppClip', 'IsUpgradeable',
+    'SignerIdentity', 'ApplicationType', 'ProfileValidated', 'IsAppClip', 'IsUpgradeable', 'UIBackgroundModes',
 ]
 DEVICE_KEYS = [
     'DeviceName', 'ProductType', 'ProductVersion', 'BuildVersion', 'DeviceClass', 'HardwareModel',
@@ -69,12 +69,23 @@ async def main(udid: str, cache: str) -> None:
             values = await lockdown.get_value()
             info = {k: values.get(k) for k in DEVICE_KEYS if k in values}
             for domain, keys in (('com.apple.disk_usage', ['TotalDataCapacity', 'TotalDataAvailable', 'TotalDiskCapacity']),
-                                 ('com.apple.mobile.backup', ['WillEncrypt', 'LastCloudBackupDate', 'CloudBackupEnabled'])):
+                                 ('com.apple.mobile.backup', ['WillEncrypt', 'LastCloudBackupDate', 'CloudBackupEnabled']),
+                                 ('com.apple.mobile.wireless_lockdown', ['EnableWifiDebugging', 'EnableWifiConnections'])):
                 try:
                     d = await lockdown.get_value(domain=domain) or {}
                     info.update({k: d.get(k) for k in keys if k in d})
                 except Exception:
                     pass
+            try:
+                info['DeveloperModeStatus'] = await lockdown.get_value(domain='com.apple.security.mac.amfi', key='DeveloperModeStatus')
+            except Exception:
+                pass
+            try:
+                # Keyboards from apps have reverse-DNS ids; Apple's own are language codes.
+                intl = await lockdown.get_value(domain='com.apple.international') or {}
+                info['AppKeyboards'] = [k for k in intl.get('SupportedKeyboards', []) if k.count('.') >= 2]
+            except Exception:
+                pass
             return info
 
         async def apps():

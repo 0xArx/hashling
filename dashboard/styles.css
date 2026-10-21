@@ -1246,6 +1246,10 @@ details.pc-list li.bad { box-shadow: inset 3px 0 0 var(--bad); background: var(-
 .pc-banner > span:nth-child(2) { flex: 1; min-width: 0; }
 .pc-banner b { display: block; font-size: 14px; }
 .pc-report .section-head { flex-wrap: wrap; }
+.pc-glance { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: -6px 0 14px; }
+.pc-glance > div { padding: 10px 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); min-width: 0; }
+.pc-glance b { display: block; font: 620 16px/1.25 var(--display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pc-glance span { font-size: 12px; color: var(--muted); }
 .pc-report .section-head .h2 { flex: none; }
 @media (max-width: 760px) { .pc-empty .pc-how { grid-template-columns: 1fr; } .pc-space { grid-template-columns: 1fr; } .pc-banner { flex-wrap: wrap; } }
 @media (prefers-reduced-motion: reduce) { .pc-wire { animation: none; } details.pc-list ul { animation: fade-only 200ms ease-out both; } }

@@ -305,6 +305,8 @@ export interface PhoneReport {
   /** Space a deep check needs, and whether the phone's backups are encrypted (iPhone only). */
   deep?: { usedBytes: number | null; encrypted: boolean | null; result?: DeepResult };
   notes: string[];
+  /** At a glance: numbers shown above the checks. */
+  facts?: { storageUsed?: number; storageTotal?: number; lastBackup?: number | null; backupOn?: boolean; apps?: number };
 }
 export interface DeepResult { at: number; detections: number; modules: { module: string; count: number }[]; checked: string[]; error?: string }
 
@@ -417,6 +419,11 @@ async function iosReleases(): Promise<{ version: string; devices: string[] }[] |
 }
 
 const APP_STORE = 'Apple iPhone OS Application Signing';
+/** Sold as "monitoring" but made to watch another adult's phone in secret. */
+const SPY_NAMES = /\b(mspy|flexispy|eyezy|spyic|hoverwatch|cocospy|xnspy|umobix|spyzie|kidsguard|thetruthspy|spyhide|highster|clevguard|minspy|spyera)\b/i;
+/** Family safety and location-sharing apps: fine when you chose them, and a favourite of stalkers because they look harmless. */
+const WATCH_NAMES = /life360|find ?my ?kids|findmykids|qustodio|famisafe|norton ?family|familysafety|safe ?kids|safekids|isharing|glympse|geozilla|ourpact|mobicip|familytime|\bbark\b|family ?link|familylink|mmguardian|net ?nanny|zoemob|covenant ?eyes|covenanteyes|truple|kidslox|screentimelabs/i;
+const appleSeconds = (v: unknown) => (typeof v === 'number' ? (v + 978_307_200) * 1000 : typeof v === 'string' && Date.parse(v) ? Date.parse(v) : null);
 const MDM_WORDS = /\b(mdm|management|managed|enrol?l|intune|jamf|airwatch|workspace ?one|mobileiron|ivanti|kandji|mosyle|hexnode|meraki|manageengine|addigy|miradore|scalefusion|simplemdm|filewave|cisco)\b/i;
 
 interface Probe {
@@ -463,6 +470,7 @@ export function evaluateIos(id: string, p: Probe, releases: { version: string; d
     const bundle = String(a.CFBundleIdentifier ?? '');
     const hit = matchIoc(iocs, bundle);
     if (hit) known!.push({ name: appName(a), note: `Matches known stalkerware: ${hit.name} (${bundle})`, flag: 'bad' });
+    else if (SPY_NAMES.test(`${appName(a)} ${bundle}`)) known!.push({ name: appName(a), note: 'A spying app sold for watching someone else’s phone', flag: 'bad' });
     if (!signer || signer === APP_STORE) continue;
     // TestFlight betas are signed by Apple and come through Apple's own beta service.
     if (/TestFlight/i.test(signer)) { beta!.push({ name: appName(a), note: 'Beta from TestFlight' }); continue; }
@@ -502,7 +510,35 @@ export function evaluateIos(id: string, p: Probe, releases: { version: string; d
   if (supervised || org) items.push({ id: 'managed', status: supervised && !org ? 'bad' : 'warn', title: org ? `Your phone is managed by ${org}` : 'Your phone is supervised', detail: supervised ? 'Supervision gives whoever set it up deep control: they can install apps silently, restrict settings and see a lot about the phone. Normal for a work or school phone. On a personal phone it is a serious warning sign.' : 'An organisation set this phone up through Apple’s business enrollment.', fix: 'If this is your own phone and you don’t know why, back up your photos, then erase it: Settings > General > Transfer or Reset iPhone > Erase All Content and Settings.' });
   else if (!p.errors?.cloud) items.push({ id: 'managed', status: 'ok', title: 'Not managed by anyone else', detail: 'No company or person has remote control of this phone.' });
 
-  // 6. Expiring company certificates without apps are harmless; still list leftovers for experts.
+  // 6. Apps that can follow you or watch the phone (fine when you chose them).
+  const watchers = apps.filter((a) => WATCH_NAMES.test(`${appName(a)} ${a.CFBundleIdentifier}`));
+  if (watchers.length) items.push({ id: 'watchers', status: 'info', title: watchers.length === 1 ? 'An app can share your location or monitor this phone' : `${watchers.length} apps can share your location or monitor this phone`, detail: 'Family safety and location-sharing apps are fine when you chose them. People who stalk a partner install them too, because they look harmless.', fix: 'Open each one and check who can see you. Delete any you didn’t install yourself.', list: watchers.map((a) => ({ name: appName(a), note: 'Location sharing or monitoring app' })) });
+
+  // 7. Keyboards from apps: with Full Access, a keyboard can see what you type.
+  const kbApps = ((d.AppKeyboards as string[] | undefined) ?? []).map((k) => {
+    const owner = apps.find((a) => k.startsWith(`${a.CFBundleIdentifier}.`));
+    return { k, owner, store: !owner || !owner.SignerIdentity || owner.SignerIdentity === APP_STORE || /TestFlight/i.test(String(owner.SignerIdentity)) };
+  });
+  if (kbApps.length) items.push({ id: 'keyboards', status: kbApps.some((x) => !x.store) ? 'warn' : 'info', title: kbApps.length === 1 ? `${kbApps[0].owner ? appName(kbApps[0].owner) : 'An app'} adds its own keyboard` : `${kbApps.length} apps add their own keyboard`, detail: 'If you gave a keyboard Full Access, it can see what you type and send it to its maker. Keyboards from outside the App Store are a known way to steal passwords.', fix: 'Settings > General > Keyboard > Keyboards. Remove ones you don’t use, and only allow Full Access for ones you trust.', list: kbApps.map((x) => ({ name: x.owner ? appName(x.owner) : x.k, note: x.store ? 'Keyboard from an App Store app' : 'Keyboard from an app outside the App Store', flag: x.store ? undefined : 'warn' as const })) });
+
+  // 8. Location in the background (only if you chose "Always").
+  const bgLoc = apps.filter((a) => ((a.UIBackgroundModes as string[] | undefined) ?? []).includes('location'));
+  if (bgLoc.length) items.push({ id: 'bg-location', status: 'info', title: `${bgLoc.length} app${bgLoc.length === 1 ? ' is' : 's are'} able to follow your location in the background`, detail: 'They can only do it if you chose “Always” for them. Worth a look: most apps only need your location while you use them.', fix: 'Settings > Privacy & Security > Location Services. Set apps to While Using the App or Never unless they really need Always.', list: bgLoc.map((a) => ({ name: appName(a), note: 'Can use location in the background if allowed' })) });
+
+  // 9. Developer settings
+  if (d.EnableWifiDebugging === true) items.push({ id: 'wifi-debug', status: 'warn', title: 'Wireless debugging is on', detail: 'A Mac that this phone trusts can install apps and debug it over Wi-Fi, without a cable. Turn it off unless you build apps for it.', fix: 'On the Mac: Xcode > Window > Devices and Simulators, select the phone and untick Connect via network.' });
+  // Apps from Xcode, or Xcode's own developer profiles, mean someone builds apps on this phone.
+  const builds = developer!.length > 0 || (p.provisioning ?? []).some((x) => x.getTaskAllow);
+  if (d.DeveloperModeStatus === true) items.push({ id: 'devmode', status: builds ? 'info' : 'warn', title: 'Developer Mode is on', detail: builds ? 'It lets apps from Xcode and sideloading tools run. Fine while you build apps; turn it off when you don’t.' : 'It lets apps from outside the App Store run, and nothing on this phone needs it right now. Someone may have turned it on to install something.', fix: 'Settings > Privacy & Security > Developer Mode, then turn it off and restart.' });
+
+  // 10. iCloud Backup: what you need if you ever have to erase a phone.
+  const lastBackup = appleSeconds(d.LastCloudBackupDate);
+  const backupDays = lastBackup ? Math.floor((Date.now() - lastBackup) / 86_400_000) : null;
+  if (d.CloudBackupEnabled === false) items.push({ id: 'backup', status: 'info', title: 'iCloud Backup is off', detail: 'If you ever lose this phone, or have to erase it to get rid of spyware, your photos and messages could be gone.', fix: 'Settings > your name > iCloud > iCloud Backup, then turn on Back Up This iPhone. Or back it up to this Mac in Finder.' });
+  else if (backupDays != null && backupDays > 14) items.push({ id: 'backup', status: 'info', title: `Last iCloud backup was ${backupDays} days ago`, detail: 'Backups run on Wi-Fi while the phone charges and is locked. If you ever have to erase it, you would lose everything since then.', fix: 'Settings > your name > iCloud > iCloud Backup > Back Up Now.' });
+  else if (backupDays != null) items.push({ id: 'backup', status: 'ok', title: `Backed up to iCloud ${backupDays === 0 ? 'today' : backupDays === 1 ? 'yesterday' : `${backupDays} days ago`}`, detail: 'If you ever have to erase this phone, your things come back.' });
+
+  // 11. Expiring company certificates without apps are harmless; still list leftovers for experts.
   const leftovers = (p.provisioning ?? []).filter((x) => x.allDevices && !enterprise!.length);
   if (leftovers.length) items.push({ id: 'certs', status: 'info', title: 'Old company app certificates', detail: 'Left behind by apps that were deleted. They do nothing on their own.', list: leftovers.map((x) => ({ name: x.team || x.name, note: `For ${x.app || 'an app'}, expires ${String(x.expires).slice(0, 10)}` })) });
 
@@ -512,10 +548,11 @@ export function evaluateIos(id: string, p: Probe, releases: { version: string; d
     id, platform: 'ios', name: String(d.DeviceName ?? cls), model: modelName(type, cls), os: version ? `${osName} ${version}` : osName, checkedAt: Date.now(), verdict, headline, items, notes,
     counts: { apps: apps.length, outsideStore: enterprise!.length + developer!.length, profiles: ids.length },
     deep: { usedBytes: used > 0 ? used : null, encrypted: typeof d.WillEncrypt === 'boolean' ? d.WillEncrypt : null },
+    facts: { storageUsed: used > 0 ? used : undefined, storageTotal: Number(d.TotalDataCapacity ?? 0) || undefined, lastBackup, backupOn: typeof d.CloudBackupEnabled === 'boolean' ? d.CloudBackupEnabled : undefined, apps: apps.length },
   };
 }
 
-const IOS_TIER = (i: CheckItem): 'sus' | 'risk' | 'tip' => (i.id === 'stalkerware' || i.id === 'mvt' || (i.status === 'bad' && (i.id === 'profiles' || i.id === 'managed')) ? 'sus' : i.id === 'os-major' ? 'tip' : 'risk');
+const IOS_TIER = (i: CheckItem): 'sus' | 'risk' | 'tip' => (i.id === 'stalkerware' || i.id === 'mvt' || (i.status === 'bad' && (i.id === 'profiles' || i.id === 'managed')) ? 'sus' : i.id === 'os-major' || i.id === 'devmode' ? 'tip' : 'risk');
 
 async function checkIos(id: string): Promise<void> {
   setStep(1, 'Asking your phone about itself');
@@ -558,6 +595,14 @@ export interface AndroidRaw {
   perms: string;
   verifier: string;
   su: string;
+  /** Newer checks; empty when a phone (or a test) doesn't provide them. */
+  installers?: string;
+  usage?: string;
+  overlays?: string;
+  sms?: string;
+  vpn?: string;
+  keyboards?: string;
+  adbWifi?: string;
 }
 
 const pkgOfComponent = (c: string) => c.trim().split('/')[0];
@@ -608,8 +653,8 @@ export function evaluateAndroid(id: string, raw: AndroidRaw, iocs: Ioc[], today 
   }
 
   // 2. Known stalkerware
-  const known = [...apps.keys()].map((p) => [p, matchIoc(iocs, p)] as const).filter(([, h]) => h);
-  if (known.length) items.push({ id: 'stalkerware', status: 'bad', title: known.length === 1 ? 'An app matches known stalkerware' : `${known.length} apps match known stalkerware`, detail: 'Stalkerware secretly sends your messages, calls, location and photos to someone else. If you did not install it, someone may be watching you.', fix: 'If you feel unsafe, talk to someone you trust or a domestic abuse helpline first: the person may notice if it stops. Then remove it in Settings > Apps, and change your Google password from a device they never touched.', list: known.map(([p, h]) => ({ name: p, note: `Known as ${h!.name}`, flag: 'bad' as const })) });
+  const known = [...apps.keys()].map((p) => [p, matchIoc(iocs, p)?.name ?? (SPY_NAMES.test(p) ? 'a spying app' : null)] as const).filter(([, h]) => h);
+  if (known.length) items.push({ id: 'stalkerware', status: 'bad', title: known.length === 1 ? 'An app matches known stalkerware' : `${known.length} apps match known stalkerware`, detail: 'Stalkerware secretly sends your messages, calls, location and photos to someone else. If you did not install it, someone may be watching you.', fix: 'If you feel unsafe, talk to someone you trust or a domestic abuse helpline first: the person may notice if it stops. Then remove it in Settings > Apps, and change your Google password from a device they never touched.', list: known.map(([p, h]) => ({ name: p, note: `Known as ${h}`, flag: 'bad' as const })) });
 
   // 3. Apps from outside an app store
   const side = [...apps.values()].filter(sideloaded);
@@ -649,7 +694,44 @@ export function evaluateAndroid(id: string, raw: AndroidRaw, iocs: Ioc[], today 
   for (const m of raw.verifier.matchAll(/^(\w+)=(.*)$/gm)) ver[m[1]] = m[2].trim();
   if (ver.package_verifier_user_consent === '-1' || ver.package_verifier_enable === '0') items.push({ id: 'play-protect', status: 'bad', title: 'Play Protect looks switched off', detail: 'Play Protect scans apps for malware. Stalkerware instructions tell people to turn it off first.', fix: 'Play Store > your picture > Play Protect > settings (gear) > turn on Scan apps with Play Protect.' });
 
-  // 9. Rooted
+  // 9. Lists of packages Android grants special powers to.
+  const pkgList = (t = '') => [...new Set([...t.matchAll(/^\s*([a-zA-Z][\w]*(?:\.[\w]+)+)\s*$/gm)].map((m) => m[1]))].filter((p) => apps.has(p));
+  const components = (t = '') => (t.trim() === 'null' ? [] : [...new Set(t.split(':').map(pkgOfComponent).filter((p) => apps.has(p)))]);
+  const note = (p: string) => `From ${from(apps.get(p)!)}`;
+
+  // Texting app: whoever it is reads every text, including login codes.
+  const sms = (raw.sms ?? '').trim();
+  if (apps.has(sms) && sideloaded(apps.get(sms)!)) items.push({ id: 'sms-app', status: 'bad', title: 'Your texting app came from outside an app store', detail: 'The default texting app sees every text you get, including login codes from your bank. Spy apps try to become it.', fix: 'Settings > Apps > Default apps > SMS app, and pick Messages. Then remove the other app if you don’t know it.', list: [{ name: sms, note: note(sms), flag: 'bad' }] });
+
+  // Apps allowed to install other apps.
+  const installers = pkgList(raw.installers).filter((p) => !STORES[p]);
+  if (installers.length) items.push({ id: 'installers', status: installers.some((p) => sideloaded(apps.get(p)!)) ? 'warn' : 'info', title: installers.length === 1 ? 'An app is allowed to install other apps' : `${installers.length} apps are allowed to install other apps`, detail: 'This is how apps from outside the Play Store get onto a phone. Browsers and file managers ask for it; turn it off once you’re done with it.', fix: 'Settings > Apps > Special app access > Install unknown apps. Turn it off for each app.', list: installers.map((p) => ({ name: p, note: note(p), flag: sideloaded(apps.get(p)!) ? 'warn' as const : undefined })) });
+
+  // Usage access and drawing over other apps, from apps outside a store: how spy and banking malware watch and trick you.
+  const usage = pkgList(raw.usage).filter((p) => sideloaded(apps.get(p)!));
+  const overlays = pkgList(raw.overlays).filter((p) => sideloaded(apps.get(p)!));
+  if (usage.length || overlays.length) items.push({ id: 'special-access', status: 'warn', title: 'Apps from outside a store have special access', detail: 'Usage access shows an app everything you open and when. Drawing over other apps lets it put fake screens on top of your bank or email to steal passwords.', fix: 'Settings > Apps > Special app access. Check Usage access and Display over other apps, and turn them off for apps you don’t know.', list: [...usage.map((p) => ({ name: p, note: 'Can see which apps you use', flag: 'warn' as const })), ...overlays.map((p) => ({ name: p, note: 'Can draw over other apps', flag: 'warn' as const }))] });
+
+  // Keyboards from apps.
+  const kbs = components(raw.keyboards);
+  if (kbs.length) items.push({ id: 'keyboards', status: kbs.some((p) => sideloaded(apps.get(p)!)) ? 'warn' : 'info', title: kbs.length === 1 ? 'An app adds its own keyboard' : `${kbs.length} apps add their own keyboard`, detail: 'A keyboard sees everything you type, including passwords. Keyboards from outside an app store are a known way to steal them.', fix: 'Settings > System > Keyboard > On-screen keyboard (or Languages & input). Turn off ones you don’t use.', list: kbs.map((p) => ({ name: p, note: note(p), flag: sideloaded(apps.get(p)!) ? 'warn' as const : undefined })) });
+
+  // Always-on VPN: all traffic goes through that app.
+  const vpn = (raw.vpn ?? '').trim();
+  if (apps.has(vpn)) items.push({ id: 'vpn', status: sideloaded(apps.get(vpn)!) ? 'warn' : 'info', title: 'All your internet goes through a VPN app', detail: `${vpn} is set as an always-on VPN, so it can see where your phone connects. Fine if you chose it.`, fix: 'Settings > Network & internet > VPN. Remove it if you don’t know it.', list: [{ name: vpn, note: note(vpn) }] });
+
+  // Family safety and location-sharing apps.
+  const watchers = [...apps.keys()].filter((p) => WATCH_NAMES.test(p));
+  if (watchers.length) items.push({ id: 'watchers', status: 'info', title: watchers.length === 1 ? 'An app can share your location or monitor this phone' : `${watchers.length} apps can share your location or monitor this phone`, detail: 'Family safety and location-sharing apps are fine when you chose them. People who stalk a partner install them too, because they look harmless.', fix: 'Open each one and check who can see you. Delete any you didn’t install yourself.', list: watchers.map((p) => ({ name: p, note: note(p) })) });
+
+  // 10. How the phone itself is locked down.
+  const boot = props['ro.boot.verifiedbootstate'];
+  if (boot && boot !== 'green') items.push({ id: 'bootloader', status: 'warn', title: 'The phone’s bootloader is unlocked', detail: 'Android can’t check that its own system hasn’t been changed. That makes rooting and hidden spyware much easier.', fix: 'If you didn’t unlock it yourself, back up your photos and reset the phone. Re-locking needs the maker’s steps for your model.' });
+  if (props['ro.crypto.state'] === 'unencrypted') items.push({ id: 'encryption', status: 'warn', title: 'The phone’s storage isn’t encrypted', detail: 'Someone with the phone could read its files without your PIN.', fix: 'Set a PIN or password in Settings > Security. Newer phones encrypt as soon as you do.' });
+  if ((raw.adbWifi ?? '').trim() === '1') items.push({ id: 'wifi-debug', status: 'warn', title: 'Wireless debugging is on', detail: 'Computers on the same Wi-Fi that you paired can control this phone without a cable.', fix: 'Settings > System > Developer options > turn off Wireless debugging.' });
+  if (boot === 'green' && props['ro.crypto.state'] !== 'unencrypted') items.push({ id: 'boot', status: 'ok', title: 'Android’s own system checks out', detail: 'The bootloader is locked, so Android can check its system hasn’t been changed, and storage is encrypted.' });
+
+  // 11. Rooted
   if (raw.su.trim() || props['ro.build.tags'] === 'test-keys') items.push({ id: 'rooted', status: 'warn', title: 'This phone looks rooted', detail: 'Rooting removes Android’s safety walls, so any app could read everything. Some spy apps need it.', fix: 'If you didn’t root it yourself, back up your photos and reset the phone: Settings > System > Reset options > Erase all data.' });
 
   items.push({ id: 'usb-debugging', status: 'info', title: 'Turn USB debugging off when we’re done', detail: 'You switched it on so I could look. Leaving it on lets any computer you plug into ask questions too.', fix: 'Settings > System > Developer options > turn off USB debugging.' });
@@ -658,10 +740,11 @@ export function evaluateAndroid(id: string, raw: AndroidRaw, iocs: Ioc[], today 
   return {
     id, platform: 'android', name, model, os: release ? `Android ${release}` : 'Android', checkedAt: today, verdict, headline, items, notes,
     counts: { apps: apps.size, outsideStore: side.length, accessibility: access.length },
+    facts: { apps: apps.size },
   };
 }
 
-const ANDROID_TIER = (i: CheckItem): 'sus' | 'risk' | 'tip' => (i.id === 'stalkerware' || i.id === 'play-protect' || (i.status === 'bad' && ['sideloaded', 'accessibility', 'device-admin'].includes(i.id)) ? 'sus' : i.id === 'usb-debugging' ? 'tip' : 'risk');
+const ANDROID_TIER = (i: CheckItem): 'sus' | 'risk' | 'tip' => (i.id === 'stalkerware' || i.id === 'play-protect' || i.id === 'sms-app' || (i.status === 'bad' && ['sideloaded', 'accessibility', 'device-admin'].includes(i.id)) ? 'sus' : i.id === 'usb-debugging' ? 'tip' : 'risk');
 
 async function checkAndroid(id: string): Promise<void> {
   const adb = adbPath();
@@ -679,9 +762,16 @@ async function checkAndroid(id: string): Promise<void> {
   const perms = await sh(['dumpsys', 'package', 'packages'], 120_000);
   const verifier = (await Promise.all(['package_verifier_user_consent', 'package_verifier_enable'].map(async (k) => `${k}=${(await sh(['settings', 'get', 'global', k])).trim()}`))).join('\n');
   const su = await sh(['command', '-v', 'su']);
-  setStep(3, 'Comparing with known stalkerware');
+  setStep(3, 'Checking keyboards, texting app and special access');
+  const op = (name: string) => sh(['appops', 'query-op', '--user', '0', name, 'allow']);
+  const [installers, usage, overlays] = [await op('REQUEST_INSTALL_PACKAGES'), await op('GET_USAGE_STATS'), await op('SYSTEM_ALERT_WINDOW')];
+  const sms = await sh(['settings', 'get', 'secure', 'sms_default_application']);
+  const vpn = await sh(['settings', 'get', 'secure', 'always_on_vpn_app']);
+  const keyboards = await sh(['settings', 'get', 'secure', 'enabled_input_methods']);
+  const adbWifi = await sh(['settings', 'get', 'global', 'adb_wifi_enabled']);
+  setStep(4, 'Comparing with known stalkerware');
   const iocs = await stalkerwareList();
-  const report = evaluateAndroid(id, { props, packages, accessibility, listeners, policy, launchers, perms, verifier, su }, iocs.list);
+  const report = evaluateAndroid(id, { props, packages, accessibility, listeners, policy, launchers, perms, verifier, su, installers, usage, overlays, sms, vpn, keyboards, adbWifi }, iocs.list);
   if (!iocs.fresh && !iocs.list.length) report.notes.push('I couldn’t download the list of known stalkerware just now, so I only checked how apps behave.');
   saveReport(report);
   toFindings(report, ANDROID_TIER);
@@ -694,7 +784,7 @@ export function startCheck(id: string): { ok: true } | { error: string } {
   const d = devices.get(id);
   if (!d) return { error: 'I don’t see that phone any more. Plug it in again.' };
   if (d.state !== 'ready') return { error: d.hint || 'Your phone isn’t ready yet.' };
-  return begin({ kind: 'check', what: d.platform, deviceId: id, total: d.platform === 'ios' ? 2 : 3 }, () => (d.platform === 'ios' ? checkIos(id) : checkAndroid(id)));
+  return begin({ kind: 'check', what: d.platform, deviceId: id, total: d.platform === 'ios' ? 2 : 4 }, () => (d.platform === 'ios' ? checkIos(id) : checkAndroid(id)));
 }
 
 // ---------- deep check (MVT, iPhone) ----------

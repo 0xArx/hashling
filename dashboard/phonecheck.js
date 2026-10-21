@@ -76,7 +76,8 @@ const WHAT_I_CHECK = `<section class="mt"><p class="h3" style="margin:0 0 10px">
   <li>${icon('check')}<span><b>Stalkerware:</b> apps that secretly send your messages, location and photos to someone else, matched against the open list kept by Echap, a member of the Coalition Against Stalkerware.</span></li>
   <li>${icon('check')}<span><b>Apps from outside the App Store or Play Store,</b> and apps that can read your screen, your notifications or make themselves hard to remove.</span></li>
   <li>${icon('check')}<span><b>Hidden settings:</b> configuration profiles, certificates and remote management that hand control of the phone to someone else.</span></li>
-  <li>${icon('check')}<span><b>Updates:</b> whether your phone has the latest security fixes.</span></li>
+  <li>${icon('check')}<span><b>Quiet watchers:</b> location-sharing and “family safety” apps, keyboards that could read what you type, apps that can follow you in the background, and on Android, apps that took over texting, can see which apps you use, or can draw fake screens.</span></li>
+  <li>${icon('check')}<span><b>How locked down it is:</b> latest security fixes, passcode, Developer Mode and wireless debugging, an unlocked bootloader, and when it was last backed up.</span></li>
   <li>${icon('check')}<span><b>Deep check (iPhone, optional):</b> Amnesty International’s Mobile Verification Toolkit looks for traces of spyware like Pegasus in a backup.</span></li>
 </ul></section>`;
 
@@ -120,15 +121,28 @@ const ONLY_YOU = {
   android: ['<b>Your Google account devices:</b> Settings &gt; Google &gt; Manage your Google Account &gt; Security &gt; Your devices.', '<b>Location sharing:</b> Google Maps &gt; your picture &gt; Location sharing.', '<b>Play Protect scan:</b> Play Store &gt; your picture &gt; Play Protect &gt; Scan.'],
 };
 
+/** A few plain numbers about the phone, above the checks. */
+function glance(r) {
+  const f = r.facts ?? {};
+  const cells = [
+    [r.os, r.model],
+    f.apps != null ? [String(f.apps), 'apps installed'] : null,
+    f.storageUsed && f.storageTotal ? [bytes(f.storageUsed), `used of ${bytes(f.storageTotal)}`] : null,
+    f.backupOn === false ? ['Off', 'iCloud Backup'] : f.lastBackup ? [ago(f.lastBackup), 'last iCloud backup'] : null,
+  ].filter(Boolean);
+  return cells.length > 1 ? `<div class="pc-glance">${cells.map(([b, s]) => `<div><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('')}</div>` : '';
+}
+
 function reportCard(r, st) {
   const tone = r.verdict === 'worry' ? 'bad' : r.verdict === 'look' ? 'flag' : '';
-  const order = { bad: 0, warn: 1, info: 2, ok: 3 };
+  const order = { bad: 0, warn: 1, ok: 2, info: 3 };
   const items = [...r.items].sort((a, b) => order[a.status] - order[b.status]);
   return `<section class="mt pc-report">
     <div class="section-head"><p class="h2">${esc(r.name)}</p><span class="small faint">${esc([r.model !== r.name ? r.model : '', r.os].filter(Boolean).join(' · '))} · checked ${esc(ago(r.checkedAt))}</span></div>
     <div class="status ${tone}"><div class="ico">${icon(r.verdict === 'clear' ? 'shieldok' : 'alert', 'lg')}</div><div><b>${esc(r.headline)}</b><span class="sub">${r.verdict === 'worry' ? 'Read the red items first. Nothing on your phone has been changed.' : r.verdict === 'look' ? 'Nothing looks like spyware. A few things are worth a minute.' : 'Your phone looks clean from here.'}<span class="adv"> · ${W.plural(r.counts.apps ?? 0, 'app')}, ${r.counts.outsideStore ?? 0} from outside a store${r.counts.profiles != null ? `, ${W.plural(r.counts.profiles, 'profile')}` : ''}</span></span></div>
       <div class="actions">${askBtn({ kind: 'phone-report', phone: r.name, platform: r.platform, os: r.os, headline: r.headline, items: r.items.filter((i) => i.status !== 'ok').map((i) => ({ status: i.status, title: i.title, detail: i.detail, items: i.list?.slice(0, 15) })) }, 'Explain with AI', 'Use phone_checkup to read my phone check-up. Tell me in plain words what matters most, what to do first on the phone, and what I can ignore. If anything could be stalkerware, tell me how to stay safe before removing it.')}</div></div>
     ${r.notes.length ? `<p class="small muted" style="margin:-8px 0 12px">${r.notes.map(esc).join(' ')}</p>` : ''}
+    ${glance(r)}
     <div class="list">${items.map((i) => itemRow(r, i)).join('')}</div>
     ${deepCard(r, st)}
     <section class="mt"><p class="h3" style="margin:0 0 10px">Things only you can check on the phone</p><ul class="rules">${ONLY_YOU[r.platform].map((t) => `<li>${icon('check')}<span>${t}</span></li>`).join('')}</ul></section>
