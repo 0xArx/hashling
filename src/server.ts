@@ -50,12 +50,13 @@ export function loadToken(): string {
 const TOKEN = loadToken();
 
 /** Changes whenever the dashboard files change, so open tabs know to reload after an update. */
-const UI_BUILD = (() => {
+/** A fingerprint of the dashboard files, read fresh each time, so open tabs can tell when they are out of date. */
+const uiBuild = () => {
   try {
     const dir = join(ROOT, 'dashboard');
     return readdirSync(dir).map((f) => statSync(join(dir, f)).mtimeMs).reduce((a, b) => Math.max(a, b), 0).toString(36);
   } catch { return '0'; }
-})();
+};
 const COOKIE = 'hashling_session';
 const DASH = join(ROOT, 'dashboard');
 const MIME: Record<string, string> = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.woff2': 'font/woff2' };
@@ -574,7 +575,7 @@ export function startServer(): void {
         res.writeHead(403, { 'content-type': 'text/plain; charset=utf-8' }); res.end('I only accept requests from my own pages.'); return;
       }
       const url = new URL(req.url ?? '/', `http://${HOST}:${PORT}`);
-      if (url.pathname === '/api/health') return send(res, 200, { ok: true, name: 'hashling', ui: UI_BUILD });
+      if (url.pathname === '/api/health') return send(res, 200, { ok: true, name: 'hashling', ui: uiBuild() });
       if (url.pathname === '/api/unlock' && req.method === 'POST') return await unlock(req, res);
 
       if (!url.pathname.startsWith('/api/')) {

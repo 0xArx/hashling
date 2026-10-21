@@ -1515,6 +1515,25 @@ async function onReconnect() {
   if (state.offline) { state.offline = false; render(); }
 }
 
+/**
+ * A newer dashboard is on disk (Hashling was updated): reload by itself when that is safe, which is
+ * when nobody is typing, otherwise offer a Reload button. Checked when you come back to the tab and
+ * every couple of minutes.
+ */
+async function checkForUpdate() {
+  try {
+    const h = await (await fetch('/api/health', { credentials: 'same-origin' })).json();
+    if (!h.ui || !state.ui) { state.ui ??= h.ui; return; }
+    if (h.ui === state.ui) return;
+    const typing = document.activeElement?.matches?.('input, textarea, [contenteditable="true"]') && document.activeElement.value;
+    if (!typing && document.visibilityState === 'visible') { location.reload(); return; }
+    toast('A newer version of this page is ready.', { label: 'Reload', fn: () => location.reload() });
+    state.ui = h.ui;
+  } catch { /* offline: the stream reconnect handles it */ }
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') void checkForUpdate(); });
+setInterval(() => { if (document.visibilityState === 'visible') void checkForUpdate(); }, 120_000);
+
 function connect() {
   const es = new EventSource('/api/stream');
   es.onopen = () => { $('#live').classList.add('on'); onReconnect(); };
