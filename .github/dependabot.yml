@@ -1,4 +1,6 @@
 # Dependabot opens a pull request when a dependency or a pinned GitHub Action has an update.
+# Minor and patch updates come grouped in one pull request; major updates come one by one,
+# because they can need code changes.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -7,7 +9,11 @@ updates:
       interval: weekly
     groups:
       npm:
-        patterns: ['*']
+        update-types: [minor, patch]
+    ignore:
+      # Hashling runs on Node 24, so its type definitions stay on 24.
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
     schedule:

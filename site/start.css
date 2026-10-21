@@ -353,3 +353,20 @@ body:not([data-platform="windows"]) .win-only, body[data-platform="windows"] .ma
 .soon-fine { text-align: center; margin: 14px 0 0; color: var(--text3); font-size: 0.9rem; }
 .soon-fine b { color: var(--text2); } .soon-fine a { color: var(--amber); }
 @media (max-width: 760px) { .soon-grid { grid-template-columns: 1fr; } }
+
+/* Why you can trust Hashling */
+.trust-lean { padding: 1rem 0 4.5rem; }
+.trust-wrap { max-width: 980px; }
+.trust-sub { margin: 0.8rem auto 0; max-width: 60ch; text-align: center; color: var(--text2); line-height: 1.6; }
+.trust-grid { list-style: none; padding: 0; margin: 2.2rem 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.trust-grid li { display: flex; gap: 14px; align-items: flex-start; padding: 20px 22px; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--border); }
+.trust-grid li > svg { flex: none; width: 40px; height: 40px; padding: 10px; border-radius: 12px; background: var(--amber-dim); color: var(--amber); }
+.trust-grid b { display: block; color: var(--text1); margin-bottom: 4px; }
+.trust-grid p, .trust-honest p { margin: 0; color: var(--text2); font-size: 0.95rem; line-height: 1.55; }
+.trust-grid a, .trust-honest a, .trust-badges a { color: var(--amber); }
+.trust-honest { margin-top: 14px; padding: 20px 22px; border-radius: 18px; background: var(--surface2); box-shadow: inset 0 0 0 1px var(--border2); }
+.trust-honest b { display: block; color: var(--text1); margin-bottom: 4px; }
+.trust-badges { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 16px; margin: 16px 0 0; font-size: 0.9rem; }
+.trust-badges img { display: block; }
+@media (max-width: 900px) { .trust-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .trust-grid { grid-template-columns: 1fr; } .trust-grid li, .trust-honest { padding: 18px; } }
