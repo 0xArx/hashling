@@ -1185,3 +1185,7 @@ details.just-opened > :not(summary) { animation: fold-in 240ms var(--ease-out); 
   .nav a:active, .item[data-act]:active, a.item:active, .watch .area:active, .now a:active, .thread:active { transform: none; }
 }
 @keyframes fade-only { from { opacity: 0; } }
+.crucial-tag { color: var(--high); font-weight: 600; }
+details.archive > summary { gap: 10px; flex-wrap: wrap; }
+details.archive > summary .tier-hint { font-weight: 400; color: var(--faint); font-size: 12.5px; }
+details.archive .list { border: 0; border-top: 1px solid var(--line); border-radius: 0; box-shadow: none; background: transparent; }

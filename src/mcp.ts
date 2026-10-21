@@ -164,8 +164,8 @@ tool('propose_action', 'Propose a protective action. It does NOT run: it waits u
   finding_id: z.string().optional(),
 }, async ({ type, target, reason, finding_id }) => api('POST', '/api/actions', { type, target, reason, finding_id }));
 
-tool('list_actions', 'Proposed actions and their status (pending, executed, rejected, failed, expired) plus results.', {
-  status: z.enum(['pending', 'executed', 'rejected', 'failed', 'expired']).optional(),
+tool('list_actions', 'Proposed actions, their status (pending, executed, rejected, failed, archived) and results. Undecided suggestions move to the archive after a day, except crucial ones, which wait for the user.', {
+  status: z.enum(['pending', 'executed', 'rejected', 'failed', 'archived']).optional(),
 }, async ({ status }) => api('GET', `/api/actions${status ? `?status=${status}` : ''}`));
 
 tool('recent_events', 'Timeline of what Hashling noticed recently: new findings, new network destinations for agents, scans, actions.', {

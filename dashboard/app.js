@@ -567,7 +567,6 @@ const plainIds = (t) => String(t ?? '').replace(/\b(?:com|org|net|io|dev|us|co)\
 /** Plain words for the errors macOS hands back when a fix could not be done. */
 function plainResult(a) {
   const r = String(a.result ?? '');
-  if (a.status === 'expired') return 'Nobody decided within a day, so I dropped it. Ask me again if you still want it.';
   if (a.status !== 'failed') return plainIds(r);
   if (/No such bundle identifier/i.test(r)) return 'That app is no longer on this Mac, so there was nothing to take away.';
   if (/don.t have permission|not permitted|Operation not permitted|EPERM|EACCES/i.test(r)) return 'macOS would not let me touch it. It may be owned by the system or another user. Drag it to the Trash yourself if you still want it gone.';
@@ -580,25 +579,28 @@ const CLEANUP = new Set(['trash_paths', 'run_cleanup']);
 const sizeOf = (a) => { const m = `${a.summary} ${a.reason}`.match(/(\d+(?:\.\d+)?)\s*(KB|MB|GB|TB)\b/i); return m ? Number(m[1]) * 1024 ** ({ KB: 1, MB: 2, GB: 3, TB: 4 }[m[2].toUpperCase()]) : 0; };
 const bytesText = (b) => b >= 1024 ** 3 ? `${(b / 1024 ** 3).toFixed(b >= 10 * 1024 ** 3 ? 0 : 1)} GB` : `${Math.max(1, Math.round(b / 1024 ** 2))} MB`;
 const pendingItem = (a) => `
-    <div class="item"><span class="dot ${CLEANUP.has(a.type) ? 'low' : 'medium'}" style="margin-top:7px"></span><div class="body"><div class="t">${esc(plainIds(a.summary))}</div><div class="s">${esc(plainIds(a.reason))}</div><div class="tiny faint" style="margin-top:4px">Suggested by ${esc(a.requested_by === 'Hashling assistant' ? 'me' : a.requested_by)} · ${ago(a.created_at)}</div></div>
+    <div class="item"><span class="dot ${CLEANUP.has(a.type) ? 'low' : 'medium'}" style="margin-top:7px"></span><div class="body"><div class="t">${esc(plainIds(a.summary))}</div><div class="s">${esc(plainIds(a.reason))}</div><div class="tiny faint" style="margin-top:4px">Suggested by ${esc(a.requested_by === 'Hashling assistant' ? 'me' : a.requested_by)} · ${ago(a.created_at)}${a.crucial ? ' · <span class="crucial-tag">Important, stays here until you decide</span>' : ''}</div></div>
       <div class="side-r">${askBtn({ kind: 'pending-action', id: a.id, summary: a.summary, reason: a.reason, by: a.requested_by }, 'Should I?', 'Should I approve this action? Explain what it will do, whether it can be undone, and any risk.')}<button class="btn primary sm" data-act="approve" data-id="${esc(a.id)}" ${state.busy.has(a.id) ? 'disabled' : ''}>${state.busy.has(a.id) ? 'Waiting for Touch ID…' : 'Approve'}</button><button class="btn sm" data-act="reject" data-id="${esc(a.id)}">Reject</button></div></div>`;
 
 views.approvals = async () => {
-  const [pending, all, q] = await Promise.all([api('/api/actions?status=pending'), api('/api/actions'), api('/api/quarantine')]);
-  const done = all.filter((a) => a.status !== 'pending').slice(0, 30);
+  const [pending, all, q, archived] = await Promise.all([api('/api/actions?status=pending'), api('/api/actions'), api('/api/quarantine'), api('/api/actions?status=archived')]);
+  const done = all.filter((a) => a.status !== 'pending' && a.status !== 'archived').slice(0, 30);
   const fixes = pending.filter((a) => !CLEANUP.has(a.type));
   const cleanups = pending.filter((a) => CLEANUP.has(a.type));
   const freed = cleanups.reduce((n, a) => n + sizeOf(a), 0);
   return `${pending.length ? `<div class="status flag"><div class="ico">${icon('inbox', 'lg')}</div><div><b>${!fixes.length && freed ? `${plural(pending.length, 'cleanup')} ready to free about ${bytesText(freed)}` : `${plural(pending.length, 'change')} waiting for your OK`}</b><span class="sub">Approving asks for Touch ID (or your password) on this Mac.</span></div>${pending.length > 1 ? `<div class="actions"><button class="btn primary sm" data-act="approve-all" ${state.busyAll ? 'disabled' : ''}>${state.busyAll ? 'Waiting for Touch ID…' : `Approve all ${pending.length}`}</button><button class="btn sm" data-act="reject-all">Reject all</button></div>` : ''}</div>` : `<div class="status"><div class="ico">${icon('shieldok', 'lg')}</div><div><b>Nothing is waiting for your approval</b><span class="sub">Your AI can only suggest fixes. You decide.</span></div></div>`}
   ${fixes.length ? `${cleanups.length ? `<div class="section-head mt"><p class="h2">Security fixes</p><span class="small faint">${plural(fixes.length, 'change')}</span></div>` : ''}<div class="list">${fixes.map(pendingItem).join('')}</div>` : ''}
   ${cleanups.length ? `<div class="section-head mt"><p class="h2">Free up space</p><span class="small faint">${plural(cleanups.length, 'cleanup')}${freed ? ` · about ${bytesText(freed)}` : ''} · everything goes to the Trash</span></div><div class="list">${cleanups.map(pendingItem).join('')}</div>` : ''}
+  ${archived.length ? `<details class="card fold mt archive"${state.archiveOpen ? ' open' : ''}><summary>${icon('inbox')}Archived suggestions <span class="tier-count">${archived.length}</span><span class="tier-hint">Waited more than a day without a decision. Nothing was changed.</span></summary>
+    <div class="list">${archived.map((a) => `<div class="item"><span class="dot low" style="margin-top:7px;opacity:.55"></span><div class="body"><div class="t">${esc(plainIds(a.summary))}</div><div class="s">${esc(plainIds(a.reason))}</div><div class="tiny faint" style="margin-top:4px">Archived ${ago(a.decided_at ?? a.created_at)}</div></div>
+      <div class="side-r"><button class="btn sm" data-act="restore-action" data-id="${esc(a.id)}">${icon('undo')}Bring back</button><button class="btn sm ghost" data-act="dismiss-action" data-id="${esc(a.id)}">Dismiss</button></div></div>`).join('')}</div></details>` : ''}
   <div class="grid g2 mt" style="align-items:start">
     <div><div class="section-head"><p class="h2">Quarantine</p></div><div class="list">${q.items.map((i) => `<div class="item"><div class="body"><div class="t mono small">${esc(home(i.original))}</div><div class="s">${i.restored ? 'Restored' : 'Locked away'} ${ago(i.at)}${i.sha256 ? ` · sha256 ${esc(i.sha256.slice(0, 12))}…` : ''}</div></div>${i.restored ? '' : `<button class="btn sm" data-act="propose" data-a="${attr({ type: 'restore_file', target: { id: i.id }, reason: `Restore ${home(i.original)}` })}">Restore…</button>`}</div>`).join('') || '<div class="empty">Nothing in quarantine.</div>'}</div></div>
     <div class="adv"><div class="section-head"><p class="h2">Blocked domains</p></div><div class="list">${q.blockedDomains.map((d) => `<div class="item"><div class="body t mono">${esc(d)}</div><button class="btn sm" data-act="propose" data-a="${attr({ type: 'unblock_domain', target: { domain: d }, reason: `Unblock ${d}` })}">Unblock…</button></div>`).join('') || '<div class="empty">No domains blocked.</div>'}</div>
       <div class="row" style="margin-top:10px"><input class="input" id="block-domain" placeholder="tracker.example.com" style="flex:1"><button class="btn" data-act="block">Block domain…</button></div></div>
   </div>
   <div class="mt"><div class="section-head"><p class="h2">History</p></div><div class="tablewrap"><table class="table stack-sm"><thead><tr><th>Action</th><th>By</th><th>Status</th><th>Result</th><th>When</th></tr></thead><tbody>
-    ${done.map((a) => `<tr><td class="cell-title">${esc(plainIds(a.summary))}</td><td class="small muted" data-label="By">${esc(a.requested_by === 'Hashling assistant' ? 'Me' : a.requested_by)}</td><td><span class="chip ${a.status === 'failed' ? 'bad' : a.status === 'executed' ? 'ok' : ''}">${esc({ executed: 'Done', failed: 'Didn’t work', rejected: 'Rejected', approved: 'Approved', expired: 'Expired' }[a.status] ?? a.status)}</span></td><td class="small muted wrap">${esc(plainResult(a))}</td><td class="small faint">${ago(a.decided_at ?? a.created_at)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">No history yet.</td></tr>'}
+    ${done.map((a) => `<tr><td class="cell-title">${esc(plainIds(a.summary))}</td><td class="small muted" data-label="By">${esc(a.requested_by === 'Hashling assistant' ? 'Me' : a.requested_by)}</td><td><span class="chip ${a.status === 'failed' ? 'bad' : a.status === 'executed' ? 'ok' : ''}">${esc({ executed: 'Done', failed: 'Didn’t work', rejected: 'Rejected', approved: 'Approved' }[a.status] ?? a.status)}</span></td><td class="small muted wrap">${esc(plainResult(a))}</td><td class="small faint">${ago(a.decided_at ?? a.created_at)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">No history yet.</td></tr>'}
   </tbody></table></div></div>`;
 };
 
@@ -891,7 +893,7 @@ function chatHtml(mode) {
         ${m.steps?.length ? `<div class="steps">${m.steps.map((s) => `<div class="step">${s.done ? `<span class="ok">${icon('check')}</span>` : '<span class="spin"></span>'}${esc(s.label)}</div>`).join('')}</div>` : ''}
         ${m.text ? `<div class="md">${md(m.text)}</div>` : m.error ? '' : '<div class="step"><span class="spin"></span>Thinking…</div>'}
         ${m.error ? `<div class="ai-off" style="margin-top:6px"><b>Couldn’t answer</b><p class="small muted" style="margin:4px 0 10px">${esc(m.error)}</p>${/sign in|signed in|API key/i.test(m.error) ? `<div class="row"><button class="btn primary sm" data-act="handoff" data-prompt="${esc(m.question ?? '')}" data-ctx="${attr(m.ctx ?? null)}">${icon('ext')}Ask in Claude instead</button><button class="btn sm" data-act="ai-connect">Sign in to Claude</button></div>` : ''}</div>` : ''}
-        ${(m.actions ?? []).map((a) => `<div class="action-card"><span class="dot medium"></span><div class="body"><div class="t">${esc(a.summary)}</div>${a.reason ? `<div class="s">${esc(a.reason)}</div>` : ''}${UNDO[a.type] ? `<div class="s undo">${icon('undo')}${esc(UNDO[a.type])}</div>` : ''}<div class="s">${a.status === 'pending' ? 'Nothing has changed yet. Approve to do it, with Touch ID.' : esc(({ executed: 'Done.', rejected: 'You said no. Nothing changed.', failed: 'It did not work. Nothing else was changed.', expired: 'Expired. Nothing changed.' })[a.status] ?? a.status)}</div></div>${a.status === 'pending' ? `<button class="btn primary sm" data-act="approve" data-id="${esc(a.id)}">Approve</button><button class="btn sm" data-act="reject" data-id="${esc(a.id)}">Reject</button>` : ''}</div>`).join('')}
+        ${(m.actions ?? []).map((a) => `<div class="action-card"><span class="dot medium"></span><div class="body"><div class="t">${esc(a.summary)}</div>${a.reason ? `<div class="s">${esc(a.reason)}</div>` : ''}${UNDO[a.type] ? `<div class="s undo">${icon('undo')}${esc(UNDO[a.type])}</div>` : ''}<div class="s">${a.status === 'pending' ? 'Nothing has changed yet. Approve to do it, with Touch ID.' : esc(({ executed: 'Done.', rejected: 'You said no. Nothing changed.', failed: 'It did not work. Nothing else was changed.', archived: 'Archived after a day. Bring it back from Approvals any time.' })[a.status] ?? a.status)}</div></div>${a.status === 'pending' ? `<button class="btn primary sm" data-act="approve" data-id="${esc(a.id)}">Approve</button><button class="btn sm" data-act="reject" data-id="${esc(a.id)}">Reject</button>` : ''}</div>`).join('')}
       </div></div>`).join('')}`;
 }
 
@@ -1179,6 +1181,18 @@ document.addEventListener('click', async (ev) => {
     }
     else if (act === 'approve') await approve(el.dataset.id);
     else if (act === 'approve-all' || act === 'reject-all') await bulk(act === 'approve-all');
+    else if (act === 'restore-action') {
+      const r = await api(`/api/actions/${el.dataset.id}/restore`, { method: 'POST' });
+      await leaveRow(el.closest('#main .item'), 'no');
+      state.archiveOpen = true;
+      toast(`Back on your list: ${plainIds(r.summary)}`); render();
+    }
+    else if (act === 'dismiss-action') {
+      await api(`/api/actions/${el.dataset.id}/reject`, { method: 'POST' });
+      await leaveRow(el.closest('#main .item'), 'no');
+      state.archiveOpen = true;
+      toast('Dismissed. Nothing was changed.'); render();
+    }
     else if (act === 'reject') { await api(`/api/actions/${el.dataset.id}/reject`, { method: 'POST' }); toast('Rejected.'); await leaveRow(el.closest("#main .item"), 'no'); for (const m of chat.messages) for (const a of m.actions ?? []) if (a.id === el.dataset.id) a.status = 'rejected'; render(); renderChat(); }
     else if (act === 'agent') { state.agentOpen = el.dataset.id; render(); }
     else if (act === 'net-all') { state.netAll = el.dataset.v === '1'; render(); }
@@ -1360,7 +1374,9 @@ function setBadge(el, value) {
 // Opening a fold plays its reveal once; live refreshes rebuild open folds without replaying it.
 document.addEventListener('toggle', (e) => {
   const d = e.target;
-  if (!(d instanceof HTMLDetailsElement) || !d.open) return;
+  if (!(d instanceof HTMLDetailsElement)) return;
+  if (d.classList.contains('archive')) state.archiveOpen = d.open;
+  if (!d.open) return;
   d.classList.add('just-opened');
   setTimeout(() => d.classList.remove('just-opened'), 320);
 }, true);

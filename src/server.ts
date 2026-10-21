@@ -11,7 +11,7 @@ import { redact } from './lib/redact.ts';
 import { overview } from './overview.ts';
 import { runCollector, collectorNames, status } from './scheduler.ts';
 import { requestScan, getScan, listScans, engines, refreshScanFindings, requestFullScan } from './scanner.ts';
-import { proposeAction, listActions, getAction, approveAction, approveMany, rejectAction, listQuarantine, blockedDomains, ACTION_TYPES } from './actions.ts';
+import { proposeAction, listActions, getAction, approveAction, approveMany, rejectAction, restoreAction, listQuarantine, blockedDomains, ACTION_TYPES } from './actions.ts';
 import { osquery, validateSql } from './lib/osquery.ts';
 import { processInfo } from './process.ts';
 import { ask, aiStatus, publicConfig, saveConfig, listThreads, getThread, deleteThread, openClaudeLogin, handoff, MODELS } from './ai.ts';
@@ -240,6 +240,7 @@ route('POST', '/api/actions/approve-all', async (req, res) => { const b = await 
 route('POST', '/api/actions/reject-all', async (req, res) => { const b = await body(req); let n = 0; for (const id of Array.isArray(b.ids) ? b.ids.map(String) : []) if (!('error' in rejectAction(id))) n++; send(res, 200, { rejected: n }); }, true);
 route('POST', '/api/actions/:id/approve', async (_q, res, [id]) => { const r = await approveAction(id); send(res, 'error' in r ? 400 : 200, r); }, true);
 route('POST', '/api/actions/:id/reject', (_q, res, [id]) => { const r = rejectAction(id); send(res, 'error' in r ? 400 : 200, r); }, true);
+route('POST', '/api/actions/:id/restore', (_q, res, [id]) => { const r = restoreAction(id); send(res, 'error' in r ? 400 : 200, r); }, true);
 route('GET', '/api/suspicious', (_q, res) => send(res, 200, suspicious()));
 // --- engines added in v0.2 ---
 route('GET', '/api/intel', snap('intel'));

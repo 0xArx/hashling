@@ -22,7 +22,7 @@ export const CLEANUPS: Record<string, { label: string; cmd: string; args: string
 /** Never move these, whatever an agent proposes. */
 const PROTECTED = [/^\/System(\/|$)/, /^\/usr(\/|$)/, /^\/bin(\/|$)/, /^\/sbin(\/|$)/, /^\/Library\/(Apple|Keychains)(\/|$)/, /\/Library\/Keychains(\/|$)/, /\/\.ssh(\/|$)/, /\/\.hashling(\/|$)/, /\/\.Trash(\/|$)/, /^\/Applications\/(Safari|Hashling)\.app$/];
 export type ActionType = typeof ACTION_TYPES[number];
-export type ActionStatus = 'pending' | 'rejected' | 'executed' | 'failed' | 'expired';
+export type ActionStatus = 'pending' | 'rejected' | 'executed' | 'failed' | 'archived';
 
 export interface Action {
   id: string;
@@ -36,6 +36,16 @@ export interface Action {
   decided_at: number | null;
   result: string | null;
   summary: string;
+  /** Crucial fixes never move to the archive: they wait until the user decides. */
+  crucial: boolean;
+}
+
+/** Responding to malware, or fixing something rated critical or high, is too important to tidy away. */
+const CRUCIAL_TYPES = new Set(['quarantine_file', 'kill_process', 'disable_persistence']);
+function isCrucial(type: string, findingId: unknown): boolean {
+  if (CRUCIAL_TYPES.has(type)) return true;
+  const f = findingId ? getFinding(String(findingId)) : null;
+  return f ? f.severity === 'critical' || f.severity === 'high' : false;
 }
 
 const HOSTS_TAG = '# added by Hashling';
@@ -178,7 +188,7 @@ export function proposeAction(type: string, target: Record<string, unknown>, rea
 
 function toAction(r: Record<string, unknown>): Action {
   const target = parseJson<Record<string, unknown>>(r.target, {});
-  return { ...(r as unknown as Action), target, summary: describe(r.type as ActionType, target) };
+  return { ...(r as unknown as Action), target, summary: describe(r.type as ActionType, target), crucial: isCrucial(String(r.type), r.finding_id) };
 }
 
 export function getAction(id: string): Action | null {
@@ -187,15 +197,36 @@ export function getAction(id: string): Action | null {
 }
 
 export function listActions(status?: string, limit = 50): Action[] {
-  expireOld();
+  archiveOld();
   const rows = status
     ? db.prepare('SELECT * FROM actions WHERE status = ? ORDER BY created_at DESC LIMIT ?').all(status, limit)
     : db.prepare('SELECT * FROM actions ORDER BY created_at DESC LIMIT ?').all(limit);
   return (rows as Record<string, unknown>[]).map(toAction);
 }
 
-function expireOld(): void {
-  db.prepare(`UPDATE actions SET status = 'expired', decided_at = ? WHERE status = 'pending' AND created_at < ?`).run(now(), now() - 24 * 3600_000);
+// Older versions dropped undecided suggestions as "expired"; they belong in the archive.
+db.prepare(`UPDATE actions SET status = 'archived' WHERE status = 'expired'`).run();
+
+/**
+ * A suggestion nobody decided on within a day moves to the archive, so the waiting list stays
+ * short. Crucial ones stay waiting. Nothing is changed on the Mac either way.
+ */
+function archiveOld(): void {
+  const stale = db.prepare(`SELECT id, type, finding_id FROM actions WHERE status = 'pending' AND created_at < ?`).all(now() - 24 * 3600_000) as { id: string; type: string; finding_id: string | null }[];
+  for (const a of stale) if (!isCrucial(a.type, a.finding_id)) db.prepare(`UPDATE actions SET status = 'archived', decided_at = ? WHERE id = ?`).run(now(), a.id);
+}
+
+/** Put an archived suggestion back on the waiting list, as if it was just made. */
+export function restoreAction(id: string): Action | { error: string } {
+  const a = getAction(id);
+  if (!a) return { error: 'No such action.' };
+  if (a.status !== 'archived') return { error: `Action is ${a.status}, not archived.` };
+  const pending = (db.prepare(`SELECT COUNT(*) AS n FROM actions WHERE status = 'pending'`).get() as { n: number }).n;
+  if (pending >= 25) return { error: 'Too many changes are already waiting. Decide on some of those first.' };
+  db.prepare(`UPDATE actions SET status = 'pending', created_at = ?, decided_at = NULL, result = NULL WHERE id = ?`).run(now(), id);
+  logEvent('action', 'low', `You brought back: ${a.summary}`, { id });
+  bus.emit('change', { type: 'action', id });
+  return getAction(id)!;
 }
 
 function finish(id: string, status: ActionStatus, result: string): Action {
@@ -207,7 +238,7 @@ function finish(id: string, status: ActionStatus, result: string): Action {
 export function rejectAction(id: string): Action | { error: string } {
   const a = getAction(id);
   if (!a) return { error: 'No such action.' };
-  if (a.status !== 'pending') return { error: `Action is already ${a.status}.` };
+  if (a.status !== 'pending' && a.status !== 'archived') return { error: `Action is already ${a.status}.` };
   logEvent('action', 'info', `You rejected: ${a.summary}`, { id });
   return finish(id, 'rejected', 'Rejected by you.');
 }
