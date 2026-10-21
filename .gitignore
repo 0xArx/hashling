@@ -4,3 +4,4 @@ helpers/build/
 *.log
 .vercel
 site/.vercel
+dist/

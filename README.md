@@ -12,6 +12,8 @@ Hashling keeps watch over your Mac around the clock: scams, malware, trackers, r
 
 ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-6C5CE7) ![Apple silicon](https://img.shields.io/badge/Apple%20silicon-M1%2B-6C5CE7) ![Works with MCP](https://img.shields.io/badge/works%20with-Claude%20Code%20%C2%B7%20Cursor%20%C2%B7%20Codex-1B1640) ![MIT](https://img.shields.io/badge/license-MIT-0F9F76)
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/0xArx/hashling/badge)](https://scorecard.dev/viewer/?uri=github.com/0xArx/hashling) [![CI](https://github.com/0xArx/hashling/actions/workflows/ci.yml/badge.svg)](https://github.com/0xArx/hashling/actions/workflows/ci.yml) [![CodeQL](https://github.com/0xArx/hashling/actions/workflows/codeql.yml/badge.svg)](https://github.com/0xArx/hashling/actions/workflows/codeql.yml) [![Notarized by Apple](https://img.shields.io/badge/app-notarized%20by%20Apple-6C5CE7)](https://github.com/0xArx/hashling/releases)
+
 <img src="site/assets/screens/home.png" alt="The Hashling home screen: a security score, a short to-do list, and what needs attention" width="900">
 
 </div>
@@ -169,6 +171,15 @@ hashling uninstall --all # remove Hashling (it lists anything left behind)
 ```
 
 To update, install again the same way; your settings and history are kept. Before removing Hashling, restore any quarantined files you want and unblock any websites you blocked (both on the Approvals page).
+
+## Why you can trust it
+
+- **Open source** under the MIT license: every line is here to read.
+- **Signed and notarized.** Each [release](https://github.com/0xArx/hashling/releases) has a Hashling.app signed with a verified Apple Developer ID and notarized by Apple, the exact source it was built from, and SHA-256 checksums.
+- **Checked in public.** [OpenSSF Scorecard](https://scorecard.dev/viewer/?uri=github.com/0xArx/hashling) grades how safely the project is run every week, GitHub CodeQL scans every change, and Dependabot watches the dependencies.
+- **Catches the industry's test files.** EICAR, zipped and nested EICAR, and a test file landing in Downloads: [results and how to run it yourself](docs/AMTSO-CHECK.md).
+- **Not yet independently tested.** No lab test (AV-TEST, AV-Comparatives) or paid audit so far. [What it would take](docs/CERTIFICATION.md).
+- **Found a security problem?** Please [report it privately](SECURITY.md).
 
 ## Limitations
 

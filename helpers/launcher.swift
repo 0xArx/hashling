@@ -14,9 +14,18 @@ import UserNotifications
 
 setvbuf(stdout, nil, _IOLBF, 0)
 let bundle = Bundle.main
-let root = (bundle.object(forInfoDictionaryKey: "HashlingRoot") as? String) ?? ""
-let node = (bundle.object(forInfoDictionaryKey: "HashlingNode") as? String) ?? "/opt/homebrew/bin/node"
 let home = FileManager.default.homeDirectoryForCurrentUser.path
+/// Info.plist value, or nil when it is empty (the notarized release build leaves both empty,
+/// because one signed app has to work on every Mac).
+func plistPath(_ key: String) -> String? {
+    guard let v = bundle.object(forInfoDictionaryKey: key) as? String, !v.isEmpty else { return nil }
+    return v
+}
+/// Built on this Mac: the paths the installer wrote. Release build: where the installer puts Hashling.
+let root = plistPath("HashlingRoot") ?? "\(home)/.hashling/app"
+let node = plistPath("HashlingNode")
+    ?? ["/opt/homebrew/opt/node@24/bin/node", "/usr/local/opt/node@24/bin/node", "/opt/homebrew/bin/node"]
+        .first { FileManager.default.isExecutableFile(atPath: $0) } ?? "/opt/homebrew/bin/node"
 let base = "http://127.0.0.1:5750"
 /// Where the dashboard opens in the browser: the friendly name, which always means this Mac.
 let dashboardBase = "http://hashling.localhost:5750"
