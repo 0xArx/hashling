@@ -255,3 +255,83 @@
   var ua = navigator.userAgent || '';
   choose(/Windows/i.test(ua) && !/Macintosh/i.test(ua) ? 'windows' : 'mac');
 })();
+
+/* Demo video: plays muted while on screen, pauses when scrolled away. Reduced motion starts paused. */
+(function () {
+  var video = document.getElementById('demo-video');
+  if (!video) return;
+  var fig = video.closest('.hero-video');
+  var play = document.getElementById('demo-play');
+  var sound = document.getElementById('demo-sound');
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var userPaused = reducedMotion;
+  function sync() {
+    fig.classList.toggle('is-paused', video.paused);
+    fig.classList.toggle('is-muted', video.muted);
+    play.setAttribute('aria-label', video.paused ? 'Play the demo' : 'Pause the demo');
+    sound.setAttribute('aria-label', video.muted ? 'Turn sound on' : 'Turn sound off');
+  }
+  ['play', 'pause', 'volumechange'].forEach(function (e) { video.addEventListener(e, sync); });
+  play.addEventListener('click', function () {
+    if (video.paused) { userPaused = false; video.play().catch(function () {}); }
+    else { userPaused = true; video.pause(); }
+  });
+  sound.addEventListener('click', function () {
+    video.muted = !video.muted;
+    if (!video.muted && video.paused) { userPaused = false; video.play().catch(function () {}); }
+  });
+  video.addEventListener('click', function () { play.click(); });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !userPaused) video.play().catch(function () {});
+        else if (!entry.isIntersecting && !video.paused) video.pause();
+      });
+    }, { threshold: 0.35 }).observe(video);
+  } else if (!userPaused) {
+    video.play().catch(function () {});
+  }
+  sync();
+})();
+
+/* Proof strip: live numbers from GitHub's public API. Anything that fails keeps its plain wording. */
+(function () {
+  var stars = document.getElementById('proof-stars');
+  if (!stars) return;
+  var shipped = document.getElementById('proof-shipped');
+  var dl = document.getElementById('proof-downloads');
+  var dlLi = document.getElementById('proof-downloads-li');
+  var API = 'https://api.github.com/repos/0xArx/hashling';
+  var KEY = 'hashling-proof';
+  function fmt(n) { return n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k' : String(n); }
+  function ago(iso) {
+    var days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+    if (isNaN(days)) return null;
+    if (days <= 0) return 'Updated today';
+    if (days === 1) return 'Updated yesterday';
+    if (days < 30) return 'Updated ' + days + ' days ago';
+    return null;
+  }
+  function show(d) {
+    if (d.stars > 0) stars.textContent = fmt(d.stars) + (d.stars === 1 ? ' star' : ' stars') + ' on GitHub';
+    var a = d.pushed && ago(d.pushed);
+    if (a) shipped.textContent = a + ' · see what changed';
+    if (d.downloads > 0) { dl.textContent = fmt(d.downloads) + ' downloads'; dlLi.hidden = false; }
+  }
+  var cached;
+  try { cached = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) {}
+  if (cached) return show(cached);
+  Promise.all([
+    fetch(API).then(function (r) { return r.ok ? r.json() : {}; }),
+    fetch(API + '/releases?per_page=100').then(function (r) { return r.ok ? r.json() : []; })
+  ]).then(function (res) {
+    var repo = res[0] || {};
+    var releases = Array.isArray(res[1]) ? res[1] : [];
+    var downloads = releases.reduce(function (sum, rel) {
+      return sum + (rel.assets || []).reduce(function (s, a) { return s + (a.download_count || 0); }, 0);
+    }, 0);
+    var d = { stars: repo.stargazers_count || 0, pushed: repo.pushed_at, downloads: downloads };
+    try { sessionStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {}
+    show(d);
+  }).catch(function () {});
+})();

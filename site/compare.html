@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hashling compared - vs Little Snitch, LuLu, Malwarebytes and more</title>
+  <meta name="description" content="How Hashling compares to Little Snitch, LuLu, Malwarebytes for Mac, Bitdefender AI Guardian, and Snyk Agent Scan. Honest, side-by-side.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Hashling compared - vs Little Snitch, LuLu, Malwarebytes and more">
+  <meta property="og:description" content="How Hashling compares to Little Snitch, LuLu, Malwarebytes for Mac, Bitdefender AI Guardian, and Snyk Agent Scan. Honest, side-by-side.">
+  <meta property="og:image" content="/og.png">
+  <meta property="og:url" content="https://hashling.vercel.app/compare">
+  <meta property="og:site_name" content="Hashling">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Hashling compared">
+  <meta name="twitter:description" content="How Hashling compares to Little Snitch, LuLu, Malwarebytes for Mac, Bitdefender AI Guardian, and Snyk Agent Scan. Honest, side-by-side.">
+  <meta name="twitter:image" content="/og.png">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="start.css">
+  <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <!-- NAV -->
+  <header class="nav" role="banner">
+    <div class="wrap nav-inner">
+      <a href="/" class="nav-logo" aria-label="Hashling home">
+        <svg class="nav-logo-icon" width="26" height="26" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="hl-site" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B7DFB"/><stop offset="1" stop-color="#5F4FE0"/></linearGradient></defs><g fill="url(#hl-site)"><rect x="38" y="10" width="15" height="98" rx="7.5" transform="skewX(-10)" transform-origin="45.5 59"/><rect x="67" y="10" width="15" height="98" rx="7.5" transform="skewX(-10)" transform-origin="74.5 59"/><rect x="16" y="36" width="90" height="15" rx="7.5"/><rect x="13" y="68" width="90" height="15" rx="7.5"/></g></svg>
+        <span class="nav-wordmark">Hashling</span>
+      </a>
+      <div class="nav-end">
+        <a href="https://github.com/0xArx/hashling" class="nav-gh" aria-label="Hashling on GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
+        <button class="btn-icon theme-btn" id="theme-btn" aria-label="Switch to light theme">
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <a href="/start" class="btn btn-accent nav-dl">
+          Get started
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="page-hero">
+      <div class="page-hero-inner">
+        <span class="page-eyebrow">Compared</span>
+        <h1>Hashling compared</h1>
+        <p class="page-hero-sub">An honest look at how Hashling sits alongside Little Snitch, LuLu, Malwarebytes, Bitdefender AI Guardian, and Snyk Agent Scan. Every tool listed here is good at what it does. They cover different things.</p>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <div class="compare-intro">
+        <p>No single tool does everything. Hashling watches your Mac broadly in plain words, connects your AI to your security, and checks your phone. It does <strong>not</strong> block network connections in real time (Little Snitch and LuLu do that). It does <strong>not</strong> intercept malware the moment a file arrives (Malwarebytes does that and has been lab tested by independent labs, Hashling has not). It is aimed at people, not CI pipelines.</p>
+        <p>If the honest trade-offs below suggest you need a tool Hashling does not cover, pair them. Hashling works well alongside a firewall like LuLu.</p>
+      </div>
+
+      <div class="compare-table-wrap" role="region" aria-label="Feature comparison table" tabindex="0">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th scope="col">Feature</th>
+              <th scope="col" class="col-hashling">Hashling</th>
+              <th scope="col">Little Snitch</th>
+              <th scope="col">LuLu</th>
+              <th scope="col">Malwarebytes</th>
+              <th scope="col">Bitdefender AI Guardian</th>
+              <th scope="col">Snyk Agent Scan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Price</td>
+              <td class="col-hashling">Free</td>
+              <td>~$59 one-time</td>
+              <td>Free</td>
+              <td>Free scan; ~$39.99/yr for real-time protection</td>
+              <td>Free (public beta)</td>
+              <td>Free tier; $25+/user/month for teams</td>
+            </tr>
+            <tr>
+              <td>Open source</td>
+              <td class="col-hashling"><span class="tick">Yes</span> (MIT)</td>
+              <td><span class="cross">No</span></td>
+              <td><span class="tick">Yes</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="tick">Yes</span> (Apache-2.0)</td>
+            </tr>
+            <tr>
+              <td>Runs fully on your Mac</td>
+              <td class="col-hashling"><span class="tick">Yes</span> <span class="partial">(looks up IP owners online; can be turned off)</span></td>
+              <td><span class="tick">Yes</span></td>
+              <td><span class="tick">Yes</span></td>
+              <td><span class="tick">Yes</span> <span class="partial">(cloud reputation checks)</span></td>
+              <td><span class="tick">Mostly</span> <span class="partial">(some website reputation checks use Bitdefender cloud)</span></td>
+              <td><span class="tick">Yes</span> <span class="partial">(requires a Snyk account and API token)</span></td>
+            </tr>
+            <tr>
+              <td>Works with your own AI via MCP</td>
+              <td class="col-hashling"><span class="tick">Yes</span> (Claude Code, Cursor, Codex, any MCP agent)</td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="partial">Partial</span> (MCP server for code scanning, not a full security overview)</td>
+            </tr>
+            <tr>
+              <td>Watches AI coding agents (Claude Code, Cursor, Codex, etc.)</td>
+              <td class="col-hashling"><span class="tick">Yes</span> (permissions, MCP servers, keys in settings, live network use)</td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="tick">Yes</span> (blocks risky agent actions, detects prompt injection; currently Claude Code and OpenClaw only)</td>
+              <td><span class="tick">Yes</span> (scans MCP servers and agent components for vulnerabilities; CLI tool)</td>
+            </tr>
+            <tr>
+              <td>Scam check for texts, emails, and links</td>
+              <td class="col-hashling"><span class="tick">Yes</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="partial">Partial</span> (browser web protection blocks known phishing sites)</td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+            </tr>
+            <tr>
+              <td>Firewall that blocks connections live</td>
+              <td class="col-hashling"><span class="cross">No</span> (monitors only; pair with LuLu or Little Snitch)</td>
+              <td><span class="tick">Yes</span> (per-app allow/deny with alerts)</td>
+              <td><span class="tick">Yes</span> (per-app allow/deny)</td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+            </tr>
+            <tr>
+              <td>Real-time malware blocking before a file opens</td>
+              <td class="col-hashling"><span class="partial">No</span> (Hashling scans files shortly after they arrive and watches for mass-rename attacks; it has not been tested by independent labs)</td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="tick">Yes</span> (quarantines threats in real time; tested by AV-Test, AVLab, MRG Effitas)</td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+            </tr>
+            <tr>
+              <td>Plain-word explanations throughout</td>
+              <td class="col-hashling"><span class="tick">Yes</span> (hover any label; Simple/Standard/Expert modes)</td>
+              <td><span class="cross">No</span> (aimed at technical users)</td>
+              <td><span class="cross">No</span> (minimal UI)</td>
+              <td><span class="partial">Partial</span> (dashboard is clear; logs are technical)</td>
+              <td><span class="partial">Partial</span> (developer-focused)</td>
+              <td><span class="cross">No</span> (developer/team tool)</td>
+            </tr>
+            <tr>
+              <td>Phone check-up (cable: iOS and Android)</td>
+              <td class="col-hashling"><span class="tick">Yes</span> (read-only; nothing leaves the Mac)</td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+              <td><span class="cross">No</span></td>
+            </tr>
+            <tr>
+              <td>Needs an account</td>
+              <td class="col-hashling"><span class="tick">No account</span></td>
+              <td><span class="cross">License key required</span></td>
+              <td><span class="tick">No</span></td>
+              <td><span class="partial">Optional for free; account needed for premium</span></td>
+              <td><span class="cross">Account for beta access</span></td>
+              <td><span class="cross">Yes (Snyk account and API token)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="compare-cards-title">Each tool at a glance</h2>
+      <div class="compare-cards">
+
+        <div class="cmp-card">
+          <p class="cmp-card-name">Little Snitch</p>
+          <p class="cmp-card-price">~$59 one-time license. Not open source.</p>
+          <div class="cmp-card-pro">
+            <strong>Better than Hashling at</strong>
+            <p>Blocking outgoing connections in real time, per app. When an app tries to call home, Little Snitch stops it and asks you. It is the gold standard for network-level privacy on a Mac. Also shows a detailed Network Monitor with traffic history.</p>
+          </div>
+          <div class="cmp-card-pick">
+            <strong>Pick it when</strong>
+            <p>You want to control which apps can reach the internet and you are comfortable managing a list of connection rules. It pairs well with Hashling.</p>
+          </div>
+        </div>
+
+        <div class="cmp-card">
+          <p class="cmp-card-name">LuLu</p>
+          <p class="cmp-card-price">Free. Open source (by Objective-See).</p>
+          <div class="cmp-card-pro">
+            <strong>Better than Hashling at</strong>
+            <p>Blocking outgoing connections in real time, at no cost. Free alternative to Little Snitch from a trusted Mac security researcher. Fewer features, simpler UI, but the core firewall is solid.</p>
+          </div>
+          <div class="cmp-card-pick">
+            <strong>Pick it when</strong>
+            <p>You want live connection blocking for free. It pairs well with Hashling for broader visibility.</p>
+          </div>
+        </div>
+
+        <div class="cmp-card">
+          <p class="cmp-card-name">Malwarebytes for Mac</p>
+          <p class="cmp-card-price">Free scan. ~$39.99/yr for real-time protection. Not open source.</p>
+          <div class="cmp-card-pro">
+            <strong>Better than Hashling at</strong>
+            <p>Blocking malware the moment a file arrives, before it can run. Independently tested by AV-Test, AVLab, and MRG Effitas. Hashling scans files shortly after arrival using ClamAV, YARA-X, and Apple's own XProtect rules, but has not been tested by independent labs.</p>
+          </div>
+          <div class="cmp-card-pick">
+            <strong>Pick it when</strong>
+            <p>You want lab-verified, real-time malware blocking and do not mind a subscription. Malwarebytes does not watch AI coding agents or explain things in plain words.</p>
+          </div>
+        </div>
+
+        <div class="cmp-card">
+          <p class="cmp-card-name">Bitdefender AI Guardian</p>
+          <p class="cmp-card-price">Free during public beta (launched 30 Sep 2026). Not open source. Future pricing not announced.</p>
+          <div class="cmp-card-pro">
+            <strong>Better than Hashling at</strong>
+            <p>Intercepting and blocking individual AI agent actions before they run. AI Guardian acts as a gatekeeper between your AI coding agent and your Mac, blocking actions that break its policy. It also detects prompt injection attempts and verifies MCP tools before an agent calls them. Hashling watches and explains but does not block individual actions live.</p>
+          </div>
+          <div class="cmp-card-pick">
+            <strong>Pick it when</strong>
+            <p>You want a tool that actively blocks risky AI agent actions in real time. It currently supports Claude Code and OpenClaw only. It is in beta and future pricing is not announced.</p>
+          </div>
+        </div>
+
+        <div class="cmp-card">
+          <p class="cmp-card-name">Snyk Agent Scan</p>
+          <p class="cmp-card-price">Free tier. $25+/user/month for teams. Open source (Apache-2.0). Requires a Snyk account.</p>
+          <div class="cmp-card-pro">
+            <strong>Better than Hashling at</strong>
+            <p>Deep supply-chain scanning of MCP servers, agent skills, and prompts for known vulnerabilities, tool poisoning, and hardcoded secrets. Built for software teams that want to audit their agent infrastructure in CI and across an organization. Snyk's broader platform integrates with code reviews, dependency scanning, and container security.</p>
+          </div>
+          <div class="cmp-card-pick">
+            <strong>Pick it when</strong>
+            <p>You are a developer or a security team that builds or uses AI agents and wants automated, policy-driven scanning in your pipeline. It is not designed for end users or as a personal Mac security agent.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="compare-sources">
+        <strong>Sources (checked 21 October 2026)</strong><br>
+        Little Snitch: <a href="https://obdev.at/products/littlesnitch/">obdev.at/products/littlesnitch</a> and pricing reports via TidBITS (approx. $59).<br>
+        LuLu: <a href="https://objective-see.org/products/lulu.html">objective-see.org/products/lulu.html</a>.<br>
+        Malwarebytes: <a href="https://www.malwarebytes.com/antimalware/mac/">malwarebytes.com/antimalware/mac</a>; award information (AV-Test, AVLab, MRG Effitas) from the same page.<br>
+        Bitdefender AI Guardian: <a href="https://www.bitdefender.com/en-us/news/bitdefender-unveils-ai-guardian,-an-advanced-security-layer-developed-for-autonomous-ai-agents">Bitdefender press release, 30 Sep 2026</a>; <a href="https://techradar.com/pro/phone-communications/the-agent-itself-has-become-its-own-entity-to-secure-bitdefenders-new-free-mac-tool-goes-after-flaws-that-let-attackers-fool-ai-models">TechRadar coverage</a>.<br>
+        Snyk Agent Scan: <a href="https://snyk.io">snyk.io</a>; <a href="https://codex.danielvaughan.com/2026/05/08/codex-cli-snyk-mcp-server-security-scanning-ai-generated-code-agent-supply-chain/">Codex CLI + Snyk MCP walkthrough</a>; <a href="https://costbench.com/software/vulnerability-management/snyk/">pricing via CostBench</a>.
+        <p class="compare-checked">Checked on 21 October 2026. Prices and features may change. Confirm with each vendor before buying.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="wrap footer-inner">
+      <a href="/" class="footer-logo" aria-label="Hashling home">
+        <svg width="18" height="18" viewBox="0 0 120 120" aria-hidden="true"><g fill="url(#hl-site)"><rect x="38" y="10" width="15" height="98" rx="7.5" transform="skewX(-10)" transform-origin="45.5 59"/><rect x="67" y="10" width="15" height="98" rx="7.5" transform="skewX(-10)" transform-origin="74.5 59"/><rect x="16" y="36" width="90" height="15" rx="7.5"/><rect x="13" y="68" width="90" height="15" rx="7.5"/></g></svg>
+        Hashling
+      </a>
+      <nav class="footer-nav" aria-label="Footer links">
+        <a href="https://github.com/0xArx/hashling">GitHub</a>
+        <a href="/start">Get started</a>
+        <a href="https://github.com/0xArx/hashling/blob/main/INSTALL.md">Install guide</a>
+        <a href="https://github.com/0xArx/hashling/blob/main/LICENSE">MIT License</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

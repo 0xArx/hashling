@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hashling: your personal AI cybersecurity agent</title>
-  <meta name="description" content="Hashling is a free, open-source AI security agent that lives on your computer. It watches for scams, malware, trackers and risky apps, tells you what it finds in plain words, and changes nothing until you say yes. On Mac now, Windows coming soon.">
+  <title>Hashling: your personal cybersecurity engineer for the age of AI</title>
+  <meta name="description" content="Hashling is a free, open-source cybersecurity engineer that lives on your Mac and teams up with the AI you already use. It watches for scams, malware and risky AI agents, explains what it finds in plain words, and changes nothing until you approve with Touch ID.">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Hashling: your personal AI cybersecurity agent">
-  <meta property="og:description" content="A free, open-source AI security agent that lives on your computer, explains what it finds in plain words, and changes nothing until you say yes. On Mac now, Windows coming soon.">
+  <meta property="og:title" content="Hashling: your personal cybersecurity engineer for the age of AI">
+  <meta property="og:description" content="Hashling is a free, open-source cybersecurity engineer that lives on your Mac and teams up with the AI you already use. It watches for scams, malware and risky AI agents, explains what it finds in plain words, and changes nothing until you approve with Touch ID.">
   <meta property="og:image" content="/og.png">
   <meta property="og:url" content="https://hashling.vercel.app">
   <meta property="og:site_name" content="Hashling">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Hashling: your personal AI cybersecurity agent">
-  <meta name="twitter:description" content="A free, open-source AI security agent that lives on your computer, explains what it finds in plain words, and changes nothing until you say yes. On Mac now, Windows coming soon.">
+  <meta name="twitter:title" content="Hashling: your personal cybersecurity engineer for the age of AI">
+  <meta name="twitter:description" content="Hashling is a free, open-source cybersecurity engineer that lives on your Mac and teams up with the AI you already use. It watches for scams, malware and risky AI agents, explains what it finds in plain words, and changes nothing until you approve with Touch ID.">
   <meta name="twitter:image" content="/og.png">
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -24,6 +24,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="start.css">
+  <link rel="stylesheet" href="pages.css">
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to main content</a>
@@ -63,8 +64,8 @@
     <section class="hero" aria-label="Introduction">
       <div class="wrap hero-content">
         <div class="hero-mascot-wrap"><p class="hero-say" id="hero-say" role="status" aria-live="polite" hidden></p><button type="button" class="hero-mascot" id="hero-mascot" aria-label="Say hi to Hashling"><svg viewBox="0 0 120 120"><g class="hm-body" fill="url(#hl-site)"><rect x="38" y="10" width="15" height="98" rx="7.5" transform="skewX(-10)" transform-origin="45.5 59"/><rect x="67" y="10" width="15" height="98" rx="7.5" transform="skewX(-10)" transform-origin="74.5 59"/><g class="hm-arm"><rect x="16" y="36" width="90" height="15" rx="7.5"/><rect x="24" y="39" width="34" height="4" rx="2" fill="#fff" opacity=".4"/></g><rect x="13" y="68" width="90" height="15" rx="7.5"/><rect x="21" y="71" width="34" height="4" rx="2" fill="#fff" opacity=".4"/></g></svg></button></div>
-        <h1 class="hero-title">Your personal AI cybersecurity agent.</h1>
-        <p class="hero-sub">Hashling lives on your computer, watches for scams, malware, trackers and risky AI tools, and tells you in plain words what to do. Nothing changes until you say yes.</p>
+        <h1 class="hero-title">Your personal cybersecurity engineer for the age of AI.</h1>
+        <p class="hero-sub">Hashling lives on your Mac and teams up with the AI you already use, like Claude, Cursor or Codex. It watches for scams, malware and AI agents that overstep, explains everything in plain words, and changes nothing until you approve with Touch ID.</p>
         <div class="platform-pick" role="tablist" aria-label="Choose your computer">
           <button type="button" role="tab" class="pp-tab is-on" id="pp-mac" aria-selected="true" aria-controls="pp-mac-panel" data-platform="mac"><svg width="15" height="18" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-42.4-155.5-127.4C46.7 790.7 0 663 0 541.8c0-207.5 135.4-317.3 270-317.3 71 0 130.5 46.4 175 46.4 42.5 0 109.2-49 191.5-49 30.8 0 159.8 2.9 243.4 112.4zm-188-123.3c33.8-40.8 58-96.8 58-152.8 0-7.7-.7-15.5-2.2-22.9-55.1 2.2-120.3 36.7-159.3 81.4-31.3 35.7-60.8 90.4-60.8 147.2 0 8.5 1.5 17 2.2 19.5 3.5.6 9.2 1.3 14.8 1.3 49.9 0 112.3-32.2 147.3-73.7z"/></svg>Mac</button>
           <button type="button" role="tab" class="pp-tab" id="pp-win" aria-selected="false" aria-controls="pp-win-panel" data-platform="windows"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.1 10.4 4v7.2H3zM11.3 3.9 21 2.5v8.7h-9.7zM3 12.1h7.4v7.2L3 18.2zM11.3 12.1H21v8.7l-9.7-1.4z"/></svg>Windows <span class="pp-soon">Soon</span></button>
@@ -80,24 +81,27 @@
         </div>
       </div>
 
-      <!-- The real dashboard -->
-      <div class="wrap hero-shot-outer">
-        <figure class="hero-shot">
+      <!-- Demo video: a real recording of the dashboard -->
+      <div class="wrap hero-shot-outer" id="demo">
+        <figure class="hero-shot hero-video">
           <div class="hero-shot-bar" aria-hidden="true"><span></span><span></span><span></span><em>hashling.localhost</em></div>
-          <picture>
-            <source srcset="assets/screens/home-dark.png" media="(prefers-color-scheme: dark)">
-            <img src="assets/screens/home.png" width="1600" height="1000" alt="The Hashling home screen: a security score of 67 out of 100, a short to-do list, and what needs your attention first">
-          </picture>
+          <video id="demo-video" src="assets/demo/hashling-demo.mp4" poster="assets/demo/hashling-demo-poster.jpg" width="1920" height="1080" muted loop playsinline preload="metadata" aria-label="A 75 second demo of Hashling: the overview, the AI agents table, a scam check and approving a fix with Touch ID"></video>
+          <div class="demo-controls">
+            <button type="button" class="demo-btn" id="demo-play" aria-label="Pause the demo"><svg class="i-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+            <button type="button" class="demo-btn" id="demo-sound" aria-label="Turn sound on"><svg class="i-muted" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m23 9-6 6M17 9l6 6"/></svg><svg class="i-sound" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></button>
+          </div>
+          <figcaption class="demo-cap">A real recording of Hashling on a Mac. No sign-up, nothing leaves your computer.</figcaption>
         </figure>
       </div>
     </section>
 
-    <!-- TRUST -->
-    <section class="trust-strip" aria-label="Why you can trust it">
+    <!-- PROOF -->
+    <section class="trust-strip proof-strip" aria-label="Hashling in numbers">
       <ul class="wrap trust-list">
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Free and open source</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Runs on your computer, no cloud</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Every fix needs your Touch ID</li>
+        <li><a href="https://github.com/0xArx/hashling" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17l-5.7 3.1 1.2-6.3L2.9 9.4l6.3-.8z"/></svg><span id="proof-stars">Star it on GitHub</span></a></li>
+        <li id="proof-downloads-li" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="proof-downloads"></span></li>
+        <li><a href="/changelog"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="proof-shipped">New updates every week</span></a></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Free and open source (MIT)</li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Works with Claude, Cursor and Codex</li>
       </ul>
     </section>
@@ -237,6 +241,7 @@
           </div>
         </div>
         <p class="cta-fine">Needs a Mac with Apple silicon and macOS 14 or later. <a href="#windows">Windows and a browser extension are coming soon.</a></p>
+        <p class="founder"><img src="https://avatars.githubusercontent.com/u/34143289?s=80&amp;v=4" width="36" height="36" alt="" loading="lazy"><span>Built in the open by <a href="https://github.com/0xArx" target="_blank" rel="noopener">Abdulrahman Shahzad</a>, a solo developer. Questions or ideas? <a href="https://github.com/0xArx/hashling/issues" target="_blank" rel="noopener">Open an issue</a> and I will answer it myself.</span></p>
       </div>
     </section>
   </main>
@@ -250,6 +255,8 @@
       <nav class="footer-nav" aria-label="Footer links">
         <a href="https://github.com/0xArx/hashling">GitHub</a>
         <a href="/start">Get started</a>
+        <a href="/compare">Compare</a>
+        <a href="/changelog">Changelog</a>
         <a href="https://github.com/0xArx/hashling/blob/main/INSTALL.md">Install guide</a>
         <a href="https://github.com/0xArx/hashling/blob/main/SECURITY.md">Security</a>
         <a href="https://github.com/0xArx/hashling/blob/main/LICENSE">MIT License</a>
