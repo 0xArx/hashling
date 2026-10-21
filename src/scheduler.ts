@@ -28,6 +28,8 @@ import { pruneHistory, recordScore } from './history.ts';
 import { routineScan, updateSignatures, refreshScanFindings, weeklyFullScan } from './scanner.ts';
 import { pruneOld } from './db.ts';
 import { bus } from './bus.ts';
+import { checkBreaches } from './intel/breaches.ts';
+import { collectMessages } from './collectors/messages.ts';
 
 export interface CollectorStatus { lastRun: number | null; ok: boolean | null; error: string | null; durationMs: number | null; running: boolean; every: number }
 
@@ -54,6 +56,8 @@ const COLLECTORS: Record<string, { every: number; fn: () => Promise<void> | void
   storage: { every: SCHEDULE.storage, fn: collectStorage },
   // Notices a phone plugged in by cable. It never checks one until you press the button.
   phoneWatch: { every: 4, fn: watchPhones },
+  breaches: { every: 6 * 3600, fn: () => checkBreaches() },
+  messages: { every: 60, fn: collectMessages },
   yaraForge: { every: 7 * 86_400, fn: updateYaraForge },
   elasticRules: { every: 7 * 86_400, fn: updateElasticMacRules },
   correlate: { every: 60, fn: correlate },

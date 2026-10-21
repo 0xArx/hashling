@@ -6,7 +6,7 @@ const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ESC[c]);
 const attr = (o) => esc(JSON.stringify(o));
 const SEV = ['critical', 'high', 'medium', 'low', 'info'];
 const RANK = { info: 0, low: 1, medium: 2, high: 3, critical: 4 };
-const CAT = { network: 'Network', posture: 'System', persistence: 'Startup items', permissions: 'Permissions', location: 'Location', trackers: 'Tracking', malware: 'Malware', 'malware-artifacts': 'Malware', agents: 'AI agents' };
+const CAT = { network: 'Network', posture: 'System', persistence: 'Startup items', permissions: 'Permissions', location: 'Location', trackers: 'Tracking', malware: 'Malware', 'malware-artifacts': 'Malware', agents: 'AI agents', accounts: 'Accounts', messages: 'Text messages', ransomware: 'Ransomware', browser: 'Browser' };
 
 // ---------- icons ----------
 const P = {
@@ -24,6 +24,7 @@ const P = {
   shield: '<path d="M12 2.8 4.5 5.8v5.6c0 4.7 3.2 8.2 7.5 9.8 4.3-1.6 7.5-5.1 7.5-9.8V5.8L12 2.8Z"/>',
   hash: '<path d="M5 9h14M4 15h14M10 3 8 21M16 3l-2 18"/>',
   shieldok: '<path d="M12 2.8 4.5 5.8v5.6c0 4.7 3.2 8.2 7.5 9.8 4.3-1.6 7.5-5.1 7.5-9.8V5.8L12 2.8Z"/><path d="m8.8 12 2.2 2.2 4.2-4.4"/>',
+  upload: '<path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/>',
   inbox: '<path d="M3 13h5l1.5 3h5L16 13h5"/><path d="M5 5h14l2 8v6H3v-6z"/>',
   clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   terminal: '<rect x="3" y="4" width="18" height="16" rx="3"/><path d="m7 9 3 3-3 3M13 15h4"/>',
@@ -1550,6 +1551,7 @@ try { await import('./phonecheck.js'); } catch (e) { console.error('Hashling pho
 try { await import('./guide.js'); } catch (e) { console.error('Hashling guide did not load', e); }
 try { await import('./buddy.js'); } catch (e) { console.error('Hashling helper did not load', e); }
 try { await import('./phonemode.js'); } catch (e) { console.error('Hashling phone mode did not load', e); }
+try { await import('./shield.js'); } catch (e) { console.error('Hashling extra protection did not load', e); }
 
 renderNav();
 route();

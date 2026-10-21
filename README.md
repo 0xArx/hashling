@@ -108,6 +108,10 @@ Built on free, open-source tools it installs when you first need them, with no p
 | **Trackers** | AirTag-style trackers separated from their owner that keep following you, plus Tile, SmartTag and Chipolo. |
 | **Apps & downloads** | Where every new file and app came from, its signature, Apple's verdict for every installed app, malware reputation (fingerprints only) and outdated software. |
 | **Uploads** | How much each app sent this week and to whom, and files named in upload commands. Contents are encrypted, so Hashling never claims to know what was inside. |
+| **Data breaches** | Breach watch: add an email you use and Hashling tells you if it turns up in a known data breach, and again whenever a new one appears (looked up with the free XposedOrNot database, off until you add an address). |
+| **Text messages** | Text message scam watch: new texts and iMessages on the Mac are checked for scams like fake delivery fees and unpaid tolls, only from people you have never written to. Everything stays on the Mac. Off until you switch it on. |
+| **Ransomware** | A tripwire spots files being mass-renamed or a ransom note appearing. With the ransomware brake on, Hashling pauses the program doing it straight away; you then quit it, or let it carry on, with Touch ID. |
+| **AI fakes** | “Was this made by AI?” reads the labels AI tools leave in pictures and videos (Content Credentials, the IPTC AI code, generator names), plus plain advice for deepfake calls. No AI model runs on your Mac. |
 | **Scams** | Scam messages and screenshots, phishing sites in your browser history, risky commands pasted into Terminal (ClickFix), swapped crypto wallet addresses, leaked passwords and website notification spam. |
 | **Mac settings** | FileVault, firewall, SIP, Gatekeeper, XProtect, updates, auto-login, guest account, screen lock, proxies, trusted root certificates, MDM and remote-access apps. |
 | **Storage & speed** | Where your space went, caches that are safe to clear, unused apps, leftovers and duplicates. Everything goes to the Trash. |

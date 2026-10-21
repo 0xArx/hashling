@@ -29,12 +29,15 @@ import { uploadsReport } from './intel/uploads.ts';
 import { storageProgress } from './collectors/storage.ts';
 import { loadPrefs, savePrefs } from './prefs.ts';
 import { SETTINGS_ANCHOR } from './collectors/permissions.ts';
-import { clearRansomwareAlerts } from './intel/ransomware.ts';
+import { clearRansomwareAlerts, pausedPrograms, resumeProgram } from './intel/ransomware.ts';
 import { loadHelper, saveHelper, weeklySummary } from './summary.ts';
 import { redFlags } from './lib/scamflags.ts';
 import { findUninstaller } from './lib/uninstaller.ts';
 import { PHONE_SECRET, phoneMayCall, phoneState, phoneOn, phoneOff, newPairing, forgetPhone, pairingDone } from './phone.ts';
 import { userPresence } from './actions.ts';
+import { listWatched, watchEmail, unwatchEmail, checkBreaches } from './intel/breaches.ts';
+import { messageWatchState, resetMessageWatch } from './collectors/messages.ts';
+import { checkMedia } from './lib/aimedia.ts';
 import { phoneCheckState, askToTrust, startCheck, startDeepCheck, installPhoneTools, forgetReport } from './phonecheck.ts';
 
 export function loadToken(): string {
@@ -283,7 +286,15 @@ route('GET', '/api/changes', (_q, res, _p, _w, url) => send(res, 200, whatChange
 route('GET', '/api/cleanups', (_q, res) => send(res, 200, CLEANUPS));
 route('GET', '/api/uploads', (_q, res, _p, _w, url) => send(res, 200, uploadsReport(Math.min(168, Math.max(1, Number(url.searchParams.get('hours') ?? 168))))));
 route('GET', '/api/prefs', (_q, res) => send(res, 200, loadPrefs()));
-route('POST', '/api/prefs', async (req, res) => send(res, 200, savePrefs(await body(req))), true);
+route('POST', '/api/prefs', async (req, res) => {
+  const b = await body(req);
+  const before = loadPrefs();
+  const after = savePrefs(b);
+  if (before.messageWatch && !after.messageWatch) resetMessageWatch();
+  if (!before.messageWatch && after.messageWatch) void runCollector('messages');
+  send(res, 200, after);
+}, true);
+route('GET', '/api/message-watch', (_q, res) => send(res, 200, messageWatchState()), true);
 // Setup's "Check again" for Full Disk Access: look right now instead of waiting for the next scheduled check.
 // macOS sometimes applies a new grant only after the app restarts, so {restart: true} exits and launchd
 // (KeepAlive) starts Hashling again a few seconds later.
@@ -373,6 +384,19 @@ route('POST', '/api/read-image', async (req, res) => {
     const out = JSON.parse(r.stdout || '{}');
     send(res, out.error ? 400 : 200, out.error ? { error: 'I couldn’t read that picture.' } : { text: String(out.text ?? ''), codes: out.codes ?? [] });
   } catch { send(res, 500, { error: 'I couldn’t read that picture.' }); }
+  finally { rmSync(dir, { recursive: true, force: true }); }
+}, true);
+// "Was this made by AI?": the dashboard sends a copy of the picture or video; it is checked, then deleted.
+route('POST', '/api/ai-media', async (req, res) => {
+  const size = Number(req.headers['content-length'] ?? 0);
+  if (!size || size > 500 * 1024 ** 2) return send(res, 400, { error: size ? 'That file is over 500 MB.' : 'Empty file.' });
+  const dir = join(DATA_DIR, 'inbox', randomUUID());
+  mkdirSync(dir, { recursive: true });
+  const file = join(dir, 'media');
+  try {
+    await pipeline(req, createWriteStream(file, { mode: 0o600 }));
+    send(res, 200, checkMedia(file));
+  } catch { send(res, 500, { error: 'I couldn’t read that file.' }); }
   finally { rmSync(dir, { recursive: true, force: true }); }
 }, true);
 route('POST', '/api/check-file', async (req, res, _p, _w, url) => {
@@ -497,6 +521,20 @@ route('POST', '/api/phonecheck/trust/:id', async (_q, res, [id]) => send(res, 20
 route('POST', '/api/phonecheck/check/:id', (_q, res, [id]) => { const r = startCheck(id); send(res, 'error' in r ? 409 : 202, r); }, true);
 route('POST', '/api/phonecheck/deep/:id', async (req, res, [id]) => { const b = await body(req); const r = startDeepCheck(id, typeof b.password === 'string' && b.password ? b.password : undefined); send(res, 'error' in r ? 409 : 202, r); }, true);
 route('DELETE', '/api/phonecheck/reports/:id', (_q, res, [id]) => send(res, forgetReport(id) ? 200 : 404, { ok: true }), true);
+// Breach watch. The addresses are personal, so only the dashboard can see or change the list.
+// Ransomware brake: programs paused because they were scrambling files. Letting one carry on needs Touch ID.
+route('GET', '/api/ransomware/paused', (_q, res) => send(res, 200, pausedPrograms()));
+route('POST', '/api/ransomware/resume/:pid', async (_q, res, [pid]) => {
+  const p = pausedPrograms().find((x) => x.pid === Number(pid));
+  if (!p) return send(res, 404, { error: 'That program is not paused.' });
+  const ok = await userPresence(`let ${p.name} carry on changing your files`);
+  if (!ok.ok) return send(res, 403, { error: `Still paused: ${ok.message}.` });
+  send(res, 200, { ok: resumeProgram(p.pid) });
+}, true);
+route('GET', '/api/breaches', (_q, res) => send(res, 200, listWatched()), true);
+route('POST', '/api/breaches', async (req, res) => { const r = await watchEmail(String((await body(req)).email ?? '')); send(res, 'error' in r ? 400 : 200, r); }, true);
+route('POST', '/api/breaches/check', async (_q, res) => { await checkBreaches(true); send(res, 200, listWatched()); }, true);
+route('DELETE', '/api/breaches/:email', (_q, res, [email]) => send(res, unwatchEmail(email) ? 200 : 404, { ok: true }), true);
 route('GET', '/api/quarantine', (_q, res) => send(res, 200, { items: listQuarantine(), blockedDomains: blockedDomains() }));
 route('POST', '/api/run/:name', async (_q, res, [name]) => {
   if (!collectorNames.includes(name)) return send(res, 404, { error: 'Unknown collector' });

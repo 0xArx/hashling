@@ -3,7 +3,7 @@
  * Shared by the dashboard's Scam check and the MCP scam_check tool.
  */
 const SHORTENERS = /^(bit\.ly|tinyurl\.com|t\.co|is\.gd|cutt\.ly|rb\.gy|ow\.ly|buff\.ly|shorturl\.at|tiny\.cc|rebrand\.ly|s\.id|t\.ly)$/i;
-const ODD_TLDS = /\.(top|xyz|click|zip|mov|icu|shop|support|live|rest|cam|sbs|cfd|lol|quest|monster|buzz|gq|tk|ml|cf)$/i;
+const ODD_TLDS = /\.(top|xyz|click|zip|mov|icu|shop|support|live|rest|cam|sbs|cfd|lol|quest|monster|buzz|gq|tk|ml|cf|info|biz|vip|bond|win|club)$/i;
 /** Brands scammers copy most, and the real domains they use. */
 const BRANDS: Record<string, RegExp> = {
   apple: /(^|\.)(apple\.com|icloud\.com)$/, paypal: /(^|\.)paypal\.com$/, amazon: /(^|\.)(amazon\.[a-z.]+|amzn\.to)$/, microsoft: /(^|\.)(microsoft\.com|live\.com|office\.com|outlook\.com)$/,
@@ -36,6 +36,7 @@ export function redFlags(text: string): { label: string; why: string }[] {
   if (has(/\b(verify|confirm|update) (your )?(account|identity|password|payment|details|information)|one[- ]time (code|password)|\botp\b|security code|verification code/)) add('Asks for passwords or codes', 'Never share a password or a code sent to your phone. Real staff never ask for them.');
   if (has(/\b(anydesk|teamviewer|remote (access|support|desktop)|screen ?share|quick ?assist|install (this|the) (app|software))\b/)) add('Wants to control your computer', 'Asking you to install a remote-control app is the main step in tech-support scams.');
   if (has(/\b(you('ve| have)? won|winner|prize|lottery|inheritance|claim your (reward|refund|prize)|unclaimed)\b/)) add('Too good to be true', 'Prizes you never entered and surprise refunds are bait to get your details or a “fee”.');
+  if (has(/\b(tolls?|e-?z ?pass|fastrak|sunpass|txtag|peach ?pass|i-?pass|turnpike|good to go)\b/) && has(/\b(unpaid|outstanding|balance|overdue|late fee|fine|pay)\b/)) add('Unpaid toll text', 'Texts about unpaid tolls are one of the most common scams right now. Toll agencies do not text you a link to pay. Check your balance in the agency’s own app or website.');
   if (has(/\b(parcel|package|delivery|shipment)\b/) && has(/\b(fee|pay|failed|attempt|reschedule|customs|address)\b/)) add('Delivery fee or failed delivery', 'Fake delivery texts are the most common scam. Couriers do not text links to pay small fees.');
   if (has(/\b(virus|infected|hacked|trojan|security alert|your (computer|mac|iphone) (is|has))\b/) && has(/\b(call|phone|contact|support)\b/)) add('Fake virus warning', 'Real virus warnings never show a phone number to call. That number reaches scammers.');
   if (has(/(\+?\d[\d\s().-]{8,}\d)/) && has(/\b(call|phone|contact|support|helpline)\b/)) add('Gives a number to call', 'Only call numbers you look up yourself, like the one on your bank card. Numbers in messages can reach scammers.');
