@@ -34,6 +34,7 @@ db.exec(`CREATE TABLE IF NOT EXISTS downloads (
   scan_id TEXT
 )`);
 try { db.exec('ALTER TABLE downloads ADD COLUMN rep TEXT'); } catch { /* exists */ }
+try { db.exec('ALTER TABLE downloads ADD COLUMN version TEXT'); } catch { /* exists */ }
 
 const WATCH = {
   downloads: join(HOME, 'Downloads'),
@@ -91,6 +92,16 @@ async function notarization(path: string, kind: string): Promise<string> {
   return 'unknown';
 }
 
+/** An app's version from its Info.plist, e.g. "156.0.8078.47". */
+async function appVersion(path: string): Promise<string | null> {
+  const plist = join(path, 'Contents/Info.plist');
+  for (const key of ['CFBundleShortVersionString', 'CFBundleVersion']) {
+    const r = await run('/usr/bin/plutil', ['-extract', key, 'raw', '-o', '-', plist], { timeout: 5000 });
+    if (r.ok && r.stdout.trim()) return r.stdout.trim();
+  }
+  return null;
+}
+
 async function analyze(path: string): Promise<void> {
   if (!existsSync(path)) return;
   let st = statSync(path);
@@ -105,7 +116,14 @@ async function analyze(path: string): Promise<void> {
   }
   const kind = kindOf(path);
   const name = basename(path);
-  if (db.prepare('SELECT 1 FROM downloads WHERE path = ? AND size = ? AND ts > ?').get(path, st.size, now() - 3600_000)) return;
+  // Apps are folders that change inside every time they run or update themselves, so an app
+  // counts as new only the first time, and again only when its version changes.
+  const version = kind === 'app' ? await appVersion(path) : null;
+  const known = kind === 'app'
+    ? db.prepare('SELECT version FROM downloads WHERE path = ? ORDER BY ts DESC LIMIT 1').get(path) as { version: string | null } | undefined
+    : undefined;
+  if (kind === 'app' && known && (known.version ?? null) === version) return;
+  if (kind !== 'app' && db.prepare('SELECT 1 FROM downloads WHERE path = ? AND size = ? AND ts > ?').get(path, st.size, now() - 3600_000)) return;
 
   const prov = await provenance(path);
   const host = prov.url ? (() => { try { return new URL(prov.url!).hostname; } catch { return undefined; } })() : undefined;
@@ -118,11 +136,12 @@ async function analyze(path: string): Promise<void> {
   const rep = executable || kind === 'archive' ? await reputation(path).catch(() => null) : null;
 
   const id = randomUUID().slice(0, 10);
-  db.prepare(`INSERT INTO downloads (id, ts, path, name, size, kind, from_url, referrer, agent, signer, signer_kind, notarized, intel, scan_id, rep)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+  db.prepare(`INSERT INTO downloads (id, ts, path, name, size, kind, from_url, referrer, agent, signer, signer_kind, notarized, intel, scan_id, rep, version)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
     .run(id, now(), path, name, st.isDirectory() ? 0 : st.size, kind, prov.url ?? null, prov.referrer ?? null, prov.agent ?? null,
-      sign ? describeSigner(sign) : null, sign?.kind ?? null, notarized, intel ? toJson(intel) : null, scanId, rep ? toJson(rep) : null);
-  logEvent('download', intel ? 'high' : 'info', `New ${kind}: ${name}${host ? ` from ${host}` : ''}`, { id, path });
+      sign ? describeSigner(sign) : null, sign?.kind ?? null, notarized, intel ? toJson(intel) : null, scanId, rep ? toJson(rep) : null, version);
+  const title = known ? `${name.replace(/\.app$/, '')} updated${version ? ` to ${version}` : ''}` : `New ${kind}: ${name}${host ? ` from ${host}` : ''}`;
+  logEvent('download', intel ? 'high' : 'info', title, { id, path });
   bus.emit('change', { type: 'downloads' });
   refreshDownloadFindings();
 }
@@ -227,6 +246,14 @@ export function startDownloadWatch(): void {
   for (const dir of PERSIST_DIRS) add(dir, (p) => schedule(dir, () => { logEvent('persistence', 'low', `Startup folder changed: ${basename(p)}`, { path: p }); bus.emit('trigger', 'persistence'); }, 1500));
   status = { watching, blocked };
   putSnapshot('downloadWatch', { at: Date.now(), ...status });
+  void backfillVersions();
+}
+
+/** Apps recorded before versions were tracked: note the version they have now, so they don't show up as updated. */
+async function backfillVersions(): Promise<void> {
+  const rows = db.prepare(`SELECT id, path FROM downloads d WHERE kind = 'app' AND version IS NULL
+    AND ts = (SELECT MAX(ts) FROM downloads y WHERE y.path = d.path)`).all() as { id: string; path: string }[];
+  for (const r of rows) if (existsSync(r.path)) db.prepare('UPDATE downloads SET version = ? WHERE id = ?').run(await appVersion(r.path), r.id);
 }
 
 export function stopDownloadWatch(): void { for (const w of watchers.splice(0)) w.close(); }

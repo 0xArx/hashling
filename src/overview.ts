@@ -63,7 +63,7 @@ export function overview() {
     engines: engines(),
     limitations: access,
     collectors: status,
-    recentEvents: listEvents(8).map((e) => ({ ts: e.ts, severity: e.severity, title: e.title })),
+    recentEvents: listEvents(40).map((e) => ({ ts: e.ts, severity: e.severity, title: e.title })),
   };
 }
 

@@ -198,7 +198,38 @@ function findingItem(f, showCat = true) {
   </div>`;
 }
 
-const eventRow = (e) => `<div class="event"><time>${clock(e.ts)}</time><span class="dot ${esc(e.severity)}"></span><span class="wrap">${esc(e.title)}</span></div>`;
+const eventRow = (e) => `<div class="event"><time>${clock(e.ts)}</time><span class="dot ${esc(e.severity)}"></span><span class="wrap">${esc(e.title)}${e.times > 1 ? ` <span class="times">${e.times} times</span>` : ''}</span></div>`;
+
+/** Plain wording for my own housekeeping events, so the timeline reads like a diary, not a log file. */
+function plainEvent(e) {
+  let t = e.title.replace(/\(\((.*?)\)\)/g, '($1)').replace(/^(\w[\w ]*) \((\w[\w-]*)\)(?= )/, (m, a, n) => (a.toLowerCase() === n.toLowerCase() ? a : m));
+  const clean = t.match(/^Scan finished clean \((\d+) files?\)$/);
+  if (clean) t = `Malware scan: nothing found (${Number(clean[1]).toLocaleString()} ${clean[1] === '1' ? 'file' : 'files'} checked)`;
+  if (/^Hashling [\d.]+ started$/.test(t)) t = 'I started up';
+  t = t.replace(/^Hashling assistant proposed: /, 'I suggested: ')
+    // Claude Code's program file is named after its version, e.g. "2.1.285".
+    .replace(/^\d+\.\d+\.\d+(?= (connected|contacted) )/, 'Claude Code');
+  return { ...e, title: plainIds(t) };
+}
+/**
+ * Tidy a list of events: drop scan bookkeeping outside Expert mode and merge repeats of the same
+ * line on the same day into one row ("12 times"), keeping the newest time.
+ */
+function tidyEvents(events) {
+  const out = [];
+  const byKey = new Map();
+  for (const raw of events) {
+    if (state.mode !== 'expert' && /^Scan queued by /.test(raw.title)) continue;
+    const e = plainEvent(raw);
+    const key = `${new Date(e.ts).toDateString()}|${e.title}`;
+    const hit = byKey.get(key);
+    if (hit) { hit.times++; continue; }
+    const row = { ...e, times: 1 };
+    byKey.set(key, row);
+    out.push(row);
+  }
+  return out;
+}
 
 function ring(score, size = 118, stroke = 10) {
   const r = (size - stroke) / 2;
@@ -260,7 +291,7 @@ views.overview = async () => {
       ${o.suggestions.length ? `<details class="tier-block optional adv"><summary class="tier-head"><span class="dot low"></span><b>Optional: strengthen your security</b><span class="tier-count">${o.suggestions.length}</span><span class="tier-hint">${TIER.hardening.hint}</span></summary><div class="list">${o.suggestions.map((f) => findingItem(f, false)).join('')}</div></details>` : ''}
       <div class="grid g2 mt home-pair"><!--rail-extra--></div>
       <section class="adv mt"><div class="section-head"><p class="h2">Just now</p><a href="#/timeline">Timeline</a></div>
-        <div class="list">${o.recentEvents.map(eventRow).join('') || '<div class="empty">Quiet so far.</div>'}</div></section>
+        <div class="list">${tidyEvents(o.recentEvents).slice(0, 8).map(eventRow).join('') || '<div class="empty">Quiet so far.</div>'}</div></section>
     </div>
     <aside class="home-rail">
       <section><div class="section-head"><p class="h2">What I’m watching</p></div>
@@ -527,20 +558,44 @@ function drawer(html) {
 function closeDrawer() { $('#drawer').hidden = true; }
 
 // --- Approvals ---
+// "com.loom.desktop" -> "Loom": a bundle identifier means nothing to most people.
+const GENERIC_ID = new Set(['desktop', 'mac', 'macos', 'app', 'client', 'agent', 'helper', 'osx']);
+const appFromId = (id) => { const p = id.split('.'); const name = p.length > 2 && GENERIC_ID.has(p[p.length - 1].toLowerCase()) ? p[p.length - 2] : p[p.length - 1]; return name.charAt(0).toUpperCase() + name.slice(1); };
+const plainIds = (t) => String(t ?? '').replace(/\b(?:com|org|net|io|dev|us|co)\.[a-z0-9-]+(?:\.[A-Za-z0-9-]+)+\b/g, appFromId);
+/** Plain words for the errors macOS hands back when a fix could not be done. */
+function plainResult(a) {
+  const r = String(a.result ?? '');
+  if (a.status !== 'failed') return plainIds(r);
+  if (/No such bundle identifier/i.test(r)) return 'That app is no longer on this Mac, so there was nothing to take away.';
+  if (/don.t have permission|not permitted|Operation not permitted|EPERM|EACCES/i.test(r)) return 'macOS would not let me touch it. It may be owned by the system or another user. Drag it to the Trash yourself if you still want it gone.';
+  if (/No such process|already exited/i.test(r)) return 'It had already stopped.';
+  if (/No such file|ENOENT/i.test(r)) return 'It was already gone.';
+  return plainIds(r).replace(/\s*\(OSStatus error -?\d+\.?\)/g, '');
+}
+const CLEANUP = new Set(['trash_paths', 'run_cleanup']);
+/** "(4.5 GB)", "about 0.87 GB", "up to 2.4 GB" -> bytes, for adding up what a batch of cleanups frees. */
+const sizeOf = (a) => { const m = `${a.summary} ${a.reason}`.match(/(\d+(?:\.\d+)?)\s*(KB|MB|GB|TB)\b/i); return m ? Number(m[1]) * 1024 ** ({ KB: 1, MB: 2, GB: 3, TB: 4 }[m[2].toUpperCase()]) : 0; };
+const bytesText = (b) => b >= 1024 ** 3 ? `${(b / 1024 ** 3).toFixed(b >= 10 * 1024 ** 3 ? 0 : 1)} GB` : `${Math.max(1, Math.round(b / 1024 ** 2))} MB`;
+const pendingItem = (a) => `
+    <div class="item"><span class="dot ${CLEANUP.has(a.type) ? 'low' : 'medium'}" style="margin-top:7px"></span><div class="body"><div class="t">${esc(plainIds(a.summary))}</div><div class="s">${esc(plainIds(a.reason))}</div><div class="tiny faint" style="margin-top:4px">Suggested by ${esc(a.requested_by === 'Hashling assistant' ? 'me' : a.requested_by)} · ${ago(a.created_at)}</div></div>
+      <div class="side-r">${askBtn({ kind: 'pending-action', id: a.id, summary: a.summary, reason: a.reason, by: a.requested_by }, 'Should I?', 'Should I approve this action? Explain what it will do, whether it can be undone, and any risk.')}<button class="btn primary sm" data-act="approve" data-id="${esc(a.id)}" ${state.busy.has(a.id) ? 'disabled' : ''}>${state.busy.has(a.id) ? 'Waiting for Touch ID…' : 'Approve'}</button><button class="btn sm" data-act="reject" data-id="${esc(a.id)}">Reject</button></div></div>`;
+
 views.approvals = async () => {
   const [pending, all, q] = await Promise.all([api('/api/actions?status=pending'), api('/api/actions'), api('/api/quarantine')]);
   const done = all.filter((a) => a.status !== 'pending').slice(0, 30);
-  return `${pending.length ? `<div class="status flag"><div class="ico">${icon('inbox', 'lg')}</div><div><b>${plural(pending.length, 'change')} waiting for your OK</b><span class="sub">Approving asks for Touch ID (or your password) on this Mac.</span></div>${pending.length > 1 ? `<div class="actions"><button class="btn primary sm" data-act="approve-all" ${state.busyAll ? 'disabled' : ''}>${state.busyAll ? 'Waiting for Touch ID…' : `Approve all ${pending.length}`}</button><button class="btn sm" data-act="reject-all">Reject all</button></div>` : ''}</div>` : `<div class="status"><div class="ico">${icon('shieldok', 'lg')}</div><div><b>Nothing is waiting for your approval</b><span class="sub">Your AI can only suggest fixes. You decide.</span></div></div>`}
-  <div class="list">${pending.map((a) => `
-    <div class="item"><span class="dot medium" style="margin-top:7px"></span><div class="body"><div class="t">${esc(a.summary)}</div><div class="s">${esc(a.reason)}</div><div class="tiny faint" style="margin-top:4px">Proposed by ${esc(a.requested_by)} · ${ago(a.created_at)}</div></div>
-      <div class="side-r">${askBtn({ kind: 'pending-action', id: a.id, summary: a.summary, reason: a.reason, by: a.requested_by }, 'Should I?', 'Should I approve this action? Explain what it will do, whether it can be undone, and any risk.')}<button class="btn primary sm" data-act="approve" data-id="${esc(a.id)}" ${state.busy.has(a.id) ? 'disabled' : ''}>${state.busy.has(a.id) ? 'Waiting for Touch ID…' : 'Approve'}</button><button class="btn sm" data-act="reject" data-id="${esc(a.id)}">Reject</button></div></div>`).join('')}</div>
+  const fixes = pending.filter((a) => !CLEANUP.has(a.type));
+  const cleanups = pending.filter((a) => CLEANUP.has(a.type));
+  const freed = cleanups.reduce((n, a) => n + sizeOf(a), 0);
+  return `${pending.length ? `<div class="status flag"><div class="ico">${icon('inbox', 'lg')}</div><div><b>${!fixes.length && freed ? `${plural(pending.length, 'cleanup')} ready to free about ${bytesText(freed)}` : `${plural(pending.length, 'change')} waiting for your OK`}</b><span class="sub">Approving asks for Touch ID (or your password) on this Mac.</span></div>${pending.length > 1 ? `<div class="actions"><button class="btn primary sm" data-act="approve-all" ${state.busyAll ? 'disabled' : ''}>${state.busyAll ? 'Waiting for Touch ID…' : `Approve all ${pending.length}`}</button><button class="btn sm" data-act="reject-all">Reject all</button></div>` : ''}</div>` : `<div class="status"><div class="ico">${icon('shieldok', 'lg')}</div><div><b>Nothing is waiting for your approval</b><span class="sub">Your AI can only suggest fixes. You decide.</span></div></div>`}
+  ${fixes.length ? `${cleanups.length ? `<div class="section-head mt"><p class="h2">Security fixes</p><span class="small faint">${plural(fixes.length, 'change')}</span></div>` : ''}<div class="list">${fixes.map(pendingItem).join('')}</div>` : ''}
+  ${cleanups.length ? `<div class="section-head mt"><p class="h2">Free up space</p><span class="small faint">${plural(cleanups.length, 'cleanup')}${freed ? ` · about ${bytesText(freed)}` : ''} · everything goes to the Trash</span></div><div class="list">${cleanups.map(pendingItem).join('')}</div>` : ''}
   <div class="grid g2 mt" style="align-items:start">
     <div><div class="section-head"><p class="h2">Quarantine</p></div><div class="list">${q.items.map((i) => `<div class="item"><div class="body"><div class="t mono small">${esc(home(i.original))}</div><div class="s">${i.restored ? 'Restored' : 'Locked away'} ${ago(i.at)}${i.sha256 ? ` · sha256 ${esc(i.sha256.slice(0, 12))}…` : ''}</div></div>${i.restored ? '' : `<button class="btn sm" data-act="propose" data-a="${attr({ type: 'restore_file', target: { id: i.id }, reason: `Restore ${home(i.original)}` })}">Restore…</button>`}</div>`).join('') || '<div class="empty">Nothing in quarantine.</div>'}</div></div>
     <div class="adv"><div class="section-head"><p class="h2">Blocked domains</p></div><div class="list">${q.blockedDomains.map((d) => `<div class="item"><div class="body t mono">${esc(d)}</div><button class="btn sm" data-act="propose" data-a="${attr({ type: 'unblock_domain', target: { domain: d }, reason: `Unblock ${d}` })}">Unblock…</button></div>`).join('') || '<div class="empty">No domains blocked.</div>'}</div>
       <div class="row" style="margin-top:10px"><input class="input" id="block-domain" placeholder="tracker.example.com" style="flex:1"><button class="btn" data-act="block">Block domain…</button></div></div>
   </div>
-  <div class="mt"><div class="section-head"><p class="h2">History</p></div><div class="tablewrap"><table class="table"><thead><tr><th>Action</th><th>By</th><th>Status</th><th>Result</th><th>When</th></tr></thead><tbody>
-    ${done.map((a) => `<tr><td>${esc(a.summary)}</td><td class="small muted">${esc(a.requested_by)}</td><td><span class="chip ${a.status === 'failed' ? 'bad' : a.status === 'executed' ? 'ok' : ''}">${esc(a.status)}</span></td><td class="small muted wrap">${esc(a.result ?? '')}</td><td class="small faint">${ago(a.decided_at ?? a.created_at)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">No history yet.</td></tr>'}
+  <div class="mt"><div class="section-head"><p class="h2">History</p></div><div class="tablewrap"><table class="table stack-sm"><thead><tr><th>Action</th><th>By</th><th>Status</th><th>Result</th><th>When</th></tr></thead><tbody>
+    ${done.map((a) => `<tr><td class="cell-title">${esc(plainIds(a.summary))}</td><td class="small muted" data-label="By">${esc(a.requested_by === 'Hashling assistant' ? 'Me' : a.requested_by)}</td><td><span class="chip ${a.status === 'failed' ? 'bad' : a.status === 'executed' ? 'ok' : ''}">${esc({ executed: 'Done', failed: 'Didn’t work', rejected: 'Rejected', approved: 'Approved' }[a.status] ?? a.status)}</span></td><td class="small muted wrap">${esc(plainResult(a))}</td><td class="small faint">${ago(a.decided_at ?? a.created_at)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">No history yet.</td></tr>'}
   </tbody></table></div></div>`;
 };
 
@@ -663,14 +718,21 @@ views.system = async () => {
 
 // --- Timeline ---
 views.timeline = async () => {
-  const ev = await api('/api/events?limit=200');
+  const ev = tidyEvents(await api('/api/events?limit=600'));
   let last = '';
   // Runs of "X contacted a new destination: Y" become one line per app, so the timeline stays readable.
   const rows = [];
   for (const e of ev) {
     if (/<->/.test(e.title)) continue; // a bare socket logged by older versions, not an app
-    const m = e.title.match(/^(.*) contacted a new destination: (.*)$/);
     const prev = rows[rows.length - 1];
+    // A batch of suggestions made in the same minute: one line that opens to the list.
+    const sug = e.title.match(/^(I suggested|You proposed|AI agent proposed|.+ proposed): (.*)$/);
+    if (sug) {
+      if (prev?.batch && prev.who === sug[1] && Math.abs(prev.ts - e.ts) < 120_000) { prev.items.push(sug[2]); continue; }
+      rows.push({ batch: true, who: sug[1], items: [sug[2]], ts: e.ts, severity: e.severity, title: e.title });
+      continue;
+    }
+    const m = e.title.match(/^(.*) contacted a new destination: (.*)$/);
     if (m && prev?.group && prev.actor === m[1] && new Date(prev.ts).toDateString() === new Date(e.ts).toDateString()) { prev.dests.push(m[2]); continue; }
     rows.push(m ? { group: true, actor: m[1], dests: [m[2]], ts: e.ts, severity: e.severity } : e);
   }
@@ -684,7 +746,9 @@ views.timeline = async () => {
     return all.length === 1 ? eventRow({ ts: g.ts, severity: g.severity, title })
       : `<details class="event-group"><summary class="event"><time>${clock(g.ts)}</time><span class="dot ${esc(g.severity)}"></span><span class="wrap">${esc(title)}</span></summary><ul>${all.map((d) => `<li class="${isAddr(d) ? 'mono tiny' : ''}">${esc(d)}</li>`).join('')}</ul></details>`;
   };
-  return `<div class="list">${rows.map((e) => { const d = new Date(e.ts).toDateString(); const head = d !== last ? `<div class="day-head">${esc(d)}</div>` : ''; last = d; return head + (e.group ? groupRow(e) : eventRow(e)); }).join('') || '<div class="empty">Nothing yet.</div>'}</div>`;
+  const batchRow = (b) => b.items.length === 1 ? eventRow(b)
+    : `<details class="event-group"><summary class="event"><time>${clock(b.ts)}</time><span class="dot ${esc(b.severity)}"></span><span class="wrap">${esc(`${b.who} ${b.items.length} changes`)}</span></summary><ul>${b.items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></details>`;
+  return `<div class="list">${rows.map((e) => { const d = new Date(e.ts).toDateString(); const head = d !== last ? `<div class="day-head">${esc(d)}</div>` : ''; last = d; return head + (e.group ? groupRow(e) : e.batch ? batchRow(e) : eventRow(e)); }).join('') || '<div class="empty">Nothing yet.</div>'}</div>`;
 };
 
 // --- Query ---

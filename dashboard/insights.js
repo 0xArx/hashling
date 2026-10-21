@@ -433,6 +433,14 @@ views.processes = async () => {
   const items = d.items.filter((i) => !/^[(<]/.test(i.path) && !/^[(<]/.test(i.name));
   const hits = items.filter((i) => i.rule);
   const rules = d.rules?.rules ?? [];
+  // The same helper started over and over (Spotlight's mdworker, Chrome's renderers) reads as one line with a count.
+  const rows = [];
+  for (const i of items) {
+    const prev = rows[rows.length - 1];
+    if (prev && !i.rule && !prev.rule && prev.name === i.name && prev.parent === i.parent && prev.agent === i.agent) { prev.times++; continue; }
+    rows.push({ ...i, times: 1 });
+  }
+  const shown = state.procAll ? rows : rows.slice(0, 60);
   return `${statusBar('processes')}
   ${agentActivity(ag)}
   ${hits.length ? `<div class="mt"><div class="section-head"><p class="h2">Malware techniques seen</p></div><div class="list">${hits.slice(0, 20).map((i) => `<div class="item"><span class="dot high"></span><div class="body"><div class="t">${esc(rules.find((r) => r.id === i.rule)?.title ?? i.rule)}</div><div class="s mono wrap">${esc(clip(i.args, 220))}</div><div class="row-actions">${investigate(i.path)}${askBtn({ kind: 'process-rule-hit', rule: i.rule, program: i.name, path: i.path, command: i.args, parent: i.parent, agent: i.agent }, 'Explain')}<span class="tag">${esc(day(i.ts))}</span></div></div></div>`).join('')}</div></div>` : ''}
@@ -442,10 +450,14 @@ views.processes = async () => {
     <span class="tiny faint right">Sampled every 2 seconds · last 24 hours</span>
   </div>
   <div class="tablewrap"><table class="table"><thead><tr><th>When</th><th>Program</th><th>Started by</th><th>Command</th><th class="num"><span class="sr">Actions</span></th></tr></thead><tbody>
-    ${items.slice(0, 200).map((i) => `<tr><td class="small faint" style="white-space:nowrap">${esc(W.clock(i.ts))}</td><td><b>${esc(i.name)}</b>${i.rule ? ' <span class="chip bad">technique</span>' : ''}</td><td class="small">${esc(i.parent ?? '')}${i.agent ? ` <span class="chip agent">${esc(i.agent)}</span>` : ''}</td><td class="mono tiny muted cmd" title="${esc(i.args)}">${esc(clip(i.args, 140))}</td><td class="num">${investigate(i.path, '')}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">Nothing matches.</td></tr>'}
+    ${shown.map((i) => `<tr><td class="small faint" style="white-space:nowrap">${esc(W.clock(i.ts))}</td><td><b>${esc(i.name)}</b>${i.times > 1 ? ` <span class="faint small">×${i.times}</span>` : ''}${i.rule ? ' <span class="chip bad">technique</span>' : ''}</td><td class="small">${esc(i.parent ?? '')}${i.agent ? ` <span class="chip agent">${esc(i.agent)}</span>` : ''}</td><td class="mono tiny muted cmd one-line" title="${esc(i.args)}">${esc(shortCmd(i))}</td><td class="num">${investigate(i.path, '')}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">Nothing matches.</td></tr>'}
   </tbody></table></div>
+  ${rows.length > shown.length ? `<div class="more-row"><button class="btn sm" data-act="proc-all">Show all ${rows.length} rows</button></div>` : ''}
   <details class="card fold mt"><summary>What I watch for (${rules.length} techniques used by Mac malware)</summary><div class="fold-body"><div class="list">${rules.map((r) => `<div class="item"><span class="dot ${r.tier === 'suspicious' ? 'high' : 'medium'}"></span><div class="body"><div class="t">${esc(r.title)}</div><div class="s">${esc(r.why)}</div></div></div>`).join('')}</div></div></details>`;
 };
+
+/** The command without the long folder path in front of the program, which the hover text still shows. */
+const shortCmd = (i) => { const a = String(i.args ?? ''); return i.path && a.startsWith(i.path) ? i.path.split('/').pop() + a.slice(i.path.length) : a; };
 
 function agentActivity(d) {
   const agents = d.agents ?? [];
@@ -643,7 +655,8 @@ document.addEventListener('click', async (ev) => {
     if (act === 'dossier') { ev.stopPropagation(); await openDossier(el.dataset.q); }
     else if (act === 'story') openStory(Number(el.dataset.i));
     else if (act === 'traffic-range') { state.trafficHours = Number(el.dataset.v); W.render(); }
-    else if (act === 'proc-agent') { state.procAgent = el.dataset.v === '1'; W.render(); }
+    else if (act === 'proc-agent') { state.procAgent = el.dataset.v === '1'; state.procAll = false; W.render(); }
+    else if (act === 'proc-all') { state.procAll = true; W.render(); }
     else if (act === 'up-range') { state.upHours = Number(el.dataset.v); state.upPicked = true; W.render(); }
   } catch (e) { if (e.message !== 'unauthorized') toast(e.message); }
 }, true);
