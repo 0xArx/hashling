@@ -126,7 +126,7 @@ const helpOverview = views.overview;
 views.overview = async () => {
   const html = await helpOverview();
   if (state.mode !== 'simple') return html;
-  return html.replace(/<a class="area" href="#\/(\w+)">[\s\S]*?<\/a>/g, (tile, id) => (SIMPLE_AREAS.has(id) || !/state ok/.test(tile) ? tile.replace(/(<span class="name">)([^<]*)/, (m, open, name) => `${open}${esc(SIMPLE_NAV.flatMap(([, i]) => i).find(([x]) => x === id)?.[1] ?? SIMPLE_TITLES[id]?.[0] ?? name)}`) : ''));
+  return html.replace(/<a class="area[^"]*" href="#\/(\w+)">[\s\S]*?<\/a>/g, (tile, id) => (SIMPLE_AREAS.has(id) || !/state ok/.test(tile) ? tile.replace(/(<span class="name">)([^<]*)/, (m, open, name) => `${open}${esc(SIMPLE_NAV.flatMap(([, i]) => i).find(([x]) => x === id)?.[1] ?? SIMPLE_TITLES[id]?.[0] ?? name)}`) : ''));
 };
 
 // ---------- glossary ----------

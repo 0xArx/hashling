@@ -270,50 +270,53 @@ views.overview = async () => {
     : t.risk
       ? `Nothing suspicious on this Mac${mac}. ${t.risk === 1 ? 'One thing is' : `${t.risk} things are`} worth fixing to keep it safe.${optional}`
       : `Nothing suspicious and nothing to fix on this Mac${mac}.${optional || ' I’ll keep watching in the background.'}`;
+  const tone = t.suspicious ? 'bad' : t.risk ? 'warn' : 'ok';
+  // Areas with something to look at come first; the calm ones follow, quieter.
+  const areas = Object.entries(AREA_META).map(([k, [name, ic]]) => {
+    const s = state.sus[k] ?? {};
+    const risks = s.risks?.length ?? 0;
+    const st = s.count ? 'bad' : risks || s.blocked ? 'flag' : 'ok';
+    const text = s.count ? `${s.count} suspicious` : risks ? `${risks} worth fixing` : s.blocked ? 'Not checked yet' : 'All clear';
+    return { k, name, ic, st, text, rank: st === 'bad' ? 0 : st === 'flag' ? 1 : 2 };
+  }).sort((x, y) => x.rank - y.rank);
+  const clear = areas.filter((x) => x.st === 'ok').length;
   return `
-  <section class="card hero">
-    <div class="ring" aria-label="Security score ${o.score} of 100">${ring(o.score)}<div class="num"><div><b>${o.score}</b><span>out of 100</span></div></div></div>
-    <div>
-      <p class="verdict">${esc(o.verdict)}</p>
-      <p class="muted" style="margin:0;max-width:560px">${summary}</p>
+  <section class="ov-hero tone-${tone}">
+    <div class="ring ov-ring" aria-label="Security score ${o.score} of 100">${ring(o.score, 152, 12)}<div class="num"><div><b>${o.score}</b><span>out of 100</span></div></div></div>
+    <div class="ov-copy">
+      <h2 class="ov-verdict">${esc(o.verdict)}</h2>
+      <p class="ov-summary">${summary}</p>
       <div class="counts">${[['suspicious', 'suspicious', 'high'], ['risk', 'worth fixing', 'medium'], ['hardening', 'optional', 'low']].map(([t, l, cls]) => `<a class="sev ${cls} ${o.tiers[t] ? '' : 'zero'}" href="#/findings" data-tier="${t}">${o.tiers[t]} ${l}</a>`).join('')}${o.ignoredFindings ? `<a class="sev info" href="#/ignored">${o.ignoredFindings} ignored</a>` : ''}</div>
       ${scoreExplain(o)}
     </div>
-    <div class="stack" style="gap:8px">
+    <div class="ov-actions">
       <button class="btn blue" data-act="ask" data-ctx="${attr({ kind: 'overview', score: o.score, top: o.topFindings })}" data-prompt="Give me a security check-up of this Mac. Start with what matters most, explain it simply, and propose fixes I can approve.">${icon('spark')}Run an AI check-up</button>
-      <a class="btn" href="#/findings">See everything I found</a>
+      <a class="btn ghost-light" href="#/findings">See everything I found</a>
     </div>
+    ${o.limitations?.length ? `<a class="ov-limits" href="#/settings">${icon('eyeoff')}<span><b>I can’t see everything yet.</b> ${esc(o.limitations[0])}</span><span class="ov-limits-fix">Fix ${icon('chev')}</span></a>` : ''}
   </section>
-
-  ${o.limitations?.length ? `<div class="status flag mt"><div class="ico">${icon('alert', 'lg')}</div><div><b>I can\u2019t see everything yet</b><ul class="limits">${o.limitations.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div><div class="actions"><a class="btn sm" href="#/settings">Fix in Settings</a></div></div>` : ''}
 
   <div class="home mt">
     <div class="home-main">
-      <div class="section-head"><p class="h2">Needs your attention</p><a href="#/findings">See all</a></div>
-      <div class="list">${o.topFindings.length ? o.topFindings.map((f) => findingItem(f)).join('') : '<div class="empty">Nothing suspicious and nothing to fix right now.</div>'}</div>
-      ${o.suggestions.length ? `<details class="tier-block optional adv"><summary class="tier-head"><span class="dot low"></span><b>Optional: strengthen your security</b><span class="tier-count">${o.suggestions.length}</span><span class="tier-hint">${TIER.hardening.hint}</span></summary><div class="list">${o.suggestions.map((f) => findingItem(f, false)).join('')}</div></details>` : ''}
+      <section><div class="section-head"><p class="h2">Needs your attention</p><a href="#/findings">See all</a></div>
+      <div class="list ov-findings">${o.topFindings.length ? o.topFindings.map((f) => findingItem(f)).join('') : `<div class="ov-calm">${icon('shieldok')}<div><b>Nothing needs you right now</b><span>Nothing suspicious and nothing to fix. I’ll keep watching.</span></div></div>`}</div></section>
+      ${o.suggestions.length ? `<details class="tier-block optional adv"><summary class="tier-head"><span class="dot low"></span><b>Optional: strengthen your security</b><span class="tier-count">${o.suggestions.length}</span><span class="tier-hint">${TIER.hardening.hint}</span></summary><div class="list ov-findings">${o.suggestions.map((f) => findingItem(f, false)).join('')}</div></details>` : ''}
       <div class="grid g2 mt home-pair"><!--rail-extra--></div>
       <section class="adv mt"><div class="section-head"><p class="h2">Just now</p><a href="#/timeline">Timeline</a></div>
-        <div class="list">${tidyEvents(o.recentEvents).slice(0, 8).map(eventRow).join('') || '<div class="empty">Quiet so far.</div>'}</div></section>
+        <div class="list">${tidyEvents(o.recentEvents).slice(0, 6).map(eventRow).join('') || '<div class="empty">Quiet so far.</div>'}</div></section>
     </div>
     <aside class="home-rail">
-      <section><div class="section-head"><p class="h2">What I’m watching</p></div>
-        <div class="card watch">${Object.entries(AREA_META).map(([k, [name, ic]]) => {
-    const s = state.sus[k] ?? {};
-    const risks = s.risks?.length ?? 0;
-    const tone = s.count ? 'bad' : risks || s.blocked ? 'flag' : 'ok';
-    const text = s.count ? `${s.count} suspicious` : risks ? `${risks} worth fixing` : s.blocked ? 'Not checked yet' : 'All clear';
-    return `<a class="area" href="#/${k}"><span class="ic">${icon(ic)}</span><span class="name">${esc(name)}</span><span class="state ${tone}">${tone === 'ok' ? '' : icon('alert')}${text}</span></a>`;
-  }).join('')}</div></section>
+      <section><div class="section-head"><p class="h2">What I’m watching</p><span class="small faint">${clear} of ${areas.length} all clear</span></div>
+        <div class="ov-areas">${areas.map((x) => `<a class="area st-${x.st}" href="#/${x.k}"><span class="ic">${icon(x.ic)}</span><span class="name">${esc(x.name)}</span><span class="state ${x.st}">${x.st === 'ok' ? icon('check') : icon('alert')}${x.text}</span></a>`).join('')}</div></section>
       <section><div class="section-head"><p class="h2">Right now</p><a href="#/network">${esc(TITLES.network[0])}</a></div>
-        <dl class="card now">
-          <a href="#/network"><dt>Apps using the internet</dt><dd>${net.processesOnline ?? '…'}</dd></a>
-          <a href="#/network"><dt>Downloading</dt><dd>${rate(net.rateIn ?? 0)}</dd></a>
-          <a href="#/uploads"><dt>Uploading</dt><dd>${rate(net.rateOut ?? 0)}</dd></a>
-          <a href="#/approvals" class="${o.pendingActions ? 'wait' : ''}"><dt>Waiting for your approval</dt><dd>${o.pendingActions}</dd></a>
-        </dl></section>
+        <div class="ov-now">
+          <a href="#/network"><b>${net.processesOnline ?? '…'}</b><span>apps online</span></a>
+          <a href="#/approvals" class="${o.pendingActions ? 'wait' : ''}"><b>${o.pendingActions}</b><span>waiting for you</span></a>
+          <a href="#/network"><b>${rate(net.rateIn ?? 0)}</b><span>coming in</span></a>
+          <a href="#/uploads"><b>${rate(net.rateOut ?? 0)}</b><span>going out</span></a>
+        </div></section>
       <section><div class="section-head"><p class="h2">${esc(TITLES.agents[0])}</p><a href="#/agents">Details</a></div>
-        <div class="list">${o.agents.map((a) => `<a class="item click" href="#/agents" data-agent="${esc(a.name)}"><span class="dot ${a.running ? 'on' : ''}" style="margin-top:7px" title="${a.running ? 'Running' : 'Not running'}"></span><div class="body"><div class="t row between" style="gap:8px;flex-wrap:nowrap"><span>${esc(a.name)}</span>${riskBadge(a.risk)}</div><div class="s">${a.reasons.length ? esc(a.reasons.slice(0, 3).join(' · ')) : 'No risky abilities found'}</div></div></a>`).join('') || '<div class="empty">No AI agents found.</div>'}</div></section>
+        <div class="ov-agents">${o.agents.map((a) => `<a href="#/agents" data-agent="${esc(a.name)}" title="${esc(a.reasons.join(' · ') || 'No risky abilities found')}"><span class="dot ${a.running ? 'on' : ''}" title="${a.running ? 'Running' : 'Not running'}"></span><span class="ov-agent-name">${esc(a.name)}</span>${riskBadge(a.risk)}</a>`).join('') || '<div class="empty">No AI agents found.</div>'}</div></section>
     </aside>
   </div>`;
 };
@@ -1552,6 +1555,7 @@ try { await import('./guide.js'); } catch (e) { console.error('Hashling guide di
 try { await import('./buddy.js'); } catch (e) { console.error('Hashling helper did not load', e); }
 try { await import('./phonemode.js'); } catch (e) { console.error('Hashling phone mode did not load', e); }
 try { await import('./shield.js'); } catch (e) { console.error('Hashling extra protection did not load', e); }
+try { await import('./explain.js'); } catch (e) { console.error('Hashling hover explanations did not load', e); }
 
 renderNav();
 route();
