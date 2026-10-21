@@ -120,9 +120,11 @@ function setDevice(d: PhoneDevice): void {
   }
 }
 
-async function plistJson(xml: string): Promise<Record<string, unknown>> {
-  const r = await run('/usr/bin/plutil', ['-convert', 'json', '-o', '-', '-'], { input: xml, timeout: 5000 });
-  try { return JSON.parse(r.stdout) as Record<string, unknown>; } catch { return {}; }
+/** ideviceinfo's plain "Key: value" lines (its XML holds binary fields that JSON can't carry). */
+function infoLines(text: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const m of text.matchAll(/^(\w+): (.*)$/gm)) out[m[1]] = m[2].trim();
+  return out;
 }
 
 const IOS_HINT: Record<string, string> = {
@@ -140,7 +142,7 @@ async function refreshIos(udid: string, now: number): Promise<void> {
   if (prev?.state === 'ready') return;
   if (prev && now - (iosChecked.get(udid) ?? 0) < (prev.state === 'trust-pending' ? 3000 : 8000)) return;
   iosChecked.set(udid, now);
-  const info = await plistJson((await run(inBrew('ideviceinfo')!, ['-s', '-u', udid, '-x'], { timeout: 8000 })).stdout);
+  const info = infoLines((await run(inBrew('ideviceinfo')!, ['-s', '-u', udid], { timeout: 8000 })).stdout);
   const cls = String(info.DeviceClass ?? 'iPhone');
   const name = String(info.DeviceName ?? '') || cls;
   let state: PhoneState;
@@ -448,14 +450,13 @@ export function evaluateIos(id: string, p: Probe, releases: { version: string; d
     items.push({ id: 'os', status: 'info', title: `${osName} ${version}`, detail: 'I couldn’t reach Apple’s update list just now, so I can’t say if it is the newest. Check in Settings > General > Software Update.' });
   }
 
-  // 2. Passcode
-  if (d.PasswordProtected === false) items.push({ id: 'passcode', status: 'bad', title: 'Your phone has no passcode', detail: 'Anyone who picks it up can open it, read your messages and install things on it.', fix: 'On the phone: Settings > Face ID & Passcode (or Touch ID & Passcode) > Turn Passcode On.' });
-  else if (d.PasswordProtected === true) items.push({ id: 'passcode', status: 'ok', title: 'Your phone has a passcode', detail: 'Good. Someone holding your phone can’t open it without it.' });
+  // 2. Passcode. Only a "yes" is trusted: recent iOS reports "no passcode" over the cable even when one is set.
+  if (d.PasswordProtected === true) items.push({ id: 'passcode', status: 'ok', title: 'Your phone has a passcode', detail: 'Good. Someone holding your phone can’t open it without it.' });
 
   // 3. Apps
   const apps = (p.apps ?? []).filter((a) => a.ApplicationType === 'User' || !a.ApplicationType);
   const appName = (a: Record<string, unknown>) => String(a.CFBundleDisplayName || a.CFBundleName || a.CFBundleIdentifier);
-  const enterprise: CheckItem['list'] = [], developer: CheckItem['list'] = [], known: CheckItem['list'] = [];
+  const enterprise: CheckItem['list'] = [], developer: CheckItem['list'] = [], beta: CheckItem['list'] = [], known: CheckItem['list'] = [];
   const enterpriseTeams = new Set((p.provisioning ?? []).filter((x) => x.allDevices).map((x) => x.team));
   for (const a of apps) {
     const signer = String(a.SignerIdentity ?? '');
@@ -463,6 +464,8 @@ export function evaluateIos(id: string, p: Probe, releases: { version: string; d
     const hit = matchIoc(iocs, bundle);
     if (hit) known!.push({ name: appName(a), note: `Matches known stalkerware: ${hit.name} (${bundle})`, flag: 'bad' });
     if (!signer || signer === APP_STORE) continue;
+    // TestFlight betas are signed by Apple and come through Apple's own beta service.
+    if (/TestFlight/i.test(signer)) { beta!.push({ name: appName(a), note: 'Beta from TestFlight' }); continue; }
     const who = signer.replace(/^(iPhone|Apple) (Distribution|Developer|Development):\s*/, '').replace(/\s*\([A-Z0-9]{10}\)$/, '');
     if (/Distribution/.test(signer)) enterprise!.push({ name: appName(a), note: `Signed by ${who}${enterpriseTeams.has(who) ? ', with a company certificate that works on any iPhone' : ''}`, flag: 'warn' });
     else developer!.push({ name: appName(a), note: `Signed by ${who} (a developer certificate)` });
@@ -470,7 +473,7 @@ export function evaluateIos(id: string, p: Probe, releases: { version: string; d
   if (known!.length) items.push({ id: 'stalkerware', status: 'bad', title: known!.length === 1 ? 'An app matches known stalkerware' : `${known!.length} apps match known stalkerware`, detail: 'Stalkerware secretly sends your messages, location and photos to someone else. If you did not install it, someone may be watching you.', fix: 'If you feel unsafe, talk to someone you trust or a domestic abuse helpline before removing it: the person may notice. Then delete the app and change your Apple Account password from a device they never touched.', list: known });
   if (enterprise!.length) items.push({ id: 'enterprise-apps', status: 'warn', title: enterprise!.length === 1 ? 'An app came from outside the App Store' : `${enterprise!.length} apps came from outside the App Store`, detail: 'These use a company certificate instead of the App Store. Work apps do this, but so do spy apps and fake “free” versions of paid apps. Apple did not review them.', fix: 'If you don’t know an app or the company named, delete it. Then check Settings > General > VPN & Device Management and remove the company you don’t know.', list: enterprise });
   if (developer!.length) items.push({ id: 'developer-apps', status: 'info', title: developer!.length === 1 ? 'One app was installed from a Mac' : `${developer!.length} apps were installed from a Mac`, detail: 'They are signed with a developer certificate, which happens when you build an app yourself or use a sideloading tool. If that is you, this is normal.', fix: 'If you don’t recognise one, delete it.', list: developer });
-  if (!known!.length && !enterprise!.length && apps.length) items.push({ id: 'apps', status: 'ok', title: `Your ${apps.length - developer!.length} apps came from the App Store`, detail: 'Apple reviewed every one of them.' });
+  if (!known!.length && !enterprise!.length && apps.length) items.push({ id: 'apps', status: 'ok', title: `All ${apps.length - developer!.length} apps came from Apple`, detail: beta!.length ? `${apps.length - developer!.length - beta!.length} from the App Store and ${beta!.length} test versions from Apple’s TestFlight. None came from a company certificate or a sideloading tool.` : 'Every one came from the App Store, which Apple reviews.', list: beta!.length ? beta : undefined });
   if (p.errors?.apps) notes.push('I couldn’t read the list of apps this time.');
 
   // 4. Configuration profiles
