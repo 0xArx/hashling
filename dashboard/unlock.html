@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unlock · Hashling</title>
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111827'/%3E%3Cpath d='M16 5 7.5 8.4v6.2c0 5.2 3.6 9.1 8.5 10.7 4.9-1.6 8.5-5.5 8.5-10.7V8.4L16 5Z' fill='none' stroke='%23fff' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <!-- Self-contained on purpose: a signed-out browser can load nothing else from Hashling. -->
+  <style nonce="__NONCE__">
+    :root { --bg: #f7f6fb; --panel: #fff; --line: #ebe8f5; --text: #1b1640; --muted: #5d5880; --ink: #1b1640; --ok: #0f9f76; --bad: #e04757; --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --on-ink: #fff; --hover-ink: #283246; color-scheme: light; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { background: var(--bg); color: var(--text); font: 14px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    ::selection { background: color-mix(in srgb, #6c5ce7 30%, transparent); }
+    .lock { min-height: 100%; display: grid; place-items: center; padding: 24px 16px; }
+    .card { width: min(420px, 100%); background: var(--panel); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 1px 2px rgba(27, 22, 64, 0.04), 0 12px 32px -18px rgba(27, 22, 64, 0.18); padding: 32px 28px 26px; text-align: center; }
+    .mark { width: 64px; height: 64px; border-radius: 18px; background: var(--accent-soft, #f0eefe); display: grid; place-items: center; margin: 0 auto 20px; }
+    .mark svg { width: 44px; height: 44px; }
+    h1 { font: 650 22px/1.25 -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif; letter-spacing: -0.4px; margin: 0 0 8px; text-wrap: balance; }
+    p { color: var(--muted); margin: 0 auto; max-width: 34ch; text-wrap: pretty; }
+    button { font: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 42px; margin-top: 24px; border-radius: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--on-ink); font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color 0.15s ease, transform 160ms var(--ease-out); }
+    button:hover { background: var(--hover-ink); }
+    button:active { transform: scale(0.97); }
+    button:focus-visible { outline: 2px solid #6c5ce7; outline-offset: 2px; }
+    button[disabled] { opacity: 0.7; cursor: progress; }
+    .status-line { min-height: 20px; margin-top: 12px; font-size: 13px; color: var(--muted); }
+    .status-line.error { color: var(--bad); }
+    .status-line.ok { color: var(--ok); }
+    .alt { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+    code { font: 12.5px ui-monospace, "SF Mono", Menlo, monospace; }
+    .spin { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--on-ink) 35%, transparent); border-top-color: var(--on-ink); animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="lock">
+    <section class="card" aria-labelledby="lock-title">
+      <div class="mark" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><linearGradient id="hl-u" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B7DFB"/><stop offset="1" stop-color="#5F4FE0"/></linearGradient></defs><g fill="url(#hl-u)"><rect x="38" y="10" width="15" height="98" rx="7.5" transform="skewX(-10)" transform-origin="45.5 59"/><rect x="67" y="10" width="15" height="98" rx="7.5" transform="skewX(-10)" transform-origin="74.5 59"/><rect x="16" y="36" width="90" height="15" rx="7.5"/><rect x="13" y="68" width="90" height="15" rx="7.5"/></g></svg></div>
+      <h1 id="lock-title">Unlock Hashling</h1>
+      <p>Confirm it’s you with Touch ID or your Mac password.</p>
+      <button id="unlock" type="button">Unlock with Touch ID</button>
+      <div class="status-line" id="status" role="status" aria-live="polite"></div>
+      <div class="alt">Or click the # in your menu bar and choose <b>Open dashboard</b>.</div>
+    </section>
+  </main>
+  <script nonce="__NONCE__">
+__UNLOCK_JS__
+  </script>
+</body>
+</html>
