@@ -27,7 +27,7 @@ Hashling lives on your Mac, watches the usual security things in plain words (ne
 A few things I am honest about:
 - It does not block connections live. Pair it with LuLu or Little Snitch for that.
 - Malware is caught a few seconds after files arrive, not before they run. Malwarebytes does real-time interception and has lab testing. Hashling does not yet.
-- No account, no cloud, no tracking. Everything stays on your Mac.
+- No account, no tracking. Nothing leaves your Mac except what you send to the AI provider you choose.
 
 [FOUNDER: Add one sentence about how long you worked on it, or what surprised you most when you first ran it on your own machine.]
 

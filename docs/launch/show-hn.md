@@ -10,7 +10,7 @@
 
 Hi HN. Hashling is a personal cybersecurity engineer for the age of AI. It started from a simple question: AI coding agents like Claude Code, Cursor and Codex can run programs, read files and push code on my Mac, so what exactly is each one allowed to do? That turned into a broader personal security tool.
 
-Hashling is free and open source (MIT). It runs entirely on your machine and watches the things that matter day to day: network connections per app, startup items, privacy permissions, AI coding agents and what they can do, malware (ClamAV + YARA-X + Apple's XProtect rules), scam check for texts and links, and a few newer things like breach watch, a ransomware tripwire, and text message scam watch.
+Hashling is free and open source (MIT). It runs on your machine, nothing leaves it except what you send to the AI provider you choose, and it watches the things that matter day to day: network connections per app, startup items, privacy permissions, AI coding agents and what they can do, malware (ClamAV + YARA-X + Apple's XProtect rules), scam check for texts and links, and a few newer things like breach watch, a ransomware tripwire, and text message scam watch.
 
 The part I think is genuinely new: you connect Hashling to the AI you already have. Run one command and Claude Code (or Cursor, Codex, or any MCP agent) can ask your Mac about its own security. You can type "is my Mac safe?" and the agent calls Hashling's MCP tools, reads the findings, and tells you what needs attention in plain words. Every fix still waits for your Touch ID.
 

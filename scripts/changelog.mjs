@@ -27,6 +27,20 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Privacy wording:': {
+    tag: 'website',
+    title: 'Clearer privacy wording',
+    bullets: [
+      'The website and the demo video now say exactly where your data can go: nothing leaves your computer except what you send to the AI provider you choose.',
+    ],
+  },
+  'Website and README: drop the not-yet-tested note': {
+    tag: 'website',
+    title: 'A shorter trust section',
+    bullets: [
+      'The "Why you can trust Hashling" section on the website and the README is shorter and easier to read.',
+    ],
+  },
   'Launch kit:': {
     tag: 'website',
     title: 'A demo video, this changelog and an honest comparison page',
@@ -157,7 +171,7 @@ const ENTRIES = {
     bullets: [
       'Network monitoring, startup items, privacy permissions, AI agent auditing, malware scanning, scam check, and more.',
       'Ask anything in plain words. Hashling checks your Mac before it answers.',
-      'Every fix waits for your Touch ID. No account, no cloud.',
+      'Every fix waits for your Touch ID. No account, and nothing leaves your Mac except what you send to the AI provider you choose.',
     ],
   },
 };

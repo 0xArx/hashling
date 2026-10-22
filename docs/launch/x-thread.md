@@ -42,7 +42,7 @@ It does not block connections live (pair it with LuLu for that). It scans files 
 ---
 
 **Post 6**
-MIT licensed. No account. No cloud. No tracking.
+MIT licensed. No account. No tracking. Nothing leaves your Mac except what you send to the AI you choose.
 
 Everything runs on your Mac and stays there. The dashboard lives at hashling.localhost:5750 on loopback only. Your AI can look but never change anything without your OK.
 
