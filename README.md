@@ -178,7 +178,6 @@ To update, install again the same way; your settings and history are kept. Befor
 - **Signed and notarized.** Each [release](https://github.com/0xArx/hashling/releases) has a Hashling.app signed with a verified Apple Developer ID and notarized by Apple, the exact source it was built from, and SHA-256 checksums.
 - **Checked in public.** [OpenSSF Scorecard](https://scorecard.dev/viewer/?uri=github.com/0xArx/hashling) grades how safely the project is run every week, GitHub CodeQL scans every change, and Dependabot watches the dependencies.
 - **Catches the industry's test files.** EICAR, zipped and nested EICAR, and a test file landing in Downloads: [results and how to run it yourself](docs/AMTSO-CHECK.md).
-- **Not yet independently tested.** No lab test (AV-TEST, AV-Comparatives) or paid audit so far. [What it would take](docs/CERTIFICATION.md).
 - **Found a security problem?** Please [report it privately](SECURITY.md).
 
 ## Limitations

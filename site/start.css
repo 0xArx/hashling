@@ -362,11 +362,9 @@ body:not([data-platform="windows"]) .win-only, body[data-platform="windows"] .ma
 .trust-grid li { display: flex; gap: 14px; align-items: flex-start; padding: 20px 22px; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--border); }
 .trust-grid li > svg { flex: none; width: 40px; height: 40px; padding: 10px; border-radius: 12px; background: var(--amber-dim); color: var(--amber); }
 .trust-grid b { display: block; color: var(--text1); margin-bottom: 4px; }
-.trust-grid p, .trust-honest p { margin: 0; color: var(--text2); font-size: 0.95rem; line-height: 1.55; }
-.trust-grid a, .trust-honest a, .trust-badges a { color: var(--amber); }
-.trust-honest { margin-top: 14px; padding: 20px 22px; border-radius: 18px; background: var(--surface2); box-shadow: inset 0 0 0 1px var(--border2); }
-.trust-honest b { display: block; color: var(--text1); margin-bottom: 4px; }
-.trust-badges { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 16px; margin: 16px 0 0; font-size: 0.9rem; }
+.trust-grid p { margin: 0; color: var(--text2); font-size: 0.95rem; line-height: 1.55; }
+.trust-grid a, .trust-badges a { color: var(--amber); }
+.trust-badges { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 16px; margin: 20px 0 0; font-size: 0.9rem; }
 .trust-badges img { display: block; }
 @media (max-width: 900px) { .trust-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 600px) { .trust-grid { grid-template-columns: 1fr; } .trust-grid li, .trust-honest { padding: 18px; } }
+@media (max-width: 600px) { .trust-grid { grid-template-columns: 1fr; } .trust-grid li { padding: 18px; } }
