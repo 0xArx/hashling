@@ -27,6 +27,11 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Compare page: describe what each tool does': {
+    tag: 'website',
+    title: 'A tidier compare page',
+    bullets: ['The compare page now sticks to what each tool does, in plain words.'],
+  },
   'Privacy wording:': {
     tag: 'website',
     title: 'Clearer privacy wording',
@@ -55,7 +60,7 @@ const ENTRIES = {
     title: 'A "Why you can trust Hashling" section on the website',
     bullets: [
       'The home page now lists what you can check for yourself: open source code, read-only AI access, Touch ID for every change and no tracking.',
-      'It is honest about what has not happened yet, like an independent lab test, and links to the plan for one.',
+      'A plan for independent testing is published in the repo.',
     ],
   },
   '309b03c': {
