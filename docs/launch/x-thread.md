@@ -32,7 +32,7 @@ Plain words throughout. Simple/Standard/Expert mode.
 **Post 4**
 Honest about what it does NOT do:
 
-It does not block connections live (pair it with LuLu for that). It scans files after arrival, not before they run. It has not been tested by independent security labs. Zero findings does not mean a clean Mac.
+It does not block connections live (pair it with LuLu for that). It scans files after arrival, not before they run. Zero findings does not mean a clean Mac.
 
 ---
 

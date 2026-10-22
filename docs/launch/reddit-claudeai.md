@@ -38,7 +38,7 @@ And it does not change anything by itself. Every fix waits for your Touch ID.
 
 **Honest limitations:**
 
-Hashling is not a firewall and does not block connections live (I pair it with LuLu for that). It catches malware a few seconds after files arrive, not before they run. It has not been tested by independent security labs. Zero findings does not mean a Mac is clean.
+Hashling is not a firewall and does not block connections live (pair it with LuLu for that). It catches malware a few seconds after files arrive, not before they run. Zero findings does not mean a Mac is clean.
 
 It is a tool for understanding your setup in plain words and connecting your AI to your own security, not a replacement for purpose-built security software.
 

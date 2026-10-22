@@ -16,7 +16,7 @@ The part I think is genuinely new: you connect Hashling to the AI you already ha
 
 A few honest limitations I want to be upfront about:
 - Hashling does not block network connections live. Pair it with LuLu or Little Snitch for that.
-- It scans for malware after files arrive, not before they run. Malwarebytes and Bitdefender do the real-time interception and have been tested by independent labs. Hashling has not.
+- It scans for malware after files arrive, not before they run. Malwarebytes and Bitdefender do the real-time interception.
 - The Bitdefender AI Guardian beta (launched last month) is a closer competitor for AI agent safety specifically. It blocks risky agent actions in real time. Hashling observes and explains.
 - Zero findings in Hashling does not mean a Mac is clean.
 
