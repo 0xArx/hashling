@@ -159,7 +159,7 @@ tool('get_scan', 'Status and detections of a scan started with scan_path (or the
 
 tool('propose_action', 'Propose a protective action. It does NOT run: it waits until the user approves it in the Hashling dashboard with Touch ID. Types and targets: quarantine_file {path} (reversible), restore_file {id}, kill_process {pid, name}, disable_persistence {plist, label}, revoke_permission {service, bundleId}, block_domain {domain}, unblock_domain {domain}, trash_paths {paths: string[], bytes?: measured size from storage_report, label?: short name} (moves items to the Trash so they can be put back; for cleanup), run_cleanup {id: brew-cleanup | npm-cache | pnpm-prune | simctl-unavailable}. Explain to the user why, and tell them to approve it in the dashboard.', {
   type: z.enum(['quarantine_file', 'restore_file', 'kill_process', 'disable_persistence', 'revoke_permission', 'block_domain', 'unblock_domain', 'trash_paths', 'run_cleanup']),
-  target: z.record(z.any()).describe('See description for each type'),
+  target: z.record(z.string(), z.any()).describe('See description for each type'),
   reason: z.string().min(5).max(600).describe('Shown to the user next to the Approve button'),
   finding_id: z.string().optional(),
 }, async ({ type, target, reason, finding_id }) => api('POST', '/api/actions', { type, target, reason, finding_id }));
