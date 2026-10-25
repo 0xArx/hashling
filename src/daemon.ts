@@ -4,6 +4,9 @@ import { startServer } from './server.ts';
 import { startPhoneIfOn } from './phone.ts';
 import { startScheduler } from './scheduler.ts';
 import { logEvent } from './db.ts';
+import { startUpdateChecks } from './updates.ts';
+import { resumeLocalSetup } from './localai.ts';
+import { loadConfig } from './ai.ts';
 
 for (const d of [DATA_DIR, QUARANTINE_DIR, RULES_DIR]) mkdirSync(d, { recursive: true, mode: 0o700 });
 
@@ -14,6 +17,8 @@ startServer();
 startPhoneIfOn();
 startScheduler({ skip: (process.env.HASHLING_SKIP ?? '').split(',').filter(Boolean) });
 logEvent('system', 'info', `${NAME} ${VERSION} started`);
+startUpdateChecks();
+resumeLocalSetup(loadConfig().provider);
 
 const stop = () => { console.log('stopping'); process.exit(0); };
 process.on('SIGTERM', stop);

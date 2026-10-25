@@ -1391,3 +1391,39 @@ ol.todo-list li > svg { width: 34px; height: 34px; padding: 8px; border-radius: 
 .home-pair { align-items: stretch; }
 .home-pair > section { display: flex; flex-direction: column; }
 .home-pair > section > .card { flex: 1; }
+/* Phones: every list row keeps its arrow in the top corner instead of wrapping it onto its own line,
+   and the AI agents table shows the agents next to the abilities (the label column narrows and wraps). */
+@media (max-width: 640px) {
+  .item:has(> .chev) { position: relative; padding-right: 38px; }
+  .item > .chev { position: absolute; right: 14px; top: 15px; }
+  .matrix th:first-child, .matrix td:first-child { min-width: 122px; max-width: 150px; white-space: normal; font-size: 13px; line-height: 1.35; }
+  .matrix th, .matrix td { padding: 10px 8px; }
+  .matrix .agent-col { padding: 5px 6px; font-size: 12px; }
+}
+/* Update bar: sits under the page title on every page while a newer Hashling is ready. */
+.update-bar { margin: 0 clamp(20px, 3vw, 48px) 14px; padding: 12px 16px; border-radius: var(--radius); border: 1px solid var(--accent-line); background: var(--accent-soft); }
+.update-inner { display: flex; align-items: center; gap: 14px; }
+.update-inner .hashling { width: 34px; height: 34px; flex: none; }
+.update-text { min-width: 0; }
+.update-text b { display: block; font-size: 14px; }
+.update-text span { font-size: 12.5px; color: var(--muted); }
+.update-actions { margin-left: auto; display: flex; gap: 8px; flex: none; }
+.update-err { margin: 8px 0 0 48px; font-size: 12.5px; color: var(--bad); }
+@media (max-width: 760px) { .update-inner { flex-wrap: wrap; } .update-inner .hashling { display: none; } .update-actions { margin-left: -8px; } .update-err { margin-left: 0; } }
+
+/* Fully local AI: model choices, setup progress. */
+.local-opts { display: grid; gap: 8px; }
+.local-opt { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); cursor: pointer; transition: border-color 0.15s ease, background-color 0.15s ease; }
+.local-opt:hover { border-color: var(--line-2); }
+.local-opt.on { border-color: var(--accent-line); background: var(--accent-soft); }
+.local-opt input[type="radio"] { margin-top: 3px; accent-color: var(--accent); flex: none; }
+.local-opt > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.local-opt b { font-size: 13.5px; }
+.local-opt .input { margin-top: 8px; }
+.local-opt:not(.on) .input, .local-opt:not(.on) .row:has(.input) { display: none; }
+.local-progress { padding: 12px 14px; border-radius: 12px; background: var(--surface-2); }
+.local-track { height: 8px; margin-top: 8px; border-radius: 999px; background: var(--track); overflow: hidden; }
+.local-track span { display: block; height: 100%; border-radius: inherit; background: var(--accent); transition: width 0.6s var(--ease-out); }
+.local-track span.pulse { animation: local-pulse 1.6s ease-in-out infinite; }
+@keyframes local-pulse { 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) { .local-track span.pulse { animation: none; } }

@@ -24,7 +24,7 @@ Hashling lives on your Mac and teams up with the AI you already use, like Claude
 
 - **AI agents now run on your Mac.** Claude Code, Codex and Cursor can run programs, read your files and push code. Hashling shows what each one is allowed to do and tells you when one acts strangely.
 - **Scammers use AI too.** Fake delivery texts, cloned voices and poisoned links are cheap to make now. Hashling checks a message, link or screenshot before you click, call or pay.
-- **Your own AI can be your security engineer.** Connect Claude or any MCP agent and ask "Am I safe?". It looks at your Mac through Hashling and answers in plain words, but it can only look and suggest: every change waits for your Touch ID.
+- **Your own AI can be your security engineer.** Connect Claude or any MCP agent, or run a free model fully on your Mac, and ask "Am I safe?". It looks at your Mac through Hashling and answers in plain words, but it can only look and suggest: every change waits for your Touch ID.
 
 ---
 
@@ -159,7 +159,7 @@ The same data is available over HTTP on `127.0.0.1:5750` with `Authorization: Be
 ## You stay in control
 
 - **No account. Your files stay on your Mac.** Hashling runs on your Mac and never uploads your files; the only place your questions go is the AI provider you choose. It goes online only to download updates (malware signatures, scam and malware lists), to look up who owns an internet address (turn off with `HASHLING_ENRICH=0`), and to check fingerprints of new downloads, never the files. Phone check-up downloads Apple's public list of iOS versions and the stalkerware list; nothing about your phone is sent.
-- **AI is your choice.** The built-in assistant uses your Claude sign-in; any MCP agent can connect instead. Your question and the data it looks up go to that AI only when you ask.
+- **AI is your choice, and it can stay on your Mac.** The built-in assistant uses your Claude sign-in, or switch on **Fully local** in Settings: Hashling picks a free open model that fits your Mac's memory (or one you choose, or your own Ollama or LM Studio), downloads it once, checks it, and runs it with llama.cpp only while you are asking. Nothing you ask leaves the Mac. Any MCP agent can connect too. Your question and the data it looks up go to a cloud AI only if you chose one, and only when you ask.
 - **Agents can look, never change.** They can propose fixes, but approving needs Touch ID or your password through macOS, so even an agent holding the token cannot approve its own proposal.
 - **Locked to this Mac.** The dashboard lives at `http://hashling.localhost:5750`, listens on this Mac's loopback only, refuses cross-site requests, and a new browser has to unlock with Touch ID. Phone mode is off until you switch it on; then only phones you paired with a code can reach Hashling, over encrypted messages, and only for a short list of things.
 - **Undo is built in.** Quarantined files can be restored, cleanups go to the Trash, and removed permissions can be granted again.
@@ -178,7 +178,7 @@ hashling logs            # what Hashling is doing
 hashling uninstall --all # remove Hashling (it lists anything left behind)
 ```
 
-To update, install again the same way; your settings and history are kept. Before removing Hashling, restore any quarantined files you want and unblock any websites you blocked (both on the Approvals page).
+When a new version is out, Hashling shows an **Update now** button. It asks for your Touch ID, checks the download against the release's published checksum, and keeps your settings and history. Installing again the same way works too. Before removing Hashling, restore any quarantined files you want and unblock any websites you blocked (both on the Approvals page).
 
 ## Why you can trust it
 

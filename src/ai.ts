@@ -3,6 +3,7 @@
  * restricted mode with ONLY the Hashling MCP server attached, so it can look,
  * scan, explain and propose fixes, but cannot run commands or edit files.
  * Anything it proposes still waits for the user's Touch ID in Approvals.
+ * With the 'local' provider it uses an open model running on this Mac instead (localai.ts).
  */
 import { spawn, type ChildProcess } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -12,6 +13,7 @@ import { DATA_DIR, HOME, ROOT } from './config.ts';
 import { db, now, toJson, parseJson } from './db.ts';
 import { run } from './lib/exec.ts';
 import { loadPrefs, AUDIENCE } from './prefs.ts';
+import { localChat, localReady } from './localai.ts';
 
 const AI_DIR = join(DATA_DIR, 'ai');
 const CONFIG_PATH = join(DATA_DIR, 'config.json');
@@ -37,7 +39,7 @@ export type ModelKey = keyof typeof MODELS;
 export type HandoffTarget = 'desktop-code' | 'desktop-chat' | 'cli';
 
 export interface AiConfig {
-  provider: 'claude-code' | 'anthropic-key' | 'off';
+  provider: 'claude-code' | 'anthropic-key' | 'local' | 'off';
   model: ModelKey;
   handoff?: HandoffTarget;
   apiKey?: string;
@@ -100,6 +102,7 @@ export async function aiStatus(): Promise<{ ready: boolean; detail: string; prov
   const c = loadConfig();
   const base = { provider: c.provider, model: MODELS[c.model].label };
   if (c.provider === 'off') return { ...base, ready: false, detail: 'The AI assistant is turned off in Settings.' };
+  if (c.provider === 'local') return { ...base, model: 'Local model', ...localReady() };
   const bin = claudeBin();
   if (!bin) return { ...base, ready: false, detail: 'Claude Code is not installed. Install it from claude.com/code, or switch to an API key in Settings.' };
   if (c.provider === 'anthropic-key') {
@@ -189,7 +192,7 @@ export async function ask(opts: { threadId?: string; message: string; context?: 
   const status = await aiStatus();
   if (!status.ready) { onEvent({ type: 'error', message: status.detail }); return; }
   if (running.size >= 3) { onEvent({ type: 'error', message: 'The assistant is busy with other questions. Try again in a moment.' }); return; }
-  ensureMcpConfig();
+  if (c.provider !== 'local') ensureMcpConfig();
 
   let thread = opts.threadId ? db.prepare('SELECT * FROM ai_threads WHERE id = ?').get(opts.threadId) as Record<string, unknown> | undefined : undefined;
   if (!thread) {
@@ -202,6 +205,22 @@ export async function ask(opts: { threadId?: string; message: string; context?: 
   const messages = parseJson<Msg[]>(thread.messages, []);
   messages.push({ role: 'user', text: opts.message, at: now(), context: opts.context });
   onEvent({ type: 'start', threadId });
+
+  if (c.provider === 'local') {
+    const started = Date.now();
+    const history = messages.slice(0, -1).map((m) => ({ role: m.role, text: m.text }));
+    try {
+      const r = await localChat(`${SYSTEM}\n${AUDIENCE[loadPrefs().mode]}\nYou are running as a small model on this Mac. Call a tool before answering anything about this Mac, and keep answers short.`,
+        history, opts.message.slice(0, 4000) + contextBlock(opts.context), (e) => onEvent(e), signal, (n) => TOOL_LABEL[n] ?? n);
+      if (r.answer) messages.push({ role: 'assistant', text: r.answer, tools: r.tools, actions: r.actions, at: now() });
+      else onEvent({ type: 'error', message: signal.aborted ? 'Stopped.' : 'The local model did not answer. Try again, or pick a bigger model in Settings.' });
+      onEvent({ type: 'done', threadId, ms: Date.now() - started });
+    } catch (e) {
+      onEvent({ type: 'error', message: signal.aborted ? 'Stopped.' : `The local model had a problem: ${(e as Error).message}.` });
+    }
+    db.prepare('UPDATE ai_threads SET messages = ?, updated_at = ? WHERE id = ?').run(toJson(messages), now(), threadId);
+    return;
+  }
 
   const args = [
     '-p', opts.message.slice(0, 4000) + contextBlock(opts.context),

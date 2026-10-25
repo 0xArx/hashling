@@ -261,10 +261,13 @@ function setupHtml() {
     const ai = setup.ai;
     body = `<h2 id="setup-title">Connect your AI (optional)</h2><p class="setup-lead">Every warning already comes with a plain explanation. Connect your Claude account and I can also answer your own questions, like “is this app safe?” or “why is my Mac slow?”. Prefer another AI? Any agent that supports MCP (Claude Code, Claude Desktop, Cursor, Codex and others) can work with me too.</p>
       ${ai?.ready ? `<div class="status" style="margin:0"><div class="ico">${icon('shieldok', 'lg')}</div><div><b>Connected${ai.account ? ` as ${esc(ai.account)}` : ''}</b><span class="sub">Ask me anything from the button at the top of every page.</span></div></div>
-        <p class="small muted" style="margin:12px 0 0">When you ask me something, your question and what I look up on your Mac go to Claude. Nothing is sent unless you ask, and I only suggest fixes: you make them happen with Touch ID.</p>`
+        <p class="small muted" style="margin:12px 0 0">${ai.provider === 'local' ? 'Everything runs on this Mac, so nothing you ask leaves it.' : 'When you ask me something, your question and what I look up on your Mac go to Claude. Nothing is sent unless you ask.'} I only suggest fixes: you make them happen with Touch ID.</p>`
+        : ai?.provider === 'local' ? `<div class="status flag" style="margin:0"><div class="ico">${icon('spark', 'lg')}</div><div><b>Setting up an AI that runs only on this Mac</b><span class="sub">${esc(ai.detail)}</span></div></div>
+        <p class="small muted" style="margin:10px 0 0">It downloads in the background, so carry on. Nothing you ask will leave this Mac. You can change the model in Settings.</p>
+        <div class="row" style="gap:8px;margin-top:12px"><button class="btn ghost" data-act="setup-check">Check again</button></div>`
         : `<div class="explain"><p>I can only <b>look</b> and <b>suggest</b>. I cannot change anything on your Mac by myself: every fix I suggest waits for your Touch ID.</p><p style="margin-top:8px">When you ask me something, your question and what I look up on your Mac are sent to that AI’s company and handled under their privacy terms. Nothing is sent unless you ask.</p></div>
-        <div class="row" style="gap:8px;margin-top:12px"><button class="btn" data-act="ai-connect">${icon('ext')}Connect Claude</button><button class="btn ghost" data-act="setup-check">Check again</button></div>
-        <p class="small muted" style="margin:10px 0 0">Opens Terminal and your browser so you can sign in once. No Claude account? Skip this, everything else works without it.</p>`}
+        <div class="row" style="gap:8px;margin-top:12px"><button class="btn" data-act="ai-connect">${icon('ext')}Connect Claude</button><button class="btn" data-act="setup-local">${icon('spark')}Run an AI fully on this Mac</button><button class="btn ghost" data-act="setup-check">Check again</button></div>
+        <p class="small muted" style="margin:10px 0 0">Connect Claude opens Terminal and your browser so you can sign in once. Running an AI on this Mac downloads a free model picked for your Mac (a few GB), and nothing you ask leaves it. Or skip this: everything else works without an AI.</p>`}
       <div class="setup-actions"><button class="btn primary lg" data-act="setup-next">${ai?.ready ? 'Continue' : 'Skip for now'}</button><button class="btn ghost" data-act="setup-back">Back</button></div>`;
   } else if (setup.step === 4) {
     const row = (on, title, text, button) => `<li class="prot ${on ? 'on' : ''}">${icon(on ? 'check' : 'shield')}<div><b>${title}</b><span>${text}</span></div>${on ? '<span class="chip ok">On</span>' : button}</li>`;
@@ -348,7 +351,8 @@ document.addEventListener('click', async (ev) => {
       const again = r?.on ? r : await api('/api/recheck-access', { method: 'POST', body: {} }).catch(() => null);
       setup.fda = Boolean(again?.on); setup.fdaRetry = !setup.fda; renderSetup();
       if (!setup.fda) toast('Still off. Check that the switch next to Hashling is on in Full Disk Access.');
-    } else if (act === 'setup-check') { el.disabled = true; await refreshSetupStatus(); renderSetup(); }
+    } else if (act === 'setup-local') { el.disabled = true; await api('/api/ai/config', { method: 'POST', body: { provider: 'local' } }); W.state.localOnly = true; await refreshSetupStatus(); renderSetup(); }
+    else if (act === 'setup-check') { el.disabled = true; await refreshSetupStatus(); renderSetup(); }
     else if (act === 'setup-auto') { await api('/api/prefs', { method: 'POST', body: { autoQuarantine: true } }); await refreshSetupStatus(); renderSetup(); }
     else if (act === 'setup-dns') {
       // Changing network settings needs the Mac password; Hashling creates the change and approves it in one go.

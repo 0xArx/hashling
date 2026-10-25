@@ -35,6 +35,8 @@ import { redFlags } from './lib/scamflags.ts';
 import { findUninstaller } from './lib/uninstaller.ts';
 import { PHONE_SECRET, phoneMayCall, phoneState, phoneOn, phoneOff, newPairing, forgetPhone, pairingDone } from './phone.ts';
 import { userPresence } from './actions.ts';
+import { updateState, checkForUpdate, installUpdate } from './updates.ts';
+import { localStatus, saveLocalConfig, setupLocal, deleteModel } from './localai.ts';
 import { listWatched, watchEmail, unwatchEmail, checkBreaches } from './intel/breaches.ts';
 import { messageWatchState, resetMessageWatch } from './collectors/messages.ts';
 import { checkMedia } from './lib/aimedia.ts';
@@ -306,19 +308,43 @@ route('POST', '/api/recheck-access', async (req, res) => {
   if (!on && b?.restart) { send(res, 200, { on, restarting: true }); setTimeout(() => process.exit(0), 300); return; }
   send(res, 200, { on });
 }, true);
+// Updates. Anyone connected may see whether one exists; installing changes the Mac, so it needs Touch ID.
+route('GET', '/api/update', (_q, res) => send(res, 200, updateState()));
+route('POST', '/api/update/check', async (_q, res) => send(res, 200, await checkForUpdate()), true);
+route('POST', '/api/update/install', async (_q, res) => {
+  const s = updateState();
+  if (!s.canInstall) return send(res, 409, { error: s.devCheckout ? 'This copy of Hashling runs from its source code. Update it with git pull.' : 'There is no newer version to install.' });
+  const p = await userPresence(`update Hashling to version ${s.latest?.version}`);
+  if (!p.ok) return send(res, 403, { error: `Not updated: ${p.message}.` });
+  const r = await installUpdate();
+  send(res, 'error' in r ? 500 : 202, r);
+}, true);
 route('GET', '/api/ai/status', async (_q, res) => send(res, 200, await aiStatus()), true);
 route('GET', '/api/ai/config', (_q, res) => send(res, 200, publicConfig()), true);
 route('POST', '/api/ai/config', async (req, res) => {
   const b = await body(req);
   const patch: Record<string, unknown> = {};
-  if (['claude-code', 'anthropic-key', 'off'].includes(b.provider)) patch.provider = b.provider;
+  if (['claude-code', 'anthropic-key', 'local', 'off'].includes(b.provider)) patch.provider = b.provider;
   if (b.model in MODELS) patch.model = b.model;
   if (typeof b.apiKey === 'string') patch.apiKey = b.apiKey.trim();
   if (typeof b.extraHeaders === 'string') patch.extraHeaders = b.extraHeaders.trim().slice(0, 500);
   if (['desktop-code', 'desktop-chat', 'cli'].includes(b.handoff)) patch.handoff = b.handoff;
   saveConfig(patch);
+  if (patch.provider === 'local') void setupLocal();
   send(res, 200, { ...publicConfig(), status: await aiStatus() });
 }, true);
+// Fully local AI: what this Mac can run, the chosen model, and setup progress.
+route('GET', '/api/ai/local', (_q, res) => send(res, 200, localStatus()), true);
+route('POST', '/api/ai/local', async (req, res) => {
+  const b = await body(req);
+  const r = saveLocalConfig({ choice: String(b.choice ?? 'auto'), custom: b.custom == null ? undefined : String(b.custom), serverUrl: b.serverUrl == null ? undefined : String(b.serverUrl), serverModel: b.serverModel == null ? undefined : String(b.serverModel) });
+  if ('error' in r) return send(res, 400, r);
+  saveConfig({ provider: 'local' });
+  void setupLocal();
+  send(res, 200, localStatus());
+}, true);
+route('POST', '/api/ai/local/setup', (_q, res) => { void setupLocal(); send(res, 202, localStatus()); }, true);
+route('DELETE', '/api/ai/local/models/:file', (_q, res, [file]) => send(res, deleteModel(decodeURIComponent(file)) ? 200 : 404, localStatus()), true);
 route('POST', '/api/ai/handoff', async (req, res) => {
   const b = await body(req);
   send(res, 200, await handoff({ question: String(b.question ?? ''), context: b.context, target: b.target }));

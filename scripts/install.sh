@@ -11,6 +11,7 @@
 #   HASHLING_NO_START=1                  build everything but do not link, start or open Hashling
 #   HASHLING_ANSWER=y|n                  answer the installer's yes/no question without a keyboard
 #   HASHLING_BREW_PATH=/nonexistent      pretend Homebrew is not installed (tests the prompt)
+#   HASHLING_NO_OPEN=1                   do not open the dashboard at the end (used by in-app updates)
 set -eu
 USER_PATH="$PATH"
 PATH_ADDED=""
@@ -180,4 +181,4 @@ else cat <<EOF
     Others:        command "hashling", args ["mcp"]
 EOF
 fi
-HASHLING_NODE="$NODE" "$BIN_DIR/hashling" open || true
+[ -n "${HASHLING_NO_OPEN:-}" ] || HASHLING_NODE="$NODE" "$BIN_DIR/hashling" open || true

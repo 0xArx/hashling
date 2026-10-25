@@ -27,6 +27,15 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Hashling 0.2.0:': {
+    tag: 'new feature',
+    title: 'Update now, and an AI that runs fully on your Mac',
+    bullets: [
+      'When a new version is out, an Update now button appears. It asks for your Touch ID, checks the download against its published checksum, and keeps your settings and history.',
+      'Fully local mode: Hashling picks a free open model that fits your Mac (or one you choose, or your own Ollama or LM Studio), downloads it once and runs it on your Mac. Nothing you ask leaves it.',
+      'The AI apps table and warning lists read better on a phone.',
+    ],
+  },
   'Security updates:': {
     tag: 'security',
     title: 'Security updates for the parts Hashling is built on',

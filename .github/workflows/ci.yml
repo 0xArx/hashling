@@ -43,3 +43,5 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Start Hashling in a sandbox and check its API
         run: node scripts/smoke.mjs
+      - name: Updates and fully local AI, against stand-in servers
+        run: node scripts/test-features.mjs

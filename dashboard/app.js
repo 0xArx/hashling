@@ -152,7 +152,9 @@ const askIcons = (ctx, prompt) => {
 /** A small "Explain" button that asks the AI about any item. */
 const askBtn = (ctx, label = 'Explain', prompt) => {
   const data = `data-ctx="${attr(ctx)}"${prompt ? ` data-prompt="${esc(prompt)}"` : ''}`;
-  return `<span class="ask-pair"><button class="ask" type="button" data-act="ask" ${data}>${icon('spark')}${esc(label)}</button><button class="ask ask-claude" type="button" data-act="handoff" ${data} title="Ask in Claude (opens your Claude app with this question filled in)" aria-label="Ask in Claude">${icon('ext')}Claude</button></span>`;
+  // In fully local mode nothing goes to a cloud AI, so the "Ask in Claude" shortcut is not offered.
+  const claude = state.localOnly ? '' : `<button class="ask ask-claude" type="button" data-act="handoff" ${data} title="Ask in Claude (opens your Claude app with this question filled in)" aria-label="Ask in Claude">${icon('ext')}Claude</button>`;
+  return `<span class="ask-pair"><button class="ask" type="button" data-act="ask" ${data}>${icon('spark')}${esc(label)}</button>${claude}</span>`;
 };
 
 /** The "anything suspicious here?" bar at the top of each monitor view. */
@@ -781,19 +783,20 @@ views.settings = async () => {
   const bt = !/Bluetooth/.test(lim);
   return `<div class="grid g2" style="align-items:start">
   <section class="card">
-    <div class="pad"><p class="h2">Your AI connection</p><p class="small muted" style="margin:4px 0 6px">Every warning already explains itself. With your Claude account connected, I can also answer your own questions.</p>
+    <div class="pad"><p class="h2">Your AI connection</p><p class="small muted" style="margin:4px 0 6px">Every warning already explains itself. With an AI connected, either your Claude account or a model running fully on this Mac, I can also answer your own questions.</p>
       <ul class="small muted" style="margin:0;padding-left:18px;line-height:1.7"><li>I can look things up, scan files and suggest fixes.</li><li>I can’t change anything by myself: every fix needs your Touch ID.</li><li>Prefer another AI? Cursor, Codex and other AI apps can work with me too (through MCP). I come with a guide they read to set themselves up.</li></ul></div>
     <hr class="sep">
     <div class="pad stack" style="gap:14px">
       <div class="status ${st.ready ? '' : 'flag'}" style="margin:0"><div class="ico">${icon(st.ready ? 'shieldok' : 'alert', 'lg')}</div><div><b>${st.ready ? 'Connected' : 'Not connected yet'}</b><span class="sub">${esc(st.detail)}${st.account ? ` (${esc(st.account)})` : ''}</span></div></div>
-      <div><p class="label">Connect with</p><div class="seg" role="radiogroup">${[['claude-code', 'Claude Code sign-in'], ['anthropic-key', 'Anthropic API key'], ['off', 'Off']].map(([v, l]) => `<button class="${cfg.provider === v ? 'on' : ''}" data-act="ai-provider" data-v="${v}">${l}</button>`).join('')}</div></div>
+      <div><p class="label">Connect with</p><div class="seg" role="radiogroup">${[['claude-code', 'Claude Code sign-in'], ['anthropic-key', 'Anthropic API key'], ['local', 'Fully local'], ['off', 'Off']].map(([v, l]) => `<button class="${cfg.provider === v ? 'on' : ''}" data-act="ai-provider" data-v="${v}">${l}</button>`).join('')}</div></div>
       ${cfg.provider === 'claude-code' ? `<div class="row"><button class="btn ${st.ready ? '' : 'primary'}" data-act="ai-connect">${icon('ext')}${st.ready ? 'Sign in with another account' : 'Sign in to Claude'}</button><span class="tiny muted">Opens Terminal and your browser. Sign in once, then come back.</span></div>` : ''}
       ${cfg.provider === 'anthropic-key' ? `<div class="stack" style="gap:8px"><input class="input" id="ai-key" type="password" autocomplete="off" placeholder="${cfg.hasKey ? 'Key saved. Paste a new one to replace it.' : 'sk-ant-…'}"><input class="input" id="ai-headers" placeholder="Extra headers (optional), e.g. anthropic-workspace-id: wrkspc_…" value="${esc(cfg.extraHeaders)}"><div class="row"><button class="btn primary" data-act="ai-save-key">Save key</button>${cfg.hasKey ? '<button class="btn ghost" data-act="ai-clear-key">Remove key</button>' : ''}<span class="tiny muted">Stored only on this Mac in ~/.hashling/config.json. Uses your API credit.</span></div></div>` : ''}
-      <div class="adv"><p class="label">Model</p><div class="seg">${Object.entries(cfg.models).map(([k, m]) => `<button class="${cfg.model === k ? 'on' : ''}" data-act="ai-model" data-v="${k}">${esc(m.label)}</button>`).join('')}</div></div>
-      <hr class="sep adv">
-      <div class="adv"><p class="label">Ask in Claude opens</p><div class="seg">${cfg.handoffTargets.map((t) => `<button class="${cfg.handoff === t.id ? 'on' : ''}" data-act="ai-handoff" data-v="${t.id}" ${t.available ? '' : 'disabled title="Not installed on this Mac"'}>${esc(t.label)}</button>`).join('')}</div>
+      ${cfg.provider === 'local' ? '<!--local-ai-->' : ''}
+      <div class="adv" ${cfg.provider === 'local' ? 'hidden' : ''}><p class="label">Model</p><div class="seg">${Object.entries(cfg.models).map(([k, m]) => `<button class="${cfg.model === k ? 'on' : ''}" data-act="ai-model" data-v="${k}">${esc(m.label)}</button>`).join('')}</div></div>
+      <hr class="sep adv" ${cfg.provider === 'local' ? 'hidden' : ''}>
+      <div class="adv" ${cfg.provider === 'local' ? 'hidden' : ''}><p class="label">Ask in Claude opens</p><div class="seg">${cfg.handoffTargets.map((t) => `<button class="${cfg.handoff === t.id ? 'on' : ''}" data-act="ai-handoff" data-v="${t.id}" ${t.available ? '' : 'disabled title="Not installed on this Mac"'}>${esc(t.label)}</button>`).join('')}</div>
         <p class="tiny muted" style="margin:8px 0 0">${esc(cfg.handoffTargets.find((t) => t.id === cfg.handoff)?.detail ?? '')} The question is filled in for you to review; nothing is sent until you press send. If my tools are missing in a Claude Desktop chat, quit and reopen Claude once.</p></div>
-      <div class="row"><button class="btn" data-act="assistant">${icon('spark')}Ask Hashling</button><button class="btn" data-act="handoff">${icon('ext')}Ask in Claude</button></div>
+      <div class="row"><button class="btn" data-act="assistant">${icon('spark')}Ask Hashling</button>${cfg.provider === 'local' ? '' : `<button class="btn" data-act="handoff">${icon('ext')}Ask in Claude</button>`}</div>
     </div>
   </section>
   <section class="card">
@@ -811,7 +814,7 @@ views.settings = async () => {
         <li>Open Terminal and run <code>hashling uninstall --all</code>. I stop, no longer start at login, and my app is removed.</li>
         <li>Optional: delete the <code>.hashling</code> folder in your home folder to remove its history. The uninstall command lists anything else that is left.</li>
       </ol></div></details>
-    <div class="pad"><p class="label">Privacy</p><p class="small muted" style="margin:0">I run on this Mac, with no account and no cloud. I go online only to look up who owns an internet address, download malware signatures and lists of known bad servers, check new downloads’ fingerprints (never the files), and check for updates. When you ask me or your own AI agent something, your question and what I look up on your Mac go to that AI’s company (Anthropic when you ask me here). Use whichever AI you trust; nothing is sent unless you ask.</p></div>
+    <div class="pad"><p class="label">Privacy</p><p class="small muted" style="margin:0">I run on this Mac, with no account and no cloud. I go online only to look up who owns an internet address, download malware signatures and lists of known bad servers, check new downloads’ fingerprints (never the files), and check for updates. ${cfg.provider === 'local' ? 'Fully local AI is on, so when you ask me something here, your question and everything I look up stay on this Mac. An AI agent you connect yourself (like Claude Code) still sends what you ask it to its own company.' : 'When you ask me or your own AI agent something, your question and what I look up on your Mac go to that AI’s company (Anthropic when you ask me here). Use whichever AI you trust, or switch on Fully local above; nothing is sent unless you ask.'}</p></div>
   </section></div>`;
 };
 
@@ -1211,7 +1214,7 @@ document.addEventListener('click', async (ev) => {
     else if (act === 'sql') { state.sql = $('#sql').value; el.disabled = true; try { state.sqlResult = await api('/api/osquery', { method: 'POST', body: { sql: state.sql } }); } catch (e) { state.sqlResult = { rows: [], error: e.message }; } render(); }
     else if (act === 'settings-pane') { await api(`/api/open-settings/${el.dataset.v}`, { method: 'POST' }); toast('Opened System Settings.'); }
     else if (act === 'ai-connect') { const r = await api('/api/ai/connect', { method: 'POST' }); toast(r.ok ? 'Terminal opened. Finish signing in, then ask again.' : r.error); state.ai = null; setTimeout(() => { if (state.view === 'settings') render(); }, 15000); }
-    else if (act === 'ai-provider') { const r = await api('/api/ai/config', { method: 'POST', body: { provider: el.dataset.v } }); state.ai = r.status; render(); }
+    else if (act === 'ai-provider') { const r = await api('/api/ai/config', { method: 'POST', body: { provider: el.dataset.v } }); state.ai = r.status; state.localOnly = el.dataset.v === 'local'; render(); }
     else if (act === 'ai-model') { await api('/api/ai/config', { method: 'POST', body: { model: el.dataset.v } }); toast('Model updated.'); render(); }
     else if (act === 'ai-save-key') { const key = $('#ai-key').value.trim(); const r = await api('/api/ai/config', { method: 'POST', body: { ...(key ? { apiKey: key } : {}), extraHeaders: $('#ai-headers').value } }); state.ai = r.status; toast(r.status.ready ? 'Saved. The assistant is ready.' : r.status.detail); render(); }
     else if (act === 'ai-clear-key') { await api('/api/ai/config', { method: 'POST', body: { apiKey: '' } }); render(); }
@@ -1575,6 +1578,7 @@ try { await import('./buddy.js'); } catch (e) { console.error('Hashling helper d
 try { await import('./phonemode.js'); } catch (e) { console.error('Hashling phone mode did not load', e); }
 try { await import('./shield.js'); } catch (e) { console.error('Hashling extra protection did not load', e); }
 try { await import('./explain.js'); } catch (e) { console.error('Hashling hover explanations did not load', e); }
+try { await import('./updates.js'); } catch (e) { console.error('Hashling updates and local AI did not load', e); }
 
 renderNav();
 route();
