@@ -27,6 +27,20 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Production polish:': {
+    tag: 'website',
+    title: 'A clearer website and a safety net for every change',
+    bullets: [
+      'The home page now starts with what Hashling does for the AI agents on your Mac, with a sharper picture of the AI agents table.',
+      'Grey text on the website is darker and easier to read.',
+      'Every change is now tested by starting Hashling on a real Mac, and there is a guide for anyone who wants to help.',
+    ],
+  },
+  'Launch drafts:': {
+    tag: 'docs',
+    title: 'Tidier launch drafts',
+    bullets: ['The drafts for the public launch stick to what Hashling does.'],
+  },
   'Compare page: describe what each tool does': {
     tag: 'website',
     title: 'A tidier compare page',
@@ -234,7 +248,7 @@ let groupsHtml = '';
 for (const [date, entries] of byDate) {
   const entriesHtml = entries.map(entryHtml).join('\n');
   groupsHtml += `    <section class="cl-group">
-      <p class="cl-date">${esc(formatDate(date))}</p>
+      <h2 class="cl-date">${esc(formatDate(date))}</h2>
       <div class="cl-entries">
 ${entriesHtml}
       </div>

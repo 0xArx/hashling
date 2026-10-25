@@ -5,3 +5,5 @@ helpers/build/
 .vercel
 site/.vercel
 dist/
+.env
+.env.*

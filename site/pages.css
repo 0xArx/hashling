@@ -53,6 +53,8 @@
 }
 .cl-date {
   font-family: var(--font-mono);
+  font-weight: 500;
+  margin-top: 0;
   font-size: 0.78rem;
   color: var(--text3);
   letter-spacing: 0.04em;
@@ -239,7 +241,6 @@
 .cmp-card-price {
   font-size: 0.8rem;
   color: var(--text3);
-  font-family: var(--font-mono);
   margin-bottom: 14px;
 }
 .cmp-card-pro,
@@ -290,7 +291,8 @@
 /* ── Landing: demo video, proof strip, founder line ── */
 .hero-video { position: relative; }
 .hero-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #0e0b24; cursor: pointer; }
-.demo-controls { position: absolute; right: 14px; bottom: 50px; display: flex; gap: 8px; }
+.demo-frame { position: relative; }
+.demo-controls { position: absolute; right: 14px; bottom: 14px; display: flex; gap: 8px; }
 .demo-btn { display: grid; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 50%; background: rgba(16, 13, 40, 0.72); color: #fff; cursor: pointer; backdrop-filter: blur(8px); transition: background 0.15s ease, transform 0.15s ease; }
 .demo-btn:hover { background: rgba(16, 13, 40, 0.9); }
 .demo-btn:active { transform: scale(0.94); }
@@ -306,5 +308,12 @@
 .founder { display: flex; align-items: center; justify-content: center; gap: 12px; max-width: 560px; margin: 26px auto 0; font-size: 0.92rem; line-height: 1.5; color: var(--text2); text-align: left; }
 .founder img { flex: none; border-radius: 50%; box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px var(--border2); }
 .founder a { color: var(--amber); }
-@media (max-width: 600px) { .demo-controls { right: 10px; bottom: 46px; } .demo-btn { width: 34px; height: 34px; } }
+@media (max-width: 600px) { .demo-controls { right: 8px; bottom: 8px; gap: 6px; } .demo-btn { width: 34px; height: 34px; } }
 .trust-list li[hidden] { display: none; }
+
+/* Trust: a quiet list of facts, not a wall of boxes */
+.trust-lean .trust-grid { gap: 0 40px; margin-top: 2.4rem; }
+.trust-lean .trust-grid li { padding: 20px 0; border-radius: 0; background: none; box-shadow: none; border-top: 1px solid var(--border); }
+.trust-lean .trust-grid li > svg { width: 34px; height: 34px; padding: 8px; border-radius: 10px; }
+@media (max-width: 600px) { .trust-lean .trust-grid li { padding: 16px 0; } }
+.trust-lean .section-title { text-align: center; }

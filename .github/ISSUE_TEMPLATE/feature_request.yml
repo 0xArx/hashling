@@ -1,0 +1,11 @@
+name: Idea or request
+description: Something Hashling should watch, explain or do.
+labels: [idea]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help you?
+      description: Describe the problem you want solved, in your own words. A real example helps most.
+    validations:
+      required: true

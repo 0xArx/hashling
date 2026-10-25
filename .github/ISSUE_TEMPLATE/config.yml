@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security problem privately
+    url: https://github.com/0xArx/hashling/security/advisories/new
+    about: Please do not post security problems in public issues.
+  - name: Install guide
+    url: https://github.com/0xArx/hashling/blob/main/INSTALL.md
+    about: Every install step, question and fix.

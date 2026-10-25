@@ -4,11 +4,11 @@
 
 # Hashling
 
-**Your personal AI cybersecurity agent.**
+**Your personal cybersecurity engineer for the age of AI.**
 
-Hashling keeps watch over your Mac around the clock: scams, malware, trackers, risky apps and AI tools. Ask it anything in plain words and it checks your Mac before it answers, using the AI you already have (Claude, or any MCP agent). It suggests fixes and makes them only when you say yes with Touch ID.
+Hashling lives on your Mac and teams up with the AI you already use, like Claude, Cursor or Codex. It watches for scams, malware and AI agents that overstep, explains everything in plain words, and changes nothing until you approve with Touch ID.
 
-[Get started](https://hashling.vercel.app/start) · [Install guide](INSTALL.md) · [Website](https://hashling.vercel.app) · [For AI agents](SKILL.md)
+[Get started](https://hashling.vercel.app/start) · [Watch the 75-second demo](https://hashling.vercel.app/#demo) · [Install guide](INSTALL.md) · [How it compares](https://hashling.vercel.app/compare) · [What's new](https://hashling.vercel.app/changelog) · [For AI agents](SKILL.md)
 
 ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-6C5CE7) ![Apple silicon](https://img.shields.io/badge/Apple%20silicon-M1%2B-6C5CE7) ![Works with MCP](https://img.shields.io/badge/works%20with-Claude%20Code%20%C2%B7%20Cursor%20%C2%B7%20Codex-1B1640) ![MIT](https://img.shields.io/badge/license-MIT-0F9F76)
 
@@ -17,6 +17,14 @@ Hashling keeps watch over your Mac around the clock: scams, malware, trackers, r
 <img src="site/assets/screens/home.png" alt="The Hashling home screen: a security score, a short to-do list, and what needs attention" width="900">
 
 </div>
+
+---
+
+## Why Hashling
+
+- **AI agents now run on your Mac.** Claude Code, Codex and Cursor can run programs, read your files and push code. Hashling shows what each one is allowed to do and tells you when one acts strangely.
+- **Scammers use AI too.** Fake delivery texts, cloned voices and poisoned links are cheap to make now. Hashling checks a message, link or screenshot before you click, call or pay.
+- **Your own AI can be your security engineer.** Connect Claude or any MCP agent and ask "Am I safe?". It looks at your Mac through Hashling and answers in plain words, but it can only look and suggest: every change waits for your Touch ID.
 
 ---
 
@@ -150,7 +158,7 @@ The same data is available over HTTP on `127.0.0.1:5750` with `Authorization: Be
 
 ## You stay in control
 
-- **No account, no cloud.** Hashling runs on your Mac and never uploads your files. It goes online only to download updates (malware signatures, scam and malware lists), to look up who owns an internet address (turn off with `HASHLING_ENRICH=0`), and to check fingerprints of new downloads, never the files. Phone check-up downloads Apple's public list of iOS versions and the stalkerware list; nothing about your phone is sent.
+- **No account. Your files stay on your Mac.** Hashling runs on your Mac and never uploads your files; the only place your questions go is the AI provider you choose. It goes online only to download updates (malware signatures, scam and malware lists), to look up who owns an internet address (turn off with `HASHLING_ENRICH=0`), and to check fingerprints of new downloads, never the files. Phone check-up downloads Apple's public list of iOS versions and the stalkerware list; nothing about your phone is sent.
 - **AI is your choice.** The built-in assistant uses your Claude sign-in; any MCP agent can connect instead. Your question and the data it looks up go to that AI only when you ask.
 - **Agents can look, never change.** They can propose fixes, but approving needs Touch ID or your password through macOS, so even an agent holding the token cannot approve its own proposal.
 - **Locked to this Mac.** The dashboard lives at `http://hashling.localhost:5750`, listens on this Mac's loopback only, refuses cross-site requests, and a new browser has to unlock with Touch ID. Phone mode is off until you switch it on; then only phones you paired with a code can reach Hashling, over encrypted messages, and only for a short list of things.

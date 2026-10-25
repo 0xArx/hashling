@@ -1,7 +1,7 @@
 {
   "name": "hashling",
   "version": "0.1.0",
-  "description": "Your personal AI cybersecurity agent for Mac: keeps watch around the clock, explains what it finds in plain words, and fixes things only with your Touch ID. Dashboard + MCP server over trusted open-source engines.",
+  "description": "Your personal cybersecurity engineer for the age of AI: a free, open-source Mac security agent that teams up with the AI you already use, watches for scams, malware and AI agents that overstep, and changes nothing until you approve with Touch ID.",
   "type": "module",
   "license": "MIT",
   "bin": { "hashling": "bin/hashling" },
@@ -10,7 +10,9 @@
     "start": "node --no-warnings src/daemon.ts",
     "mcp": "node --no-warnings src/mcp.ts",
     "helpers": "sh scripts/build-helpers.sh",
-    "check": "tsc --noEmit -p ."
+    "check": "tsc --noEmit -p .",
+    "test": "node scripts/test-seal.mjs && node scripts/smoke.mjs",
+    "changelog": "node scripts/changelog.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.20.0",

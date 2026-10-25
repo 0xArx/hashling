@@ -1,4 +1,5 @@
-# Checks every change: the TypeScript compiles and the phone channel's encryption matches Node's.
+# Checks every change: the TypeScript compiles, the phone channel's encryption matches Node's,
+# the website's installer is the same file as the repo's, and Hashling starts up and guards its API on a real Mac.
 name: CI
 
 on:
@@ -26,3 +27,19 @@ jobs:
         run: npm run check
       - name: Phone encryption test
         run: node scripts/test-seal.mjs
+      - name: Website installer matches scripts/install.sh
+        run: cmp scripts/install.sh site/install.sh
+
+  smoke:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Start Hashling in a sandbox and check its API
+        run: node scripts/smoke.mjs

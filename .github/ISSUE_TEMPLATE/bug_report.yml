@@ -1,0 +1,26 @@
+name: Something is not working
+description: Hashling did something wrong, showed a wrong warning, or would not install.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for telling us. If this is a security problem in Hashling itself, please do not post it here: [report it privately](https://github.com/0xArx/hashling/blob/main/SECURITY.md).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: health
+    attributes:
+      label: What `hashling status` and `hashling version` say
+      description: Paste both. They contain no file contents or passwords, but warnings can name apps on your Mac, so remove anything you would rather not share.
+      render: text
+  - type: input
+    id: mac
+    attributes:
+      label: Your Mac
+      description: Model and macOS version, for example "MacBook Air M2, macOS 27.0.1".

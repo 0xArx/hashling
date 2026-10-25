@@ -85,12 +85,14 @@
       <div class="wrap hero-shot-outer" id="demo">
         <figure class="hero-shot hero-video">
           <div class="hero-shot-bar" aria-hidden="true"><span></span><span></span><span></span><em>hashling.localhost</em></div>
-          <video id="demo-video" src="assets/demo/hashling-demo.mp4" poster="assets/demo/hashling-demo-poster.jpg" width="1920" height="1080" muted loop playsinline preload="metadata" aria-label="A 75 second demo of Hashling: the overview, the AI agents table, a scam check and approving a fix with Touch ID"></video>
-          <div class="demo-controls">
-            <button type="button" class="demo-btn" id="demo-play" aria-label="Pause the demo"><svg class="i-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button>
-            <button type="button" class="demo-btn" id="demo-sound" aria-label="Turn sound on"><svg class="i-muted" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m23 9-6 6M17 9l6 6"/></svg><svg class="i-sound" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></button>
+          <div class="demo-frame">
+            <video id="demo-video" src="assets/demo/hashling-demo.mp4" poster="assets/demo/hashling-demo-poster.jpg" width="1920" height="1080" muted loop playsinline preload="metadata" aria-label="A 75 second demo of Hashling: the overview, the AI agents table, a scam check and approving a fix with Touch ID"></video>
+            <div class="demo-controls">
+              <button type="button" class="demo-btn" id="demo-play" aria-label="Pause the demo"><svg class="i-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+              <button type="button" class="demo-btn" id="demo-sound" aria-label="Turn sound on"><svg class="i-muted" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m23 9-6 6M17 9l6 6"/></svg><svg class="i-sound" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></button>
+            </div>
           </div>
-          <figcaption class="demo-cap">A real recording of Hashling on a Mac. No sign-up. Nothing leaves your computer except what you send to the AI provider you choose.</figcaption>
+          <figcaption class="demo-cap">A real recording of Hashling on a Mac. There is no sign-up, and nothing leaves your computer except what you send to the AI provider you choose.</figcaption>
         </figure>
       </div>
     </section>
@@ -101,8 +103,6 @@
         <li><a href="https://github.com/0xArx/hashling" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17l-5.7 3.1 1.2-6.3L2.9 9.4l6.3-.8z"/></svg><span id="proof-stars">Star it on GitHub</span></a></li>
         <li id="proof-downloads-li" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="proof-downloads"></span></li>
         <li><a href="/changelog"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="proof-shipped">New updates every week</span></a></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Free and open source (MIT)</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Works with Claude, Cursor and Codex</li>
       </ul>
     </section>
 
@@ -128,27 +128,27 @@
         <h2 id="features-h" class="section-title">What it does for you</h2>
         <article class="feature-row reveal">
           <div class="feature-text">
+            <h3>Watches the AI agents on your Mac</h3>
+            <p>Claude Code, Codex and Cursor can run programs, read your files and push code. Hashling shows what each one is allowed to do and warns you the moment one acts strangely.</p>
+            <ul class="feature-points"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Claude, Codex, Cursor, VS Code and more</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Spots passwords and keys left in their settings</li></ul>
+          </div>
+          <div class="feature-media"><figure class="feature-shot"><img src="assets/screens/ai-apps.png" width="1600" height="1000" alt="Hashling’s AI agents table: Claude Code and Codex are marked high risk because they can run programs and control a web browser" loading="lazy"></figure></div>
+        </article>
+        <article class="feature-row feature-row--flip reveal">
+          <div class="feature-text">
+            <h3>Your AI becomes your security engineer</h3>
+            <p>Connect Claude or any AI you already use. Ask “Am I safe?” or “Why is my Mac slow?” and it checks your Mac through Hashling first, then answers in plain words.</p>
+            <ul class="feature-points"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Every warning has an Explain button</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Simple, Standard or Expert detail</li></ul>
+          </div>
+          <div class="feature-media"><figure class="feature-shot"><img src="assets/screens/ask-hashling.png" width="1600" height="1000" alt="Hashling’s assistant page with suggested questions like Am I safe right now" loading="lazy"></figure></div>
+        </article>
+        <article class="feature-row reveal">
+          <div class="feature-text">
             <h3>Is this a scam?</h3>
             <p>Paste a text, email or link, or drop in a screenshot. Hashling points out the tricks before you click, call or pay.</p>
             <ul class="feature-points"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Checks links against known scam sites</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Reads screenshots on your computer</li></ul>
           </div>
           <div class="feature-media"><figure class="feature-shot"><img src="assets/screens/scam-check.png" width="1600" height="1000" alt="Hashling’s scam check pointing out four warning signs in a fake delivery text" loading="lazy"></figure></div>
-        </article>
-        <article class="feature-row feature-row--flip reveal">
-          <div class="feature-text">
-            <h3>Keeps your AI tools in check</h3>
-            <p>AI assistants can run programs and read your files. Hashling shows what each one is allowed to do and warns you when one acts strangely.</p>
-            <ul class="feature-points"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Claude, Codex, Cursor, VS Code and more</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Finds passwords left in their settings</li></ul>
-          </div>
-          <div class="feature-media"><figure class="feature-shot"><img src="assets/screens/ai-apps.png" width="1600" height="1000" alt="A table of what each AI app on the computer is able to do, with Claude Code and Codex marked high risk" loading="lazy"></figure></div>
-        </article>
-        <article class="feature-row reveal">
-          <div class="feature-text">
-            <h3>Ask it anything</h3>
-            <p>Is anyone tracking me? Why is my Mac slow? Hashling checks your computer first, then answers in plain words using the AI you already have.</p>
-            <ul class="feature-points"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Every warning has an Explain button</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Simple, Standard or Expert detail</li></ul>
-          </div>
-          <div class="feature-media"><figure class="feature-shot"><img src="assets/screens/ask-hashling.png" width="1600" height="1000" alt="Hashling’s assistant page with suggested questions like Am I safe right now" loading="lazy"></figure></div>
         </article>
         <article class="feature-row feature-row--flip reveal">
           <div class="feature-text">

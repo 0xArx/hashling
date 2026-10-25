@@ -294,7 +294,8 @@
   sync();
 })();
 
-/* Proof strip: live numbers from GitHub's public API. Anything that fails keeps its plain wording. */
+/* Proof strip: live numbers from GitHub's public API. Small counts are not proof yet, so below the
+   thresholds (and whenever a request fails) each item keeps its plain wording. */
 (function () {
   var stars = document.getElementById('proof-stars');
   if (!stars) return;
@@ -313,10 +314,10 @@
     return null;
   }
   function show(d) {
-    if (d.stars > 0) stars.textContent = fmt(d.stars) + (d.stars === 1 ? ' star' : ' stars') + ' on GitHub';
+    if (d.stars >= 25) stars.textContent = fmt(d.stars) + (d.stars === 1 ? ' star' : ' stars') + ' on GitHub';
     var a = d.pushed && ago(d.pushed);
     if (a) shipped.textContent = a + ' · see what changed';
-    if (d.downloads > 0) { dl.textContent = fmt(d.downloads) + ' downloads'; dlLi.hidden = false; }
+    if (d.downloads >= 100) { dl.textContent = fmt(d.downloads) + ' downloads'; dlLi.hidden = false; }
   }
   var cached;
   try { cached = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) {}
