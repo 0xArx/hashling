@@ -24,7 +24,7 @@ func plistPath(_ key: String) -> String? {
 /// Built on this Mac: the paths the installer wrote. Release build: where the installer puts Hashling.
 let root = plistPath("HashlingRoot") ?? "\(home)/.hashling/app"
 let node = plistPath("HashlingNode")
-    ?? ["/opt/homebrew/opt/node@24/bin/node", "/usr/local/opt/node@24/bin/node", "/opt/homebrew/bin/node"]
+    ?? ["\(home)/.hashling/runtime/node", "/opt/homebrew/opt/node@24/bin/node", "/usr/local/opt/node@24/bin/node", "/opt/homebrew/bin/node"]
         .first { FileManager.default.isExecutableFile(atPath: $0) } ?? "/opt/homebrew/bin/node"
 let base = "http://127.0.0.1:5750"
 /// Where the dashboard opens in the browser: the friendly name, which always means this Mac.

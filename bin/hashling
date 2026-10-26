@@ -8,7 +8,8 @@ done
 ROOT="$(cd "$(dirname "$SELF")/.." && pwd)"
 # Hashling needs Node 24. Prefer Homebrew's node@24 over whatever "node" is first on PATH,
 # which may be older, newer, or broken by a Homebrew update.
+# The double-click installer brings its own Node in ~/.hashling/runtime.
 NODE="${HASHLING_NODE:-}"
-for n in /opt/homebrew/opt/node@24/bin/node /usr/local/opt/node@24/bin/node; do [ -z "$NODE" ] && [ -x "$n" ] && NODE="$n"; done
+for n in "$HOME/.hashling/runtime/node" /opt/homebrew/opt/node@24/bin/node /usr/local/opt/node@24/bin/node; do [ -z "$NODE" ] && [ -x "$n" ] && NODE="$n"; done
 [ -n "$NODE" ] || NODE="$(command -v node || echo /opt/homebrew/bin/node)"
 exec "$NODE" --no-warnings "$ROOT/src/cli.ts" "$@"

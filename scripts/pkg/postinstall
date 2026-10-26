@@ -1,0 +1,49 @@
+#!/bin/sh
+# Runs after Installer has copied Hashling into your home folder (~/Applications/Hashling.app and
+# ~/.hashling): starts Hashling's background service, puts the `hashling` command where Terminal finds it,
+# and opens the dashboard for the first-run setup. Same end result as the one-line installer.
+#
+# HASHLING_PKG_TEST=1 (used by scripts/test-pkg.sh) checks everything but starts nothing permanent.
+set -u
+
+# Installs into the home folder normally run as you. If Installer ran this as root, act as the person at the Mac.
+if [ "$(id -u)" = "0" ]; then
+  USER_NAME="$(stat -f %Su /dev/console)"
+  USER_HOME="$(dscl . -read "/Users/$USER_NAME" NFSHomeDirectory 2>/dev/null | awk '{print $2}')"
+  AS_USER() { launchctl asuser "$(id -u "$USER_NAME")" sudo -u "$USER_NAME" env HOME="$USER_HOME" "$@"; }
+else
+  USER_HOME="$HOME"
+  AS_USER() { "$@"; }
+fi
+
+HL="$USER_HOME/.hashling"
+NODE="$HL/runtime/node"
+APP="$HL/app"
+LOG="$USER_HOME/Library/Logs/hashling-install.log"
+mkdir -p "$USER_HOME/Library/Logs" 2>/dev/null
+say() { printf '%s %s\n' "$(date '+%H:%M:%S')" "$*" >> "$LOG"; }
+say "Hashling package: finishing the install in $HL"
+
+chmod 755 "$NODE" "$APP/bin/hashling" "$HL/engines/yara-x/yr" 2>/dev/null
+"$NODE" --version >> "$LOG" 2>&1 || { say "The bundled Node does not run on this Mac."; exit 1; }
+
+if [ -n "${HASHLING_PKG_TEST:-}" ]; then
+  say "Test mode: not starting the background service."
+  exit 0
+fi
+
+# Start the background service (the same `hashling install` the one-line installer runs).
+AS_USER env HASHLING_NODE="$NODE" "$NODE" --no-warnings "$APP/src/cli.ts" install >> "$LOG" 2>&1 || say "The service did not start; it will retry at the next login. Details above."
+
+# Make `hashling` work in Terminal (and for AI agents) without asking for a password.
+for dir in /opt/homebrew/bin "$USER_HOME/.local/bin"; do
+  [ "$dir" = "$USER_HOME/.local/bin" ] && AS_USER mkdir -p "$dir"
+  if [ -d "$dir" ] && AS_USER test -w "$dir"; then
+    AS_USER ln -sf "$APP/bin/hashling" "$dir/hashling" && say "Linked the hashling command into $dir" && break
+  fi
+done
+
+# Open the dashboard for the 2-minute setup.
+AS_USER env HASHLING_NODE="$NODE" "$NODE" --no-warnings "$APP/src/cli.ts" open >> "$LOG" 2>&1 || true
+say "Done."
+exit 0

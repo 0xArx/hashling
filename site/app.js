@@ -336,3 +336,31 @@
     show(d);
   }).catch(function () {});
 })();
+
+/* Get started: once a release carries the signed double-click installer (.pkg), it becomes the first and
+   easiest way. Until then (or if GitHub can't be reached) the page keeps its usual three ways. */
+(function () {
+  var zipCard = document.querySelector('[aria-labelledby="way-click"]');
+  var aiCard = document.querySelector('[aria-labelledby="way-ai"]');
+  if (!zipCard || !aiCard) return;
+  fetch('https://api.github.com/repos/0xArx/hashling/releases/latest').then(function (r) { return r.ok ? r.json() : null; }).then(function (rel) {
+    var pkg = rel && (rel.assets || []).filter(function (a) { return /\.pkg$/.test(a.name); })[0];
+    if (!pkg) return;
+    var mb = Math.round(pkg.size / 1e6);
+    var card = document.createElement('article');
+    card.className = 'gs-way gs-way-main';
+    card.setAttribute('aria-labelledby', 'way-pkg');
+    card.innerHTML =
+      '<div class="gs-way-head"><span class="gs-badge">Easiest</span><h3 id="way-pkg">Download and double-click</h3>' +
+      '<p>No Terminal, nothing else to install. The installer brings everything Hashling needs and doesn’t ask for your Mac password.</p></div>' +
+      '<ol class="gs-mini"><li>Download the installer.</li><li>Open it from your Downloads folder and follow the steps.</li><li>My dashboard opens for a <b>2-minute setup</b>.</li></ol>' +
+      '<a class="btn btn-accent gs-dl" href="' + pkg.browser_download_url + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download Hashling ' + rel.tag_name.replace(/^v/, '') + ' (' + mb + ' MB)</a>' +
+      '<p class="gs-fine">Signed and notarized by Apple. For Macs with Apple silicon and macOS 14 or later.</p>';
+    // The AI-agent way moves into the pair, beside Terminal, in place of the old source download.
+    aiCard.parentNode.insertBefore(card, aiCard);
+    var badge = aiCard.querySelector('.gs-badge');
+    if (badge) badge.remove();
+    aiCard.classList.remove('gs-way-main');
+    zipCard.parentNode.replaceChild(aiCard, zipCard);
+  }).catch(function () {});
+})();

@@ -39,7 +39,8 @@ export const BIN = {
   osqueryPacks: join(ENGINES_DIR, 'osquery/private/var/osquery/packs'),
   clamscan: process.env.HASHLING_CLAMSCAN ?? '/opt/homebrew/bin/clamscan',
   freshclam: process.env.HASHLING_FRESHCLAM ?? '/opt/homebrew/bin/freshclam',
-  yr: process.env.HASHLING_YR ?? '/opt/homebrew/bin/yr',
+  // Homebrew's YARA-X, or the copy the double-click installer brings.
+  yr: process.env.HASHLING_YR ?? ['/opt/homebrew/bin/yr', join(ENGINES_DIR, 'yara-x/yr')].find((p) => existsSync(p)) ?? '/opt/homebrew/bin/yr',
   ble: helper('hashling-ble'),
   auth: helper('hashling-auth'),
   trash: helper('hashling-trash'),

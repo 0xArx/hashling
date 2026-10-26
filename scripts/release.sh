@@ -44,17 +44,25 @@ APPZIP="Hashling-$VERSION-mac.zip"
 SRC="hashling-$VERSION-source.tar.gz"
 ditto -c -k --keepParent "$DIST/Hashling.app" "$DIST/$APPZIP"
 git archive --format=tar.gz --prefix="hashling-$VERSION/" -o "$DIST/$SRC" HEAD
-( cd "$DIST" && shasum -a 256 "$APPZIP" "$SRC" > SHA256SUMS.txt && cat SHA256SUMS.txt )
+# The double-click installer, when the "Developer ID Installer" certificate is in the keychain.
+PKG="Hashling-$VERSION.pkg"
+if security find-identity -v -p basic | grep -q "Developer ID Installer"; then
+  sh "$ROOT/scripts/build-pkg.sh" && sh "$ROOT/scripts/test-pkg.sh" "$DIST/$PKG"
+else
+  PKG=""; echo "   (No Developer ID Installer certificate, so no .pkg this time.)"
+fi
+( cd "$DIST" && shasum -a 256 "$APPZIP" "$SRC" $PKG > SHA256SUMS.txt && cat SHA256SUMS.txt )
 
 if [ -z "$PUBLISH" ]; then echo "5/5 Done (not published). Files are in $DIST"; exit 0; fi
 
 echo "5/5 Publishing GitHub Release $TAG ..."
 cat > "$DIST/notes.md" <<NOTES
-**Most people do not need anything here.** The one-line installer at https://hashling.vercel.app/start builds Hashling on your own Mac from this same source.
+**To install Hashling, use https://hashling.vercel.app/start.**${PKG:+ The easiest way is \`$PKG\` below: double-click it and follow the steps.}
 
 What is in this release:
 
-- \`$APPZIP\`: Hashling.app, signed with the maintainer's Apple Developer ID (team VP9VT747BA) and notarized by Apple.
+${PKG:+- \`$PKG\`: the double-click installer. It brings everything Hashling needs, installs into your home folder without your Mac password, and is signed and notarized by Apple.
+}- \`$APPZIP\`: Hashling.app, signed with the maintainer's Apple Developer ID (team VP9VT747BA) and notarized by Apple.
 - \`$SRC\`: the exact source code this release was built from.
 - \`SHA256SUMS.txt\`: checksums, so you can confirm nothing was changed on the way.
 
@@ -70,6 +78,6 @@ To use the notarized app instead of the one the installer built: install Hashlin
 Found a security problem? Please report it privately: see [SECURITY.md](https://github.com/$REPO/blob/main/SECURITY.md).
 NOTES
 gh release create "$TAG" --repo "$REPO" --target "$(git rev-parse HEAD)" --title "Hashling $VERSION" \
-  --notes-file "$DIST/notes.md" "$DIST/$APPZIP" "$DIST/$SRC" "$DIST/SHA256SUMS.txt"
+  --notes-file "$DIST/notes.md" "$DIST/$APPZIP" "$DIST/$SRC" "$DIST/SHA256SUMS.txt" ${PKG:+"$DIST/$PKG"}
 git fetch -q --tags origin
 echo "Published: https://github.com/$REPO/releases/tag/$TAG"

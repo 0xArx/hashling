@@ -39,6 +39,8 @@ const ENTRIES = {
   // null leaves a commit out of the changelog (housekeeping nobody using Hashling would notice).
   'Launch materials: mark the repo description': null,
   'Changelog: leave housekeeping commits out': null,
+  // Ships to people with the next release; the release commit gets the entry.
+  'Double-click installer:': null,
   'Launch materials: 0.2.0 drafts': {
     tag: 'docs',
     title: 'Ready to share',

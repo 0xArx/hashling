@@ -1,5 +1,6 @@
 # Checks every change: the TypeScript compiles, the phone channel's encryption matches Node's,
-# the website's installer is the same file as the repo's, and Hashling starts up and guards its API on a real Mac.
+# the website's installer is the same file as the repo's, Hashling starts up and guards its API on a real Mac,
+# and the double-click installer builds and runs on its own.
 name: CI
 
 on:
@@ -47,3 +48,18 @@ jobs:
         run: node scripts/test-features.mjs
       - name: Booby-trapped project folders are caught, your own setups stay quiet
         run: node scripts/test-projects.mjs
+
+  package:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - name: Build an unsigned double-click installer
+        run: HASHLING_PKG_UNSIGNED=1 sh scripts/build-pkg.sh
+      - name: Install it into a throwaway home folder and start Hashling from it
+        run: sh scripts/test-pkg.sh
