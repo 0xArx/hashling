@@ -146,7 +146,7 @@ const ignoreBtn = (f) => (f.status === 'acknowledged'
 /** Icon-only Explain / Claude pair for dense table rows. */
 const askIcons = (ctx, prompt) => {
   const data = `data-ctx="${attr(ctx)}"${prompt ? ` data-prompt="${esc(prompt)}"` : ''}`;
-  return `<span class="ask-pair icons"><button class="ask" type="button" data-act="ask" ${data} title="Ask me to explain" aria-label="Explain">${icon('spark')}</button><button class="ask ask-claude" type="button" data-act="handoff" ${data} title="Ask in Claude" aria-label="Ask in Claude">${icon('ext')}</button></span>`;
+  return `<span class="ask-pair icons"><button class="ask" type="button" data-act="ask" ${data} title="Ask me to explain" aria-label="Explain">${icon('spark')}</button>${state.localOnly ? '' : `<button class="ask ask-claude" type="button" data-act="handoff" ${data} title="Ask in Claude" aria-label="Ask in Claude">${icon('ext')}</button>`}</span>`;
 };
 
 /** A small "Explain" button that asks the AI about any item. */
@@ -892,7 +892,8 @@ function chatHtml(mode) {
       <div class="welcome-mascot">${hashlingSvg()}</div>
       <h2 class="welcome-title">Hi, I’m Hashling.</h2>
       <p class="welcome-sub">Ask me anything about this Mac. I check it first, explain in plain words, and every fix waits for your Touch ID.</p>
-      ${ai && !ai.ready ? `<div class="ai-off"><b>The built-in assistant isn\u2019t connected yet</b><p class="small muted" style="margin:4px 0 10px">${esc(ai.detail)} Until then, your questions open in your Claude app with my tools, ready to send.</p><div class="row"><button class="btn primary sm" data-act="handoff">${icon('ext')}Ask in Claude</button><button class="btn sm" data-act="ai-connect">Sign in to Claude</button></div></div>` : ''}
+      ${ai && !ai.ready && ai.provider === 'local' ? `<div class="ai-off"><b>The AI on this Mac isn\u2019t ready yet</b><p class="small muted" style="margin:4px 0 10px">${esc(ai.detail)} Nothing you ask leaves this Mac, so I\u2019ll answer once it\u2019s ready.</p><div class="row"><a class="btn sm" href="#/settings">Open Settings</a></div></div>` : ''}
+      ${ai && !ai.ready && ai.provider !== 'local' ? `<div class="ai-off"><b>The built-in assistant isn\u2019t connected yet</b><p class="small muted" style="margin:4px 0 10px">${esc(ai.detail)} Until then, your questions open in your Claude app with my tools, ready to send.</p><div class="row"><button class="btn primary sm" data-act="handoff">${icon('ext')}Ask in Claude</button><button class="btn sm" data-act="ai-connect">Sign in to Claude</button></div></div>` : ''}
       <div class="suggest">${(inDock ? SUGGEST.slice(0, 4) : SUGGEST).map(([ic, title, hint, q]) => `<button type="button" data-act="ask" data-prompt="${esc(q)}"><span class="sg-ico">${icon(ic)}</span><span class="sg-text"><b>${esc(title)}</b><small>${esc(hint)}</small></span></button>`).join('')}</div></div>` : '';
   return `${welcome}${chat.messages.map((m) => m.role === 'user'
     ? `${m.ctxLabel ? `<div class="msg-ctx">${icon('spark')}About: ${esc(m.ctxLabel)}</div>` : ''}<div class="msg-user">${esc(m.text)}</div>`
@@ -997,7 +998,12 @@ async function aiReady() {
 async function askAI(prompt, ctx) {
   if (chat.busy) { toast('I’m still answering. Stop me or wait a moment.'); return; }
   // Fallback: when the built-in assistant is not connected, hand the question to the user's Claude app.
-  if (!(await aiReady())) { await handoff(prompt, ctx ?? chat.ctx, 'Built-in assistant not connected. '); return; }
+  if (!(await aiReady())) {
+    // Fully local means fully local: never fall back to a cloud AI while the local model is still being set up.
+    if (state.localOnly || state.ai?.provider === 'local') { toast(state.ai?.detail || 'The AI on this Mac isn’t ready yet. See Settings.'); return; }
+    await handoff(prompt, ctx ?? chat.ctx, 'Built-in assistant not connected. ');
+    return;
+  }
   if (ctx) { chat.ctx = ctx; chat.ctxLabel = ctxLabel(ctx); }
   const text = (prompt || (chat.ctx ? DEFAULT_PROMPT[chat.ctx.kind] ?? 'Explain this to me simply and tell me what to do.' : '')).trim();
   if (!text) return;

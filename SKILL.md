@@ -81,6 +81,8 @@ hashling logs            # what Hashling is doing
 hashling uninstall --all # remove Hashling (it lists anything left behind)
 ```
 
+To update, the person presses **Update now** in the dashboard when Hashling shows it (Touch ID, checksum-checked), or runs the installer again.
+
 Before removing Hashling, remind them to unblock any websites they blocked with it and restore any quarantined files they want back (both on the Approvals page).
 
 ## 6. If something is wrong
@@ -88,7 +90,7 @@ Before removing Hashling, remind them to unblock any websites they blocked with 
 - **Dashboard will not open**: `hashling status`. If it says not running, `hashling restart`.
 - **"Hashling can't see everything yet"**: Full Disk Access is off. System Settings, Privacy & Security, Full Disk Access, switch Hashling on, then `hashling restart`.
 - **No warnings arrive**: notifications are off. System Settings, Notifications, Hashling, Allow notifications.
-- **The built-in assistant says it is not connected**: it uses the Claude Code CLI. Run `claude` once in a terminal and sign in, or use any MCP agent instead.
+- **The built-in assistant says it is not connected**: it uses the Claude Code CLI. Run `claude` once in a terminal and sign in, or use any MCP agent instead. Prefer nothing leaving the Mac? Settings, Your AI connection, **Fully local**: Hashling picks, downloads and runs a free model on the Mac.
 - Logs: `~/Library/Logs/hashling.log`. Data and settings: `~/.hashling`.
 
 ## Phone mode

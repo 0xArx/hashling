@@ -122,7 +122,7 @@ Then click **Show me my Mac's check-up**. Hashling's first full check takes a fe
 
 ## 6. Updating and removing
 
-**Update Hashling:** install it again the same way you did the first time. Your settings, history and approvals are kept.
+**Update Hashling:** When a new version is out, Hashling shows an **Update now** button in its dashboard. It asks for your Touch ID, checks the download against the release's published checksum, and keeps your settings, history and approvals. Installing again the same way also works.
 
 **Remove Hashling:** open Terminal and run:
 
@@ -174,7 +174,7 @@ Hashling installs only what it needs, and nothing outside your user account exce
 | A login item so Hashling starts when you log in | `~/Library/LaunchAgents/dev.hashling.agent.plist` |
 | A guide for AI agents (only if you use Claude Code) | `~/.claude/skills/hashling` |
 
-**Privacy:** Hashling has no account and no cloud. It runs on your Mac and never uploads your files. It downloads updates (malware fingerprints and lists of scam websites). Your AI helper, if you connect one, only sees what you ask it about.
+**Privacy:** Hashling has no account and no cloud. It runs on your Mac and never uploads your files. It downloads updates (malware fingerprints and lists of scam websites). Your AI helper, if you connect one, only sees what you ask it about. Switch on **Fully local** in Settings and the AI runs on your Mac instead, so nothing you ask leaves it.
 
 ---
 

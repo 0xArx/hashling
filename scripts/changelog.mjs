@@ -27,6 +27,14 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Polish for 0.2.0:': {
+    tag: 'polish',
+    title: 'Fully local means fully local',
+    bullets: [
+      'While the AI on your Mac is still setting up, questions wait for it instead of opening in a cloud AI.',
+      'The install guide, help pages and compare page now explain Update now and Fully local.',
+    ],
+  },
   'Local AI, tested with real models:': {
     tag: 'improvement',
     title: 'Sharper answers from the AI on your Mac',
