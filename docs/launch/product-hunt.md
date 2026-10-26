@@ -33,22 +33,21 @@ Free, open-source security for your Mac. See what Claude Code, Codex and Cursor 
 
 **Maker's first comment** (post it the moment the launch goes live):
 
-Hi Product Hunt! I'm Abdulrahman, the solo developer behind Hashling.
+Hi Product Hunt! I'm Abdulrahman, founder of Hashling.
 
 AI agents like Claude Code, Codex and Cursor can now run programs, read files and push code on our Macs. I wanted a simple answer to "what is each one allowed to do?", and that grew into a personal security agent that explains everything in plain words.
 
 What makes it different:
 🤖 It audits the AI agents on your Mac: their permissions, MCP servers, keys left in config files, and live network use.
 💬 Your own AI becomes your security engineer. Connect Claude through MCP and ask "is my Mac safe?", or switch on Fully local and a free model runs on your Mac, so nothing leaves it.
+🧨 It catches booby-trapped repos, the cloned projects whose settings make an AI agent run code the moment you trust the folder.
 🔐 It can only look and suggest. Every change waits for your Touch ID, and most can be undone.
 
 It also checks texts and links for scams, scans for malware, watches startup items, permissions and trackers, and checks your phone over USB.
 
 Being upfront: it isn't a firewall, and it scans files shortly after they arrive rather than blocking them first. The compare page says where other tools do better: https://gethashling.com/compare
 
-It's free, MIT-licensed, notarized by Apple, with no account and no tracking. I'd love your feedback, especially on what's confusing.
-
-[FOUNDER: optional one line about what it found on your own Mac.]
+It's free and MIT-licensed, with no account and no tracking. Download the installer, double-click it, and you're set up in a few minutes. I'd love your feedback, especially on what's confusing.
 
 ---
 
@@ -57,5 +56,5 @@ It's free, MIT-licensed, notarized by Apple, with no account and no tracking. I'
 - **"Is it really free? What's the catch?"** Free and open source (MIT). No account, no ads, no data collection. If it ever has paid extras, the core stays free.
 - **"Windows?"** On the way, along with a browser extension. Watch the GitHub repo for releases.
 - **"Intel Mac?"** Apple silicon only for now (M1 or newer, macOS 14+).
-- **"Does it send my data anywhere?"** Your files never leave your Mac. Questions go only to the AI you choose, or nowhere at all in Fully local mode.
+- **"Does it send my data anywhere?"** Your files never leave your Mac. Questions go only to the AI you choose, or nowhere at all in Fully local mode. Every connection is listed at https://gethashling.com/privacy.
 - **"How is this different from an antivirus?"** Antivirus blocks known bad files. Hashling explains your whole setup in plain words, watches your AI tools, and lets your own AI help, with every fix behind Touch ID. Many people run both.

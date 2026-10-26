@@ -24,12 +24,13 @@ Hi r/macapps, I'm the developer. Hashling is a free security helper for your Mac
 
 - Price: free, open source (MIT). No account, no ads, no tracking.
 - Needs: Apple silicon (M1 or newer), macOS 14 or later.
-- Setup: about 10 minutes, with a guide written for non-experts.
+- Setup: download the installer, double-click it and follow the steps. No Terminal and no admin password. A short first-run setup walks you through the rest.
 - The app is signed and notarized by Apple. Updates are one button.
 
 It isn't a firewall and doesn't replace an antivirus that blocks files the moment they arrive. It's for understanding what's going on and fixing it safely.
 
 Get it: https://gethashling.com
+What it sends and to whom: https://gethashling.com/privacy
 75-second demo: https://gethashling.com/#demo
 Code: https://github.com/0xArx/hashling
 

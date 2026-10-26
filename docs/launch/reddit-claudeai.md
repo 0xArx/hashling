@@ -20,21 +20,21 @@ I'm the developer of Hashling, a free, open-source (MIT) security agent for macO
 - which MCP servers and hooks are switched on, and which projects can add more without asking
 - how many API keys are in their settings files (counted, never copied)
 - what each agent is doing on the network right now
+- booby-trapped repos: a cloned project whose `.mcp.json`, `.claude/settings.json` or git config would make Claude run something the moment you trust the folder. It checks who committed those files, so your own setups stay quiet and a stranger's get flagged
 
-**Connect Claude to it:**
+**Connect Claude to it:** install Hashling (download the installer from https://gethashling.com/start and double-click it, or `curl -fsSL https://gethashling.com/install.sh | sh`), then:
 
 ```
-curl -fsSL https://gethashling.com/install.sh | sh
 claude mcp add --scope user hashling -- hashling mcp
 ```
 
 Then ask Claude: *"Is my Mac safe? What can my AI agents do?"* Claude calls Hashling's tools and answers from real data. It can only look and suggest: every change (quarantine a file, remove a permission, block a site) waits for your Touch ID, so even an agent holding the token can't approve its own fix.
 
-**Don't want your questions going to the cloud?** Hashling 0.2.0 has a Fully local mode that runs a free open model on your Mac (it picks one by RAM). Claude stays the better assistant; local is there for when privacy matters more.
+**Don't want your questions going to the cloud?** Hashling has a Fully local mode that runs a free open model on your Mac (it picks one by RAM). Claude stays the better assistant; local is there for when privacy matters more.
 
 **Honest limits:** not a firewall (pair it with LuLu), it scans files shortly after they arrive rather than blocking them first, and zero findings doesn't prove a Mac is clean.
 
-[FOUNDER: one line on what it found on your own Mac. True and relevant here: it counted 51 API keys in plain text in my ~/.claude/CLAUDE.md. Only if you're comfortable, and rotate them first.]
+The first time I ran it on my own Mac, it found API keys sitting in plain text in my Claude config files. That's what made me keep building.
 
 Site and 75-second demo: https://gethashling.com
 Code: https://github.com/0xArx/hashling

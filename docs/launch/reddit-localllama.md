@@ -10,7 +10,7 @@ Small local models kept making up my Mac's security score, so I stopped letting 
 
 **Body:**
 
-I'm building Hashling, a free, MIT-licensed security agent for macOS. Its assistant can use Claude, but I wanted a mode where nothing leaves the Mac, so 0.2.0 runs a local model with llama.cpp. Some notes from getting that to behave:
+I'm building Hashling, a free, MIT-licensed security agent for macOS. Its assistant can use Claude, but I wanted a mode where nothing leaves the Mac, so it can run a local model with llama.cpp. Some notes from getting that to behave:
 
 **Setup is one switch.** Hashling installs llama.cpp with Homebrew, picks a GGUF by RAM and downloads it to `~/.hashling/models`, verifying the SHA-256 Hugging Face publishes. Stalled downloads resume from a `.part` file. `llama-server` (`--jinja`, 16k context) starts on the first question and stops after 10 idle minutes.
 

@@ -10,21 +10,22 @@ Everything for launching Hashling on Hacker News, Reddit, X and Product Hunt. No
 | `reddit-localllama.md` | r/LocalLLaMA. The local AI story and what small models taught us |
 | `reddit-claudeai.md` | r/ClaudeAI. Auditing Claude Code and connecting Claude through MCP |
 | `reddit-macapps.md` | r/macapps. Friendly, non-technical |
-| `x-thread.md` | X. Seven posts, video first |
+| `x-thread.md` | X. Eight posts, video first |
 | `product-hunt.md` | Product Hunt. Every form field, the maker comment and ready answers |
 | `assets/ph-1…5-*.png` | Product Hunt gallery, 1270 × 760. They also work as X and Reddit images |
 | `assets/ph-thumbnail.png` | Product Hunt thumbnail, 240 × 240 |
 | `../../site/assets/demo/hashling-demo.mp4` | The 75-second demo with captions |
 
-Every draft has a `[FOUNDER: …]` line. Fill it in your own words or delete it. A true, specific line about why you built it or what it found on your own Mac does more than anything else in the post.
+The founder lines are filled in with one true story: the first run found API keys in plain text in AI agents' config files. Change it to your own words if you like. A true, specific line about why you built it does more than anything else in a post.
 
 ## 1. The week before
 
 - [ ] **Get 5 to 10 real people to install it** on their own Macs (friends, colleagues, one non-technical person). Watch where they get stuck and fix it. A launch with zero outside installs is a gamble.
-- [ ] **Install it yourself on a clean Mac account** (System Settings, Users & Groups, add a user) with the one-line installer, start to finish.
+- [ ] **Install it yourself on a clean Mac account** (System Settings, Users & Groups, add a user) with the double-click installer from gethashling.com/start, start to finish.
 - [ ] **Upload the demo to YouTube** (unlisted is fine). Product Hunt needs a YouTube link.
 - [x] **GitHub repo description** updated to the new tagline (done 26 October 2026).
-- [ ] **Fill in the `[FOUNDER: …]` lines** in every draft.
+- [x] **Founder lines** written (26 October 2026).
+- [x] **Own domain and privacy page:** gethashling.com and gethashling.com/privacy (26 October 2026).
 - [ ] **Read each subreddit's rules** in its sidebar. Most allow a developer's own post once, with the right flair, and remove anything that looks like an ad.
 - [ ] **Clear your calendar** for launch days. The first 3 hours of replies decide how a post does.
 
