@@ -23,7 +23,7 @@ Every draft has a `[FOUNDER: …]` line. Fill it in your own words or delete it.
 - [ ] **Get 5 to 10 real people to install it** on their own Macs (friends, colleagues, one non-technical person). Watch where they get stuck and fix it. A launch with zero outside installs is a gamble.
 - [ ] **Install it yourself on a clean Mac account** (System Settings, Users & Groups, add a user) with the one-line installer, start to finish.
 - [ ] **Upload the demo to YouTube** (unlisted is fine). Product Hunt needs a YouTube link.
-- [ ] **Update the GitHub repo description** to the new line: "Your personal cybersecurity engineer for the age of AI. Free, open-source Mac security agent that works with your own AI or one running fully on your Mac." (Settings, About, on GitHub.)
+- [x] **GitHub repo description** updated to the new tagline (done 26 October 2026).
 - [ ] **Fill in the `[FOUNDER: …]` lines** in every draft.
 - [ ] **Read each subreddit's rules** in its sidebar. Most allow a developer's own post once, with the right flair, and remove anything that looks like an ad.
 - [ ] **Clear your calendar** for launch days. The first 3 hours of replies decide how a post does.
