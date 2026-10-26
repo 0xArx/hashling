@@ -86,7 +86,8 @@ try {
     seen.push(j);
     const toolResult = j.messages.find((m) => m.role === 'tool');
     if (!toolResult) return sse(res, [{ content: '<think>plan' }, { content: 'ning</think>Let me check. ' }, { tool_calls: [{ index: 0, id: 'c1', function: { name: 'security_overview', arguments: '{}' } }] }]);
-    const score = JSON.parse(toolResult.content).score;
+    // Hashling caps tool results at 8,000 characters for models, so read the score without parsing the whole result.
+    const score = Number(String(toolResult.content).match(/"score":\s*(\d+)/)?.[1]);
     sse(res, [{ content: `**Your Mac scores ${score}.** ` }, { content: 'Nothing else to do.' }]);
   });
 

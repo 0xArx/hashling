@@ -41,6 +41,7 @@ const ENTRIES = {
   'Changelog: leave housekeeping commits out': null,
   // Ships to people with the next release; the release commit gets the entry.
   'Double-click installer:': null,
+  'Tests: ': null,
   'Launch materials: 0.2.0 drafts': {
     tag: 'docs',
     title: 'Ready to share',
