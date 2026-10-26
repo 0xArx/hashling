@@ -27,6 +27,16 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Privacy page:': {
+    tag: 'trust',
+    title: 'A privacy page',
+    bullets: ['Every connection Hashling makes, what it sends and why, in plain words, at gethashling.com/privacy.'],
+  },
+  'The website moves to gethashling.com': {
+    tag: 'website',
+    title: 'A new home: gethashling.com',
+    bullets: ['The website now lives at gethashling.com. The old address sends you there, so saved links and the install command keep working.'],
+  },
   'Hashling 0.3.0:': {
     tag: 'new feature',
     title: 'A double-click installer',
@@ -49,7 +59,8 @@ const ENTRIES = {
   'Changelog: leave housekeeping commits out': null,
   // Ships to people with the next release; the release commit gets the entry.
   'Double-click installer:': null,
-  'Tests: ': null,
+  'Tests: read the stand-in': null,
+  'Get started: the Mac password': null,
   'Launch materials: 0.2.0 drafts': {
     tag: 'docs',
     title: 'Ready to share',

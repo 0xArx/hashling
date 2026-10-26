@@ -1,4 +1,4 @@
-/* pages.css - shared styles for /changelog and /compare */
+/* pages.css - shared styles for /changelog, /compare and /privacy */
 
 /* ── Page shell ── */
 .page-hero {
@@ -317,3 +317,112 @@
 .trust-lean .trust-grid li > svg { width: 34px; height: 34px; padding: 8px; border-radius: 10px; }
 @media (max-width: 600px) { .trust-lean .trust-grid li { padding: 16px 0; } }
 .trust-lean .section-title { text-align: center; }
+
+/* ── Privacy page ── */
+.pv-updated {
+  margin: 14px 0 0;
+  font-size: 0.85rem;
+  color: var(--text3);
+}
+.pv { max-width: 820px; }
+.pv-section + .pv-section {
+  margin-top: 48px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.pv h2 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text1);
+  margin: 0 0 18px;
+  line-height: 1.25;
+}
+.pv p {
+  color: var(--text2);
+  line-height: 1.7;
+  margin: 0 0 12px;
+}
+.pv p:last-child { margin-bottom: 0; }
+.pv b { color: var(--text1); font-weight: 600; }
+.pv a { color: var(--amber); text-underline-offset: 3px; }
+.pv code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text1);
+}
+.pv-points {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.pv-points li {
+  position: relative;
+  padding-left: 22px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+.pv-points li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.72em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+}
+.pv-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.pv-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  padding: 18px 20px;
+}
+.pv-card h3 {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--text1);
+  margin: 0 0 8px;
+}
+.pv-card p { font-size: 0.92rem; line-height: 1.65; }
+.pv-list { margin: 0; }
+.pv-row {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.pv-row:first-child { padding-top: 0; }
+.pv-row:last-child { border-bottom: none; padding-bottom: 0; }
+.pv-row dt {
+  font-weight: 600;
+  color: var(--text1);
+  line-height: 1.6;
+}
+.pv-row dd {
+  margin: 0;
+  color: var(--text2);
+  line-height: 1.7;
+}
+.pv-sends {
+  display: block;
+  color: var(--text1);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+@media (max-width: 700px) {
+  .pv-cards { grid-template-columns: 1fr; }
+  .pv-row { grid-template-columns: 1fr; gap: 4px; }
+}
