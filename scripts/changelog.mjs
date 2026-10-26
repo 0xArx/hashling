@@ -27,7 +27,10 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
-  'Launch materials:': {
+  // null leaves a commit out of the changelog (housekeeping nobody using Hashling would notice).
+  'Launch materials: mark the repo description': null,
+  'Changelog: leave housekeeping commits out': null,
+  'Launch materials: 0.2.0 drafts': {
     tag: 'docs',
     title: 'Ready to share',
     bullets: ['Launch posts, Product Hunt images and a launch playbook, in docs/launch.'],
@@ -242,13 +245,14 @@ const commits = rawLog.map(line => {
   const [hash, date, ...subjectParts] = line.split('|');
   const subject = subjectParts.join('|');
   const bySubject = Object.keys(ENTRIES).find((k) => k.length > 7 && subject.startsWith(k));
+  if (ENTRIES[hash] === null || (bySubject && ENTRIES[bySubject] === null)) return null;
   const entry = ENTRIES[hash] ?? ENTRIES[bySubject] ?? {
     title: subject,
     bullets: ['See the commit for details.'],
     tag: null,
   };
   return { hash, date, ...entry };
-});
+}).filter(Boolean);
 
 // ── Group by date ───────────────────────────────────────────────────────────
 const byDate = new Map();
