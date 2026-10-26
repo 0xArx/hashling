@@ -255,8 +255,12 @@ function scoreExplain(o) {
   const words = { suspicious: ['suspicious thing', 'suspicious things'], risk: ['thing worth fixing', 'things worth fixing'], hardening: ['optional tip', 'optional tips'] };
   const parts = Object.keys(words).filter((t) => b.byTier[t] > 0).map((t) => `<li>Minus ${b.byTier[t]} for ${o.tiers[t]} ${words[t][o.tiers[t] === 1 ? 0 : 1]}</li>`).join('');
   const gain = b.topGains[0];
+  const lost = b.settingsLost ?? 100 - b.settings;
+  const off = b.settingsOff ?? [];
+  const named = off.length > 3 ? `${off.slice(0, 3).join(', ')} and ${off.length - 3} more` : off.join(', ');
+  const settings = lost > 0 ? `<li>Minus ${lost} for macOS security settings that could be better${named ? `: ${esc(named)}` : ''}</li>` : '';
   return `<details class="score-why"><summary>How is this score worked out?</summary>
-    <ul><li>Starts at <b>${b.settings}</b>, from how well your macOS security settings are set (FileVault, firewall, updates and more).</li>${parts}<li>Ignored warnings do not count.</li></ul>
+    <ul><li>Starts at <b>100</b>.</li>${settings}${parts}<li>Ignored warnings do not count.</li></ul>
     ${gain ? `<p>Biggest gain: <a href="#/findings?id=${encodeURIComponent(gain.id)}">${esc(gain.title)}</a> (about +${Math.max(1, Math.round(gain.points))}).</p>` : ''}</details>`;
 }
 

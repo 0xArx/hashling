@@ -29,9 +29,14 @@ export function overview() {
   // What the score is made of, so the dashboard can explain it and point at the biggest gain.
   const byTier = { suspicious: 0, risk: 0, hardening: 0 };
   for (const f of scored) byTier[f.tier] += cost(f);
+  // Shown as "100, minus each part"; the parts are rounded so they add up to exactly the score shown.
+  const settingsLost = 100 - postureScore;
+  const tierLost = score > 0 ? roundToTotal(byTier, 100 - score - settingsLost) : { suspicious: Math.round(byTier.suspicious), risk: Math.round(byTier.risk), hardening: Math.round(byTier.hardening) };
   const scoreBreakdown = {
     settings: postureScore,
-    byTier: { suspicious: Math.round(byTier.suspicious), risk: Math.round(byTier.risk), hardening: Math.round(byTier.hardening) },
+    settingsLost,
+    settingsOff: (posture?.data?.checks ?? []).filter((c) => c.status !== 'pass').map((c) => c.label),
+    byTier: tierLost,
     topGains: [...scored].sort((a, b) => cost(b) - cost(a)).slice(0, 3).map((f) => ({ id: f.id, title: f.title, points: Math.round(cost(f) * 10) / 10 })),
   };
   const verdict = tiers.suspicious ? 'Something looks suspicious'
@@ -112,3 +117,16 @@ export function suspicious() {
   }
   return out;
 }
+
+/** Rounds each part to a whole number so the parts add up to `total` (largest remainder first). */
+function roundToTotal<K extends string>(parts: Record<K, number>, total: number): Record<K, number> {
+  const keys = Object.keys(parts) as K[];
+  const out = Object.fromEntries(keys.map((k) => [k, Math.floor(parts[k])])) as Record<K, number>;
+  let left = total - keys.reduce((n, k) => n + out[k], 0);
+  for (const k of [...keys].sort((x, y) => (parts[y] % 1) - (parts[x] % 1))) {
+    if (left <= 0) break;
+    if (parts[k] > 0) { out[k]++; left--; }
+  }
+  return out;
+}
+

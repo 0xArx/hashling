@@ -27,6 +27,11 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Score explanation:': {
+    tag: 'polish',
+    title: 'A score explanation that adds up',
+    bullets: ['How is this score worked out? now starts at 100 and names the macOS settings that cost points, and the lines add up to exactly the score shown.'],
+  },
   'Privacy page:': {
     tag: 'trust',
     title: 'A privacy page',
