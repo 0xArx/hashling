@@ -27,6 +27,14 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Hashling 0.3.0:': {
+    tag: 'new feature',
+    title: 'A double-click installer',
+    bullets: [
+      'Download Hashling-0.3.0.pkg, open it and follow the steps. No Terminal, no Mac password, and nothing else to install: it brings its own Node and scanning engines.',
+      'It is signed and notarized by Apple, and the Get started page now offers it first.',
+    ],
+  },
   'Booby-trapped project folders:': {
     tag: 'new feature',
     title: 'I now catch project folders booby-trapped for your AI agents',

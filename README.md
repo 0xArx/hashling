@@ -32,7 +32,9 @@ Hashling lives on your Mac and teams up with the AI you already use, like Claude
 
 Free, about 10 minutes, no experience needed. Pick one:
 
-**1. Ask your AI agent** (easiest). Paste this into Claude Code, Cursor, Codex or any agent that can run commands on your Mac:
+**1. Download and double-click** (easiest). Get **Hashling-x.y.z.pkg** from the [latest release](https://github.com/0xArx/hashling/releases/latest), open it and follow the steps. It brings everything Hashling needs, doesn't ask for your Mac password, and is signed and notarized by Apple.
+
+**2. Ask your AI agent.** Paste this into Claude Code, Cursor, Codex or any agent that can run commands on your Mac:
 
 ```text
 Set up Hashling on my Mac. Hashling is a free, open-source personal AI cybersecurity agent for Macs: https://github.com/0xArx/hashling
@@ -40,15 +42,13 @@ Set up Hashling on my Mac. Hashling is a free, open-source personal AI cybersecu
 Read SKILL.md in that repo first and follow it. Check that my Mac can run Hashling, install it, and connect yourself to it. Explain each step in plain words, and tell me before anything needs me (like my Mac password or a switch in System Settings). When it is done, give me a short check-up of my Mac.
 ```
 
-**2. Paste one line into Terminal** (press <kbd>⌘</kbd> + <kbd>Space</kbd>, type *Terminal*, press <kbd>Return</kbd>):
+**3. Paste one line into Terminal** (press <kbd>⌘</kbd> + <kbd>Space</kbd>, type *Terminal*, press <kbd>Return</kbd>):
 
 ```sh
 curl -fsSL https://hashling.vercel.app/install.sh | sh
 ```
 
-**3. Download and double-click.** [Download the ZIP](https://github.com/0xArx/hashling/archive/refs/heads/main.zip), unpack it, and double-click **Install Hashling.command**.
-
-You need a Mac with Apple silicon (M1 or newer), macOS 14 or newer, 3 GB free and your Mac password. The installer explains each of its six steps, waits for you when macOS asks for something, and opens a 2-minute setup when it is done. Every step, question and fix is in the [install guide](INSTALL.md).
+You need a Mac with Apple silicon (M1 or newer) and macOS 14 or newer. Ways 2 and 3 also need 3 GB free and your Mac password; they build Hashling on your Mac with Homebrew. The Terminal installer explains each of its six steps, waits for you when macOS asks for something, and opens a 2-minute setup when it is done. Every step, question and fix is in the [install guide](INSTALL.md).
 
 <div align="center">
 <img src="site/assets/screens/setup.png" alt="Hashling's setup asking how much detail you want: Simple, Standard or Expert" width="560">

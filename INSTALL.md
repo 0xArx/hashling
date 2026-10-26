@@ -35,7 +35,15 @@ If you use Claude Code, Cursor, Codex or another AI agent that can run commands 
 
 It reads the guide in [`SKILL.md`](SKILL.md), checks your Mac, installs Hashling, connects itself to Hashling, and tells you when it needs you (only for your password and two switches in System Settings).
 
-### Way B: Double-click (no typing)
+### Way B: Download the installer (no typing, no password)
+
+1. Open the [latest release](https://github.com/0xArx/hashling/releases/latest) and download **Hashling-x.y.z.pkg**.
+2. Open it from your Downloads folder and follow the steps. It installs into your home folder, so it doesn't ask for your Mac password.
+3. When it finishes, the **#** appears in your menu bar and the dashboard opens for a 2-minute setup.
+
+It brings everything Hashling needs (its own copy of Node, the YARA-X and osquery engines), so there's nothing else to install. It's signed and notarized by Apple. The one thing it leaves out is the ClamAV virus scanner; Hashling still checks files with YARA-X and Apple's own malware rules, and the Terminal installer adds ClamAV if you want it.
+
+### Way B2: The code folder and Install Hashling.command
 
 1. Get the Hashling folder onto your Mac. On the GitHub page, click the green **Code** button, then **Download ZIP**, then double-click the downloaded ZIP to unpack it.
 2. Open the **hashling** folder and double-click **Install Hashling.command**.
