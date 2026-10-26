@@ -101,7 +101,7 @@ async function main() {
     case 'status': {
       if (!(await health())) { console.log('I’m not running. Start me with `hashling start`.'); process.exit(1); }
       const o = await api('/api/overview');
-      console.log(`Hashling here. Your Mac scores ${o.score}/100: ${o.verdict}.`);
+      console.log(`Hashling here. Your Mac scores ${o.score}/100 (${o.grade}): ${o.verdict}.`);
       console.log(`What I found: ${Object.entries(o.openFindings).map(([k, v]) => `${v} ${k}`).join(', ')}`);
       for (const f of o.topFindings) console.log(`  [${f.severity}] ${f.title}`);
       if (o.pendingActions) console.log(`${plural(o.pendingActions, 'fix', 'fixes')} waiting for your OK in my dashboard.`);

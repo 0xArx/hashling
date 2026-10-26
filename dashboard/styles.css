@@ -775,6 +775,18 @@ html[data-text="large"] body { zoom: 1.15; }
 .score-why ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 3px; }
 .score-why p { margin: 8px 0 0; }
 .score-why a { color: var(--accent-2); text-decoration: underline; text-underline-offset: 2px; }
+.score-why .sw-areas { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 7px; }
+.sw-area { display: grid; grid-template-columns: minmax(118px, 150px) minmax(60px, 1fr) 26px; align-items: center; column-gap: 10px; row-gap: 1px; }
+.sw-name { color: var(--text); font-weight: 550; }
+.sw-area > b { text-align: right; color: var(--text); font-variant-numeric: tabular-nums; }
+.sw-bar { height: 6px; border-radius: 99px; background: var(--track); overflow: hidden; }
+.sw-bar i { display: block; height: 100%; border-radius: inherit; background: var(--ok); }
+.sw-bar i.warn { background: var(--warn); }
+.sw-bar i.bad { background: var(--high); }
+.sw-why { grid-column: 1 / -1; font-size: 12px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.score-why .sw-cap { color: var(--text); }
+.score-why .sw-gains-head { font-weight: 550; color: var(--text); }
+.score-why .sw-gains { margin-top: 4px; }
 .event-group > summary { list-style: none; cursor: pointer; }
 .event-group > summary::-webkit-details-marker { display: none; }
 .event-group > summary:hover { background: var(--surface-2); }

@@ -28,6 +28,8 @@ jobs:
         run: npm run check
       - name: Phone encryption test
         run: node scripts/test-seal.mjs
+      - name: Security score rules
+        run: node --no-warnings scripts/test-score.mjs
       - name: Website installer matches scripts/install.sh
         run: cmp scripts/install.sh site/install.sh
 

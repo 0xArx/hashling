@@ -3,6 +3,7 @@ import { listFindings, getSnapshot, listEvents, SEVERITY_RANK } from './db.ts';
 import { status } from './scheduler.ts';
 import { engines, listScans } from './scanner.ts';
 import { listActions } from './actions.ts';
+import { computeScore, type AreaId } from './score.ts';
 
 /** Everything an agent (or the dashboard header) needs in one call. */
 export function overview() {
@@ -16,28 +17,20 @@ export function overview() {
   const perms = getSnapshot<{ grants: unknown[] }>('permissions');
   const agents = getSnapshot<{ agents: { name: string; risk: string; running: boolean; riskReasons: string[] }[] }>('agents');
 
-  // Optional hardening suggestions barely move the score; suspicious items weigh the most.
-  const tierWeight = { suspicious: 1.5, risk: 1, hardening: 0.25 } as const;
-  const cost = (f: (typeof open)[number]) => ({ critical: 25, high: 12, medium: 5, low: 1.5, info: 0 }[f.severity] ?? 0) * tierWeight[f.tier];
-  // The score is this Mac's. A phone you checked over the cable has its own report and verdict.
+  // The score's own module explains the model; here we only gather its inputs.
   const scored = open.filter((f) => f.category !== 'phone');
-  const penalty = scored.reduce((n, f) => n + cost(f), 0);
   const tiers = { suspicious: 0, risk: 0, hardening: 0 };
   for (const f of scored) tiers[f.tier]++;
-  const postureScore = posture?.data?.score ?? 70;
-  const score = Math.max(0, Math.min(100, Math.round(postureScore - penalty)));
-  // What the score is made of, so the dashboard can explain it and point at the biggest gain.
-  const byTier = { suspicious: 0, risk: 0, hardening: 0 };
-  for (const f of scored) byTier[f.tier] += cost(f);
-  // Shown as "100, minus each part"; the parts are rounded so they add up to exactly the score shown.
-  const settingsLost = 100 - postureScore;
-  const tierLost = score > 0 ? roundToTotal(byTier, 100 - score - settingsLost) : { suspicious: Math.round(byTier.suspicious), risk: Math.round(byTier.risk), hardening: Math.round(byTier.hardening) };
+  const ignoredChecks = findings.filter((f) => f.status === 'acknowledged' && f.key.startsWith('posture:')).map((f) => f.key.slice('posture:'.length));
+  const partial: Partial<Record<AreaId, string>> = {};
+  const privacyGap = ['permissions', 'trackers'].map((c) => getSnapshot(c)?.error).find((e) => e && /Full Disk Access|Bluetooth/.test(e));
+  if (privacyGap) partial.privacy = privacyGap;
+  const result = computeScore({ findings: open, checks: posture?.data?.checks ?? null, ignoredChecks, partial });
+  const score = result.score;
+  // A fixed setting links to its warning when there is one, so the gain opens something you can act on.
   const scoreBreakdown = {
-    settings: postureScore,
-    settingsLost,
-    settingsOff: (posture?.data?.checks ?? []).filter((c) => c.status !== 'pass').map((c) => c.label),
-    byTier: tierLost,
-    topGains: [...scored].sort((a, b) => cost(b) - cost(a)).slice(0, 3).map((f) => ({ id: f.id, title: f.title, points: Math.round(cost(f) * 10) / 10 })),
+    ...result,
+    topGains: result.topGains.map((g) => (g.kind === 'check' ? { ...g, id: open.find((f) => f.key === g.id)?.id ?? null } : g)),
   };
   const verdict = tiers.suspicious ? 'Something looks suspicious'
     : tiers.risk ? (tiers.risk === 1 ? 'One risk worth fixing' : `${tiers.risk} risks worth fixing`)
@@ -52,6 +45,7 @@ export function overview() {
     product: `${NAME} ${VERSION}`,
     at: Date.now(),
     score,
+    grade: result.grade,
     scoreBreakdown,
     verdict,
     os: posture?.data?.os,
@@ -117,16 +111,3 @@ export function suspicious() {
   }
   return out;
 }
-
-/** Rounds each part to a whole number so the parts add up to `total` (largest remainder first). */
-function roundToTotal<K extends string>(parts: Record<K, number>, total: number): Record<K, number> {
-  const keys = Object.keys(parts) as K[];
-  const out = Object.fromEntries(keys.map((k) => [k, Math.floor(parts[k])])) as Record<K, number>;
-  let left = total - keys.reduce((n, k) => n + out[k], 0);
-  for (const k of [...keys].sort((x, y) => (parts[y] % 1) - (parts[x] % 1))) {
-    if (left <= 0) break;
-    if (parts[k] > 0) { out[k]++; left--; }
-  }
-  return out;
-}
-

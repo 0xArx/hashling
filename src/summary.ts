@@ -39,7 +39,7 @@ export function weeklySummary(): { subject: string; body: string } {
   const day = new Date().toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' });
 
   lines.push(`Hashling weekly summary for ${mac}, ${day}`, '');
-  lines.push(`Overall: ${o.verdict}. Security score ${o.score} out of 100${before !== undefined && before !== o.score ? ` (it was ${before} a week ago)` : ''}.`, '');
+  lines.push(`Overall: ${o.verdict}. Security score ${o.score} out of 100 (${o.grade})${before !== undefined && before !== o.score ? ` (it was ${before} a week ago)` : ''}.`, '');
 
   const attention = o.topFindings.filter((f: { severity: string }) => ['critical', 'high', 'medium'].includes(f.severity)).slice(0, 6);
   lines.push(attention.length ? 'Needs a look:' : 'Needs a look: nothing right now.');

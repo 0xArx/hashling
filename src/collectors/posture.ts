@@ -4,6 +4,7 @@ import { run, readPlist } from '../lib/exec.ts';
 import { XPROTECT_PLIST, XPROTECT_YARA } from '../config.ts';
 import { REMOTE_ACCESS_APPS } from '../knowledge.ts';
 import { putSnapshot, syncFindings, getSnapshot, type FindingInput, type Severity } from '../db.ts';
+import { CHECK_WEIGHT } from '../score.ts';
 
 export interface Check {
   id: string;
@@ -149,7 +150,7 @@ export async function collectPosture(): Promise<void> {
 }
 
 function scoreOf(checks: Check[]): number {
-  const weight: Record<string, number> = { sip: 20, gatekeeper: 15, filevault: 15, firewall: 8, 'security-updates': 10, 'pending-updates': 8, 'auto-login': 8, 'custom-roots': 6, proxy: 6, xprotect: 4, guest: 3, 'screen-lock': 4, stealth: 2, 'os-updates': 3, mdm: 1, profiles: 2, 'remote-apps': 2 };
+  const weight = CHECK_WEIGHT;
   let total = 0, got = 0;
   for (const c of checks) {
     const w = weight[c.id] ?? 1;

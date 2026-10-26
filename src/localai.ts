@@ -369,7 +369,8 @@ function overviewBrief(raw: string): string {
   const counts = Object.entries(o.openFindings ?? {}).filter(([, n]) => Number(n) > 0).map(([k, n]) => `${n} ${k}`).join(', ') || 'none';
   const top = (o.topFindings ?? []).slice(0, 10).map((f: any) => `- [${f.severity}] ${f.title}${f.summary ? `: ${String(f.summary).slice(0, 160)}` : ''}`).join('\n') || '- nothing open';
   const blind = (o.limitations ?? []).slice(0, 3).map((l: string) => `- ${l}`).join('\n');
-  return [`Score: ${o.score}/100 (${o.verdict}).`, `Open findings by severity: ${counts}.`, `The open issues that matter (do not mention any issue that is not in this list or in a tool result):\n${top}`,
+  const weak = (o.scoreBreakdown?.areas ?? []).filter((a: any) => a.score < 100).sort((x: any, y: any) => x.score - y.score).slice(0, 3).map((a: any) => `${a.label} ${a.score}`).join(', ');
+  return [`Score: ${o.score}/100, ${o.grade ?? ''} (${o.verdict}).${weak ? ` Weakest parts: ${weak}.` : ''}`, `Open findings by severity: ${counts}.`, `The open issues that matter (do not mention any issue that is not in this list or in a tool result):\n${top}`,
     o.pendingActions ? `Fixes already waiting for the user's Touch ID: ${o.pendingActions}.` : 'No fixes are waiting for approval.',
     blind ? `What Hashling cannot see yet:\n${blind}` : ''].filter(Boolean).join('\n');
 }

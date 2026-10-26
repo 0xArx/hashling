@@ -27,6 +27,16 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Smarter security score:': {
+    tag: 'new feature',
+    title: 'A smarter security score',
+    bullets: [
+      'I now score seven parts of your Mac (settings, malware, AI agents, passwords and keys, apps, network, privacy) and show each one, weakest first.',
+      'Small tips no longer pile up against you, settings are no longer counted twice, and anything you ignored or I could not check costs nothing.',
+      'The score can no longer look fine while something suspicious is open, and each grade has a name, from Excellent to At risk.',
+      'Fixes are ranked by exactly how much each one would raise your score.',
+    ],
+  },
   'Score explanation:': {
     tag: 'polish',
     title: 'A score explanation that adds up',

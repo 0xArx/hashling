@@ -239,7 +239,8 @@ function tidyEvents(events) {
 function ring(score, size = 118, stroke = 10) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
-  const color = score >= 80 ? 'var(--ok)' : score >= 55 ? 'var(--warn)' : 'var(--high)';
+  // Same bands as the grades: Excellent and Good are green, Fair and Needs attention amber, At risk red.
+  const color = score >= 75 ? 'var(--ok)' : score >= 40 ? 'var(--warn)' : 'var(--high)';
   return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="var(--track)" stroke-width="${stroke}"/><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - score / 100)}"/></svg>`;
 }
 
@@ -248,20 +249,29 @@ const views = {};
 
 const AREA_META = { network: ['Network', 'globe'], agents: ['AI agents', 'bot'], scans: ['Malware', 'bug'], startup: ['Startup items', 'power'], permissions: ['Permissions', 'key'], tracking: ['Tracking', 'radar'], system: ['System settings', 'sliders'] };
 
-/** Plain explanation of the score: where it starts, what takes points off, and the biggest gain. */
+/** Plain explanation of the score: the seven areas, any cap holding it down, and the fixes worth the most. */
 function scoreExplain(o) {
   const b = o.scoreBreakdown;
-  if (!b) return '';
-  const words = { suspicious: ['suspicious thing', 'suspicious things'], risk: ['thing worth fixing', 'things worth fixing'], hardening: ['optional tip', 'optional tips'] };
-  const parts = Object.keys(words).filter((t) => b.byTier[t] > 0).map((t) => `<li>Minus ${b.byTier[t]} for ${o.tiers[t]} ${words[t][o.tiers[t] === 1 ? 0 : 1]}</li>`).join('');
-  const gain = b.topGains[0];
-  const lost = b.settingsLost ?? 100 - b.settings;
-  const off = b.settingsOff ?? [];
-  const named = off.length > 3 ? `${off.slice(0, 3).join(', ')} and ${off.length - 3} more` : off.join(', ');
-  const settings = lost > 0 ? `<li>Minus ${lost} for macOS security settings that could be better${named ? `: ${esc(named)}` : ''}</li>` : '';
+  if (!b?.areas) return '';
+  const tone = (n) => (n >= 75 ? 'ok' : n >= 40 ? 'warn' : 'bad');
+  const areas = [...b.areas].sort((x, y) => x.score - y.score || y.weight - x.weight).map((a) => `<li class="sw-area">
+      <span class="sw-name">${esc(a.label)}</span>
+      <span class="sw-bar" aria-hidden="true"><i class="${tone(a.score)}" style="width:${a.score}%"></i></span><b>${a.score}</b>
+      ${a.score < 100 && a.worst ? `<span class="sw-why">${esc(a.worst)}${a.open > 1 ? ` and ${a.open - 1} more` : ''}</span>` : a.partial ? `<span class="sw-why" title="${esc(a.partial)}">Not fully checked yet</span>` : ''}</li>`).join('');
+  const c = b.cap;
+  const many = c && c.count > 1;
+  const capLine = !c ? '' : c.reason === 'suspicious'
+    ? `Held at ${c.at} while ${many ? `${c.count} suspicious things are` : 'something suspicious is'} open. Without that it would be ${b.beforeCap}.`
+    : c.reason === 'serious'
+      ? `Held at ${c.at} until ${many ? `the ${c.count} serious risks are` : 'the serious risk is'} fixed. Without that it would be ${b.beforeCap}.`
+      : `Held at ${c.at} until ${many ? `the ${c.count} things worth fixing are` : 'the thing worth fixing is'} fixed. Without that it would be ${b.beforeCap}.`;
+  const gains = b.topGains.slice(0, 3).map((g) => `<li><a href="${g.id ? `#/findings?id=${encodeURIComponent(g.id)}` : '#/system'}">${esc(g.title)}</a> <span class="faint">+${g.points}</span></li>`).join('');
   return `<details class="score-why"><summary>How is this score worked out?</summary>
-    <ul><li>Starts at <b>100</b>.</li>${settings}${parts}<li>Ignored warnings do not count.</li></ul>
-    ${gain ? `<p>Biggest gain: <a href="#/findings?id=${encodeURIComponent(gain.id)}">${esc(gain.title)}</a> (about +${Math.max(1, Math.round(gain.points))}).</p>` : ''}</details>`;
+    <p><b>${o.score}, ${esc(o.grade ?? b.grade)}.</b> I score seven parts of your Mac out of 100 and combine them. The parts that matter most count more, and the weakest part pulls the total down.</p>
+    <ul class="sw-areas">${areas}</ul>
+    ${capLine ? `<p class="sw-cap">${capLine}</p>` : ''}
+    ${gains ? `<p class="sw-gains-head">Fixes worth the most</p><ul class="sw-gains">${gains}</ul>` : ''}
+    <p class="faint">Ignored warnings and anything I couldn’t check don’t cost points.</p></details>`;
 }
 
 views.overview = async () => {
