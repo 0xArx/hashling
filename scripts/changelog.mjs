@@ -61,6 +61,7 @@ const ENTRIES = {
   'Double-click installer:': null,
   'Tests: read the stand-in': null,
   'Get started: the Mac password': null,
+  'Website: speak as a company': null,
   'Launch materials: 0.2.0 drafts': {
     tag: 'docs',
     title: 'Ready to share',
