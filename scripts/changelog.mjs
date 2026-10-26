@@ -27,6 +27,11 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Launch materials:': {
+    tag: 'docs',
+    title: 'Ready to share',
+    bullets: ['Launch posts, Product Hunt images and a launch playbook, in docs/launch.'],
+  },
   'Polish for 0.2.0:': {
     tag: 'polish',
     title: 'Fully local means fully local',

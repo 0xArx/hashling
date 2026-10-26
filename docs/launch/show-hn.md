@@ -1,27 +1,39 @@
-# Show HN: Hashling, a free security engineer for your Mac that works with your AI
+# Show HN
 
-> Title (80 chars): Show HN: Hashling, a free security engineer for your Mac that works with your AI
+**Title** (80 characters max, this one is 76):
 
-**Link to submit:** https://hashling.vercel.app
+```
+Show HN: Hashling, an open-source Mac security agent your own AI can talk to
+```
+
+**URL to submit:** https://github.com/0xArx/hashling
+(HN readers prefer the repo. The site and demo are linked in the comment.)
 
 ---
 
-## First comment (founder's voice)
+## First comment (post it right after submitting)
 
-Hi HN. Hashling is a personal cybersecurity engineer for the age of AI. It started from a simple question: AI coding agents like Claude Code, Cursor and Codex can run programs, read files and push code on my Mac, so what exactly is each one allowed to do? That turned into a broader personal security tool.
+Hi HN, I'm Abdulrahman. Hashling is a free, MIT-licensed security agent for macOS. It started with one question: Claude Code, Codex and Cursor can run programs, read files and push code on my Mac, so what exactly is each one allowed to do?
 
-Hashling is free and open source (MIT). It runs on your machine, nothing leaves it except what you send to the AI provider you choose, and it watches the things that matter day to day: network connections per app, startup items, privacy permissions, AI coding agents and what they can do, malware (ClamAV + YARA-X + Apple's XProtect rules), scam check for texts and links, and a few newer things like breach watch, a ransomware tripwire, and text message scam watch.
+What it does:
 
-The part I think is genuinely new: you connect Hashling to the AI you already have. Run one command and Claude Code (or Cursor, Codex, or any MCP agent) can ask your Mac about its own security. You can type "is my Mac safe?" and the agent calls Hashling's MCP tools, reads the findings, and tells you what needs attention in plain words. Every fix still waits for your Touch ID.
+- **Audits the AI agents on your Mac.** For Claude Code, Codex, Cursor, Claude Desktop, VS Code, Windsurf, Gemini CLI and OpenCode it reads permission modes, allow rules, hooks, MCP servers and skills, counts API keys left in their config files (never copies them), and watches their live network use.
+- **Is an MCP server.** Connect Claude Code (one command) and ask "is my Mac safe?". The agent calls Hashling's tools (overview, findings, network, uploads, storage, osquery and more) and answers from real data. Agents can only read and propose: every change waits for Touch ID through a small Swift helper, so an agent holding the API token still can't approve its own proposal.
+- **Or runs fully local.** New in 0.2.0: pick "Fully local" and it installs llama.cpp, chooses a model by RAM (Qwen3 4B on a 16 GB Mac, up to Qwen3 30B-A3B), checks the download's SHA-256 and runs it only while you're asking. Testing small models taught me they confidently guess, so Hashling now hands the model the live facts (score, open findings, plus storage or what-changed data when the question needs it) before it says a word.
+- **The usual checks, in plain words.** Per-app network connections, startup items, TCC permissions, ClamAV + YARA-X with Apple's XProtect and Elastic's macOS rules, a ransomware tripwire, scam check for texts, links and screenshots, breach watch, AirTag-style trackers, and a read-only phone check-up over USB.
 
-A few honest limitations I want to be upfront about:
-- Hashling does not block network connections live. Pair it with LuLu or Little Snitch for that.
-- It scans for malware after files arrive, not before they run. Malwarebytes and Bitdefender do the real-time interception.
-- The Bitdefender AI Guardian beta (launched last month) is a closer competitor for AI agent safety specifically. It blocks risky agent actions in real time. Hashling observes and explains.
-- Zero findings in Hashling does not mean a Mac is clean.
+Honest limits:
 
-[FOUNDER: Add a sentence about what triggered you to build this, or the first thing you found when you ran it on your own Mac that surprised you.]
+- It is not a firewall. It does not block connections live (pair it with LuLu or Little Snitch).
+- It scans files shortly after they arrive, not before they run. Malwarebytes and Bitdefender intercept in real time.
+- Bitdefender's AI Guardian beta (announced September 30) blocks risky agent actions in real time. Hashling observes, explains and proposes.
+- Zero findings does not prove a Mac is clean.
 
-The project is MIT licensed. Source: https://github.com/0xArx/hashling
+Stack: a Node 24 daemon on loopback (node:sqlite, no native modules), a dashboard at hashling.localhost:5750 behind a Touch ID unlock, and small Swift helpers for Touch ID, OCR, Bluetooth and the menu bar. Releases are notarized, CI boots it in a sandbox on a macOS runner for every commit.
 
-Happy to answer questions about the architecture (it is a Node.js service running on loopback, a dashboard served at hashling.localhost:5750, and a set of MCP tools backed by osquery, ClamAV, YARA-X, and libimobiledevice).
+[FOUNDER: one or two sentences in your own words: why you built it, or the first thing it found on your own Mac. One true option: it found 51 API keys sitting in plain text in my ~/.claude/CLAUDE.md. Only use that if you're comfortable sharing it, and rotate those keys first.]
+
+Demo (75 s): https://hashling.vercel.app/#demo
+Compared with Little Snitch, LuLu, Malwarebytes, Bitdefender and Snyk: https://hashling.vercel.app/compare
+
+I'm around all day for questions, especially about the agent audit and the local-model grounding.

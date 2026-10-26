@@ -1,48 +1,42 @@
-# r/ClaudeAI post
+# r/ClaudeAI
 
-> Note: r/ClaudeAI allows self-promotion if it is clearly relevant and you are transparent about being the developer. Add "I built this" early. Follow the sub's rules and do not spam. One post, no follow-up bumps.
+Before posting: read the sidebar rules, pick the flair for things you built (the sub has had a "Built with Claude" style flair), and say plainly that you are the developer. One post, no reposting, and reply to comments for the first few hours.
 
----
+**Title:**
 
-**Title:** I built a free open-source tool that lets Claude Code audit your Mac's security. Ask it "is my Mac safe?" and it actually checks.
-
----
+```
+I built a free MCP server that lets Claude Code audit your Mac's security, including what Claude Code itself is allowed to do
+```
 
 **Body:**
 
-I want to share something I built that might be useful to people here who use Claude Code or Cursor regularly.
+I'm the developer of Hashling, a free, open-source (MIT) security agent for macOS. Sharing it here because it was built for people who run Claude Code.
 
-**The problem:** AI coding agents like Claude Code have broad access to your Mac by default. They can read files, run commands, install things, and talk to the internet. Most people (including me, until recently) have no easy way to see what permissions each agent actually has, what MCP servers they are connected to, or whether any keys have been left in their configuration files.
+**The problem.** Claude Code can run commands, read and write files and push code. Once you've clicked "always allow" a few times, most of us can't say exactly what it's allowed to do, which MCP servers are switched on, or how many API keys are sitting in config files.
 
-**What I built:** Hashling is a free, open-source security agent for Mac (MIT license) that connects to Claude Code via MCP. Once it is set up, you can type something like:
+**What Hashling shows you** (for Claude Code, Codex, Cursor, Claude Desktop, VS Code, Windsurf, Gemini CLI and OpenCode):
+
+- which commands each agent can run without asking (your allow rules, in plain words)
+- which MCP servers and hooks are switched on, and which projects can add more without asking
+- how many API keys are in their settings files (counted, never copied)
+- what each agent is doing on the network right now
+
+**Connect Claude to it:**
 
 ```
-Is my Mac safe? Are my AI tools configured securely?
+curl -fsSL https://hashling.vercel.app/install.sh | sh
+claude mcp add --scope user hashling -- hashling mcp
 ```
 
-and Claude will call Hashling's tools behind the scenes, check your Mac's security state, and answer in plain words. It can see:
+Then ask Claude: *"Is my Mac safe? What can my AI agents do?"* Claude calls Hashling's tools and answers from real data. It can only look and suggest: every change (quarantine a file, remove a permission, block a site) waits for your Touch ID, so even an agent holding the token can't approve its own fix.
 
-- What permissions each AI app has on your Mac
-- What MCP servers are connected and what they can do
-- Whether any passwords or keys have been left in settings files
-- Live network connections per app
-- Startup items, privacy permissions, malware scan results, and more
+**Don't want your questions going to the cloud?** Hashling 0.2.0 has a Fully local mode that runs a free open model on your Mac (it picks one by RAM). Claude stays the better assistant; local is there for when privacy matters more.
 
-And it does not change anything by itself. Every fix waits for your Touch ID.
+**Honest limits:** not a firewall (pair it with LuLu), it scans files shortly after they arrive rather than blocking them first, and zero findings doesn't prove a Mac is clean.
 
-**How to set it up with Claude Code:**
+[FOUNDER: one line on what it found on your own Mac. True and relevant here: it counted 51 API keys in plain text in my ~/.claude/CLAUDE.md. Only if you're comfortable, and rotate them first.]
 
-1. Install Hashling: `curl -fsSL https://hashling.vercel.app/install.sh | sh`
-2. Connect Claude Code: `claude mcp add --scope user hashling -- hashling mcp`
-3. Ask: "Is my Mac safe?"
+Site and 75-second demo: https://hashling.vercel.app
+Code: https://github.com/0xArx/hashling
 
-**Honest limitations:**
-
-Hashling is not a firewall and does not block connections live (pair it with LuLu for that). It catches malware a few seconds after files arrive, not before they run. Zero findings does not mean a Mac is clean.
-
-It is a tool for understanding your setup in plain words and connecting your AI to your own security, not a replacement for purpose-built security software.
-
-Site: https://hashling.vercel.app
-GitHub: https://github.com/0xArx/hashling
-
-Happy to answer questions. [FOUNDER: Add a note about your experience using it yourself, or what you found the first time you ran the AI agent audit on your own machine.]
+Happy to answer anything about how the agent audit works.

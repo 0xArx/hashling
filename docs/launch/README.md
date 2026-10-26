@@ -1,35 +1,64 @@
-# Launch kit
+# Launch playbook
 
-Files for announcing Hashling when you are ready to go public. Nothing here is posted anywhere yet.
+Everything for launching Hashling on Hacker News, Reddit, X and Product Hunt. Nothing here has been posted.
 
-## Files
+## What's in this folder
 
-| File | What it is |
+| File | Where it goes |
 |---|---|
-| `show-hn.md` | Hacker News "Show HN" post: title, link, and a first comment in your voice |
-| `reddit-claudeai.md` | r/ClaudeAI post: title and body, focused on connecting Claude Code to Hashling |
-| `x-thread.md` | X/Twitter thread: 7 posts from hook to install CTA |
-| `product-hunt.md` | Product Hunt listing: name, tagline, description, topics, first comment |
+| `show-hn.md` | Hacker News. Title, URL and the first comment |
+| `reddit-localllama.md` | r/LocalLLaMA. The local AI story and what small models taught us |
+| `reddit-claudeai.md` | r/ClaudeAI. Auditing Claude Code and connecting Claude through MCP |
+| `reddit-macapps.md` | r/macapps. Friendly, non-technical |
+| `x-thread.md` | X. Seven posts, video first |
+| `product-hunt.md` | Product Hunt. Every form field, the maker comment and ready answers |
+| `assets/ph-1…5-*.png` | Product Hunt gallery, 1270 × 760. They also work as X and Reddit images |
+| `assets/ph-thumbnail.png` | Product Hunt thumbnail, 240 × 240 |
+| `../../site/assets/demo/hashling-demo.mp4` | The 75-second demo with captions |
 
-Each file has one or more `[FOUNDER: ...]` placeholders. Fill those in before posting. They are places where a personal story would make the post feel real, but where you are the only one who knows the honest answer.
+Every draft has a `[FOUNDER: …]` line. Fill it in your own words or delete it. A true, specific line about why you built it or what it found on your own Mac does more than anything else in the post.
 
-## Pre-launch checklist
+## 1. The week before
 
-- [ ] Fill in every `[FOUNDER: ...]` placeholder in each file
-- [ ] Watch the demo video at https://hashling.vercel.app/#demo and confirm it is current
-- [ ] Star the repo on GitHub: https://github.com/0xArx/hashling (you cannot ask others to star until you have)
-- [ ] Make sure the install script works on a clean Mac (or a fresh user account)
-- [ ] Run `node scripts/changelog.mjs` to regenerate the changelog page from the latest git history
-- [ ] Check that /changelog and /compare load correctly on mobile (375px)
-- [ ] Confirm the GitHub repo is public before posting any link to it
-- [ ] Read r/ClaudeAI rules before posting (self-promotion is allowed if relevant and transparent)
-- [ ] Schedule the HN post for a weekday morning US time (between 8am and 10am ET) for the most traction
-- [ ] Product Hunt launches at 12:01am PT. Submit the night before and schedule for the next day.
-- [ ] Do not post all channels at once. HN first. Wait for feedback. Then the others.
+- [ ] **Get 5 to 10 real people to install it** on their own Macs (friends, colleagues, one non-technical person). Watch where they get stuck and fix it. A launch with zero outside installs is a gamble.
+- [ ] **Install it yourself on a clean Mac account** (System Settings, Users & Groups, add a user) with the one-line installer, start to finish.
+- [ ] **Upload the demo to YouTube** (unlisted is fine). Product Hunt needs a YouTube link.
+- [ ] **Update the GitHub repo description** to the new line: "Your personal cybersecurity engineer for the age of AI. Free, open-source Mac security agent that works with your own AI or one running fully on your Mac." (Settings, About, on GitHub.)
+- [ ] **Fill in the `[FOUNDER: …]` lines** in every draft.
+- [ ] **Read each subreddit's rules** in its sidebar. Most allow a developer's own post once, with the right flair, and remove anything that looks like an ad.
+- [ ] **Clear your calendar** for launch days. The first 3 hours of replies decide how a post does.
 
-## Posting order (suggested)
+## 2. The order
 
-1. Hacker News (Show HN) on a weekday morning
-2. X thread (same day, after the HN post is up)
-3. r/ClaudeAI (same day or the next)
-4. Product Hunt (pick a day with fewer competing launches; check producthunt.com/upcoming)
+Space it out so you can answer everyone, and so feedback from one launch improves the next.
+
+| When | Where | Notes |
+|---|---|---|
+| Day 1, Tue or Wed, 8 to 10 am US Eastern | **Show HN** | Submit the GitHub URL with the title from `show-hn.md`, then post the first comment right away. |
+| Day 1, afternoon | **X thread** | Video in post 1. Link the HN post in a reply if it's doing well. |
+| Day 2 | **r/LocalLLaMA** | The most technical story. Reply with numbers and code links. |
+| Day 3 | **r/ClaudeAI** | Different angle: auditing Claude Code. |
+| Day 4 or 5 | **r/macapps** | Plain-words version for everyday Mac users. |
+| A week later, Tue to Thu at 12:01 am Pacific | **Product Hunt** | Schedule it in advance. By then you'll have stars, feedback and fixes to mention. |
+
+Don't post the same text in several subreddits on the same day. Reddit treats that as spam.
+
+## 3. On launch day
+
+- Reply to every comment, quickly and kindly, even the harsh ones. Thank people for bug reports and fix them the same day if you can.
+- Never ask for upvotes, on any site. HN and Product Hunt penalise it, and Reddit bans it. You can tell people the post is live.
+- When you fix something people asked for, say so in the thread and add it to the changelog (`npm run changelog`). Visible progress on launch day earns trust.
+- Keep a list of every question. The good ones become FAQ entries on the site.
+
+## 4. The week after
+
+- Post a short "what changed since launch" on X with real numbers (installs, stars, fixes).
+- The site's proof strip shows the GitHub star count by itself once it reaches 25, and download counts once they reach 100.
+- Write up what you learned. The local-model grounding story (`reddit-localllama.md`) can grow into a blog post.
+
+## Rules for every post
+
+- Say you're the developer.
+- Keep the honest limits in: not a firewall, scans files after they arrive, zero findings doesn't prove a Mac is clean. Leaving them in earns more trust than it costs.
+- Don't claim lab testing, user numbers or quotes that aren't real.
+- No em dashes in copy.

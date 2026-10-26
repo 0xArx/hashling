@@ -1,63 +1,39 @@
 # X thread
 
-> 5 to 7 posts. Post 1 is the hook; the rest expand. Keep each under 280 chars where possible. Thread them as replies to the first post.
+Post 1 carries the demo video (upload `site/assets/demo/hashling-demo.mp4`; it has captions, so it works muted). Post 4 can carry `assets/ph-4-local.png`. Each post is under 280 characters. Reply to yourself to build the thread.
 
----
+**1**
+Claude Code, Codex and Cursor can run programs, read your files and push code on your Mac.
 
-**Post 1 (hook)**
-Launching Hashling: your personal cybersecurity engineer for the age of AI. Free and open source, for Mac.
+Do you know exactly what each one is allowed to do?
 
-You connect it to Claude Code (or any MCP agent), ask "is my Mac safe?", and your AI actually checks before it answers. Touch ID for every fix.
+I built Hashling to show you. Free and open source. 🧵
 
-hashling.vercel.app
+**2**
+Hashling reads every AI agent's settings in plain words: which commands it runs without asking, which MCP servers are on, how many API keys sit in its config files (counted, never copied), and what it's doing on the network right now.
 
----
+**3**
+It's also an MCP server. Connect Claude Code with one command and ask "is my Mac safe?"
 
-**Post 2**
-The part I built it for: Claude Code, Cursor, Codex all have broad access to your Mac by default.
+Claude checks your Mac through Hashling and answers from real data. It can only look and suggest. Every fix waits for your Touch ID.
 
-Hashling shows you what each agent is allowed to do, what MCP servers are connected, and whether any keys are sitting in their config files. All in plain words.
+**4**
+New in 0.2.0: Fully local mode.
 
----
+Hashling picks a free open model that fits your Mac's memory, downloads it, checks it and runs it with llama.cpp. Nothing you ask leaves your Mac.
 
-**Post 3**
-It watches a lot more than just AI tools.
+**5**
+Plus the everyday stuff, in plain words: scam check for texts and links, malware scans, startup items, who can use your camera and mic, AirTag-style trackers, breach watch, and a phone check-up over USB.
 
-Network connections per app. Startup items. Privacy permissions. Malware (ClamAV + YARA-X + Apple XProtect). Scam check for texts and links. Breach watch. Ransomware tripwire. Phone check-up via cable.
+**6**
+Honest limits: it isn't a firewall (pair it with LuLu) and it scans files shortly after they arrive instead of blocking them first.
 
-Plain words throughout. Simple/Standard/Expert mode.
+Signed and notarized by Apple. No account, no tracking.
 
----
+**7**
+Free for Apple silicon Macs:
+https://hashling.vercel.app
 
-**Post 4**
-Honest about what it does NOT do:
+Code: https://github.com/0xArx/hashling
 
-It does not block connections live (pair it with LuLu for that). It scans files after arrival, not before they run. Zero findings does not mean a clean Mac.
-
----
-
-**Post 5**
-[FOUNDER: Personal story post. Something like: "The first time I ran the AI audit on my own Mac, I found X" or "I built this after Y happened." Keep it honest and specific. 2-3 sentences.]
-
----
-
-**Post 6**
-MIT licensed. No account. No tracking. Nothing leaves your Mac except what you send to the AI you choose.
-
-Everything runs on your Mac and stays there. The dashboard lives at hashling.localhost:5750 on loopback only. Your AI can look but never change anything without your OK.
-
-github.com/0xArx/hashling
-
----
-
-**Post 7 (CTA)**
-Install in one line:
-
-curl -fsSL hashling.vercel.app/install.sh | sh
-
-Connect to Claude Code:
-claude mcp add --scope user hashling -- hashling mcp
-
-Then: "Is my Mac safe?"
-
-Stars and feedback welcome.
+[FOUNDER: optional closing line in your voice, e.g. what it found on your own Mac.]
