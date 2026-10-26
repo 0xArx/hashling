@@ -24,7 +24,7 @@ I'm the developer of Hashling, a free, open-source (MIT) security agent for macO
 **Connect Claude to it:**
 
 ```
-curl -fsSL https://hashling.vercel.app/install.sh | sh
+curl -fsSL https://gethashling.com/install.sh | sh
 claude mcp add --scope user hashling -- hashling mcp
 ```
 
@@ -36,7 +36,7 @@ Then ask Claude: *"Is my Mac safe? What can my AI agents do?"* Claude calls Hash
 
 [FOUNDER: one line on what it found on your own Mac. True and relevant here: it counted 51 API keys in plain text in my ~/.claude/CLAUDE.md. Only if you're comfortable, and rotate them first.]
 
-Site and 75-second demo: https://hashling.vercel.app
+Site and 75-second demo: https://gethashling.com
 Code: https://github.com/0xArx/hashling
 
 Happy to answer anything about how the agent audit works.

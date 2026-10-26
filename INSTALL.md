@@ -64,7 +64,7 @@ It brings everything Hashling needs (its own copy of Node, the YARA-X and osquer
 2. Copy this line, paste it into Terminal (**Command + V**), and press **Return**:
 
 ```sh
-curl -fsSL https://hashling.vercel.app/install.sh | sh
+curl -fsSL https://gethashling.com/install.sh | sh
 ```
 
 This downloads the latest Hashling straight from GitHub, so you do not need to download the folder first.

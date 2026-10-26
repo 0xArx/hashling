@@ -9,7 +9,7 @@ Everything the submission form asks for, in order. Images are in `docs/launch/as
 Your personal cybersecurity engineer for the age of AI
 ```
 
-**Links:** https://hashling.vercel.app (website), https://github.com/0xArx/hashling (GitHub)
+**Links:** https://gethashling.com (website), https://github.com/0xArx/hashling (GitHub)
 
 **Description** (260 characters max, this is 246):
 ```
@@ -44,7 +44,7 @@ What makes it different:
 
 It also checks texts and links for scams, scans for malware, watches startup items, permissions and trackers, and checks your phone over USB.
 
-Being upfront: it isn't a firewall, and it scans files shortly after they arrive rather than blocking them first. The compare page says where other tools do better: https://hashling.vercel.app/compare
+Being upfront: it isn't a firewall, and it scans files shortly after they arrive rather than blocking them first. The compare page says where other tools do better: https://gethashling.com/compare
 
 It's free, MIT-licensed, notarized by Apple, with no account and no tracking. I'd love your feedback, especially on what's confusing.
 

@@ -8,7 +8,7 @@
 
 Hashling lives on your Mac and teams up with the AI you already use, like Claude, Cursor or Codex. It watches for scams, malware and AI agents that overstep, explains everything in plain words, and changes nothing until you approve with Touch ID.
 
-[Get started](https://hashling.vercel.app/start) · [Watch the 75-second demo](https://hashling.vercel.app/#demo) · [Install guide](INSTALL.md) · [How it compares](https://hashling.vercel.app/compare) · [What's new](https://hashling.vercel.app/changelog) · [For AI agents](SKILL.md)
+[Get started](https://gethashling.com/start) · [Watch the 75-second demo](https://gethashling.com/#demo) · [Install guide](INSTALL.md) · [How it compares](https://gethashling.com/compare) · [What's new](https://gethashling.com/changelog) · [For AI agents](SKILL.md)
 
 ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-6C5CE7) ![Apple silicon](https://img.shields.io/badge/Apple%20silicon-M1%2B-6C5CE7) ![Works with MCP](https://img.shields.io/badge/works%20with-Claude%20Code%20%C2%B7%20Cursor%20%C2%B7%20Codex-1B1640) ![MIT](https://img.shields.io/badge/license-MIT-0F9F76)
 
@@ -45,7 +45,7 @@ Read SKILL.md in that repo first and follow it. Check that my Mac can run Hashli
 **3. Paste one line into Terminal** (press <kbd>⌘</kbd> + <kbd>Space</kbd>, type *Terminal*, press <kbd>Return</kbd>):
 
 ```sh
-curl -fsSL https://hashling.vercel.app/install.sh | sh
+curl -fsSL https://gethashling.com/install.sh | sh
 ```
 
 You need a Mac with Apple silicon (M1 or newer) and macOS 14 or newer. Ways 2 and 3 also need 3 GB free and your Mac password; they build Hashling on your Mac with Homebrew. The Terminal installer explains each of its six steps, waits for you when macOS asks for something, and opens a 2-minute setup when it is done. Every step, question and fix is in the [install guide](INSTALL.md).

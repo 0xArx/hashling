@@ -43,7 +43,7 @@ The full install (Hashling.app, menu bar, scanning engines) is `./install.sh`.
 | `helpers/` | Small Swift tools: the menu bar app and launcher, Touch ID approval, on-device text reading, Trash, Bluetooth trackers. |
 | `bin/hashling` | The `hashling` command. |
 | `scripts/` | Installer, helper build, release, changelog and tests. |
-| `site/` | The website at hashling.vercel.app. |
+| `site/` | The website at gethashling.com. |
 | `docs/` | Test results, the certification plan and launch drafts. |
 
 ## Ground rules

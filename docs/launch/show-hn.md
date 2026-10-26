@@ -34,7 +34,7 @@ Stack: a Node 24 daemon on loopback (node:sqlite, no native modules), a dashboar
 
 [FOUNDER: one or two sentences in your own words: why you built it, or the first thing it found on your own Mac. One true option: it found 51 API keys sitting in plain text in my ~/.claude/CLAUDE.md. Only use that if you're comfortable sharing it, and rotate those keys first.]
 
-Demo (75 s): https://hashling.vercel.app/#demo
-Compared with Little Snitch, LuLu, Malwarebytes, Bitdefender and Snyk: https://hashling.vercel.app/compare
+Demo (75 s): https://gethashling.com/#demo
+Compared with Little Snitch, LuLu, Malwarebytes, Bitdefender and Snyk: https://gethashling.com/compare
 
 I'm around all day for questions, especially about the agent audit and the local-model grounding.

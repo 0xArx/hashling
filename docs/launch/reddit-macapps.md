@@ -29,8 +29,8 @@ Hi r/macapps, I'm the developer. Hashling is a free security helper for your Mac
 
 It isn't a firewall and doesn't replace an antivirus that blocks files the moment they arrive. It's for understanding what's going on and fixing it safely.
 
-Get it: https://hashling.vercel.app
-75-second demo: https://hashling.vercel.app/#demo
+Get it: https://gethashling.com
+75-second demo: https://gethashling.com/#demo
 Code: https://github.com/0xArx/hashling
 
 Feedback very welcome, especially on anything that's confusing.

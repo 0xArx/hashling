@@ -21,7 +21,7 @@ From the repo folder (or have the person double-click **Install Hashling.command
 ./install.sh
 ```
 
-Or without the repo: `curl -fsSL https://hashling.vercel.app/install.sh | sh`
+Or without the repo: `curl -fsSL https://gethashling.com/install.sh | sh`
 
 It takes about 5 minutes (up to 20 on a brand-new Mac) and prints six numbered steps. Tell the person what is happening as it goes. It needs them for a few things, so ask them to watch the screen:
 

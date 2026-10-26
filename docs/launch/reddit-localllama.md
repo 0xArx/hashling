@@ -35,6 +35,6 @@ After that, Qwen3 4B gave grounded answers in 20 to 30 s on an M-series Mac with
 Tools come from Hashling's own MCP server over stdio, so the local model and Claude see exactly the same read-only tools. Anything that changes the Mac goes through `propose_action` and waits for Touch ID.
 
 Code (the local AI part is `src/localai.ts`): https://github.com/0xArx/hashling
-Site: https://hashling.vercel.app
+Site: https://gethashling.com
 
 Curious what others do for tool-use grounding with sub-8B models. Prefetching beats hoping the model calls the tool, but I'd like something less hand-written than regexes.

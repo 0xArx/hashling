@@ -57,7 +57,7 @@ if [ -z "$PUBLISH" ]; then echo "5/5 Done (not published). Files are in $DIST"; 
 
 echo "5/5 Publishing GitHub Release $TAG ..."
 cat > "$DIST/notes.md" <<NOTES
-**To install Hashling, use https://hashling.vercel.app/start.**${PKG:+ The easiest way is \`$PKG\` below: double-click it and follow the steps.}
+**To install Hashling, use https://gethashling.com/start.**${PKG:+ The easiest way is \`$PKG\` below: double-click it and follow the steps.}
 
 What is in this release:
 

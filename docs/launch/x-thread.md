@@ -32,7 +32,7 @@ Signed and notarized by Apple. No account, no tracking.
 
 **7**
 Free for Apple silicon Macs:
-https://hashling.vercel.app
+https://gethashling.com
 
 Code: https://github.com/0xArx/hashling
 

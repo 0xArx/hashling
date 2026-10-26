@@ -1,6 +1,6 @@
 #!/bin/sh
 # Hashling installer for macOS (Apple silicon).
-#   curl -fsSL https://hashling.vercel.app/install.sh | sh
+#   curl -fsSL https://gethashling.com/install.sh | sh
 # Installs: Node 24, ClamAV and YARA-X (Homebrew), osquery (official release),
 # Hashling itself in ~/.hashling/app, Hashling.app in ~/Applications, and a login service.
 # Uninstall any time with: hashling uninstall --all
@@ -102,7 +102,7 @@ else
   case "$CODE" in
     200) ;;
     000|"") die "I couldn’t reach GitHub to download myself. Check your internet connection and try again." ;;
-    404) die "I’m not available to download yet. Its code has not been published, so there is nothing to install. Check https://hashling.vercel.app for news." ;;
+    404) die "I’m not available to download yet. Its code has not been published, so there is nothing to install. Check https://gethashling.com for news." ;;
     *) die "GitHub had a problem sending me (error $CODE). Try again in a few minutes." ;;
   esac
 fi
