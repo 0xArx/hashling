@@ -110,6 +110,14 @@ tool('new_destinations', 'Destinations each app contacted for the first time in 
   hours: z.number().min(1).max(720).optional(),
 }, async ({ hours }) => (await api('GET', `/api/network/new?hours=${hours ?? 24}`) as any[]).map((r) => ({ first_seen: new Date(r.first_seen).toISOString(), ...r.data })));
 
+tool('risky_projects', 'Project folders your AI agents opened that contain settings agents act on by themselves: committed MCP servers (.mcp.json and friends), project settings that skip safety questions, add hooks or redirect API traffic, git settings that run commands, and symlinks into ~/.ssh and other secrets. Says whether each came from you, from another commit author, or was downloaded; only the last two are warnings.', {
+  project: z.string().optional().describe('Filter by folder name or path'),
+}, async ({ project }) => {
+  const d = await api('GET', '/api/projects') as { projects?: any[]; checked?: number };
+  const list = (d.projects ?? []).filter((p) => !project || String(p.path).toLowerCase().includes(project.toLowerCase()));
+  return { checked: d.checked ?? 0, projects: list };
+});
+
 tool('agent_inventory', 'Every AI agent installed on this Mac (Claude Code, Claude Desktop, Cursor, Codex, VS Code, Gemini CLI, ...) and what each one is able to do: permission mode, allow/deny rules, MCP servers and their capabilities, hooks, skills/plugins, macOS permissions, plaintext credentials in its config (counts only, never values), and live network use.', {
   agent: z.string().optional().describe('Filter by agent name'),
 }, async ({ agent }) => {

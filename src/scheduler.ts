@@ -8,6 +8,7 @@ import { collectLocation } from './collectors/location.ts';
 import { collectTrackers } from './collectors/trackers.ts';
 import { collectAttackPacks } from './collectors/attackPacks.ts';
 import { collectAgents } from './collectors/agents.ts';
+import { collectProjects } from './collectors/projects.ts';
 import { collectProcesses, refreshProcessFindings, pruneProcesses, processSnapshot } from './collectors/processes.ts';
 import { collectBehavior } from './collectors/behavior.ts';
 import { collectNetSafety } from './collectors/netsafety.ts';
@@ -42,6 +43,7 @@ const COLLECTORS: Record<string, { every: number; fn: () => Promise<void> | void
   trackers: { every: SCHEDULE.trackers, fn: collectTrackers },
   attackPacks: { every: SCHEDULE.attackPacks, fn: collectAttackPacks },
   agents: { every: SCHEDULE.agents, fn: collectAgents },
+  projects: { every: SCHEDULE.projects, fn: collectProjects },
   processes: { every: SCHEDULE.processes, fn: collectProcesses },
   behavior: { every: SCHEDULE.behavior, fn: collectBehavior },
   intel: { every: SCHEDULE.intel, fn: () => updateFeeds() },
@@ -114,7 +116,7 @@ export function startScheduler(opts: { skip?: string[] } = {}): void {
   void run(BIN.ocr, [], { timeout: 120_000 }).catch(() => undefined);
   if (!opts.skip?.includes('downloads')) startDownloadWatch();
   if (!opts.skip?.includes('ransomware')) startRansomwareWatch();
-  const order = ['posture', 'network', 'processes', 'persistence', 'permissions', 'location', 'trackers', 'agents', 'netsafety', 'secrets', 'housekeeping', 'intel', 'behavior', 'correlate', 'attackPacks', 'score', 'signatures', 'yaraForge', 'outdated', 'notarization', 'storage', 'routineScan'];
+  const order = ['posture', 'network', 'processes', 'persistence', 'permissions', 'location', 'trackers', 'agents', 'projects', 'netsafety', 'secrets', 'housekeeping', 'intel', 'behavior', 'correlate', 'attackPacks', 'score', 'signatures', 'yaraForge', 'outdated', 'notarization', 'storage', 'routineScan'];
   // Anything not listed above still runs, after the core collectors (so a new collector can never be forgotten).
   order.push(...Object.keys(COLLECTORS).filter((k) => !order.includes(k)));
   order.forEach((name, i) => {

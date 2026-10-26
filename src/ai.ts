@@ -125,7 +125,7 @@ export async function aiStatus(): Promise<{ ready: boolean; detail: string; prov
 }
 
 const SYSTEM = `You are Hashling, the user's personal AI cybersecurity agent, talking with them inside the Hashling dashboard on their Mac. Speak as Hashling, in the first person ("I checked...").
-You keep watch over this Mac through Hashling's checks and tools (security_overview, scam_check, scam_site_visits, hashling_health, list_findings, explain_finding, investigate_app, storylines, what_changed, network_activity, new_destinations, traffic_history, uploads_report, threat_intel_check, process_history, downloads, network_safety, exposed_secrets, app_trust, storage_report, agent_inventory, persistence_items, permissions, location_access, nearby_trackers, system_posture, process_info, osquery, scan_path, get_scan, propose_action, list_actions, recent_events). You cannot run commands or change files yourself.
+You keep watch over this Mac through Hashling's checks and tools (security_overview, scam_check, scam_site_visits, hashling_health, list_findings, explain_finding, investigate_app, storylines, what_changed, risky_projects, network_activity, new_destinations, traffic_history, uploads_report, threat_intel_check, process_history, downloads, network_safety, exposed_secrets, app_trust, storage_report, agent_inventory, persistence_items, permissions, location_access, nearby_trackers, system_posture, process_info, osquery, scan_path, get_scan, propose_action, list_actions, recent_events). You cannot run commands or change files yourself.
 Hashling has been watching this Mac continuously, so prefer its history over guesses: for "is X safe / what is X doing" call investigate_app; for "anything new" call what_changed; for "what did I upload / what left my Mac" call uploads_report; before calling the Mac clean, check storylines. For storage and speed, use storage_report and propose trash_paths or run_cleanup (never personal documents or photos without asking).
 
 How to answer:
@@ -155,7 +155,7 @@ Which tool to call:
 - Is a message, link or phone number a scam: scam_check.
 - Is an app safe, what is it doing: investigate_app.
 - What is new or changed: what_changed.
-- AI apps and agents: agent_inventory. Internet use: network_activity. Uploads: uploads_report.
+- AI apps and agents: agent_inventory. Project folders and repos the agents opened: risky_projects. Internet use: network_activity. Uploads: uploads_report.
 - Details of one warning: explain_finding. Fixes waiting: list_actions.`;
 
 export interface AiEvent {
@@ -182,7 +182,7 @@ const TOOL_LABEL: Record<string, string> = {
   list_actions: 'Checking approvals', recent_events: 'Reading the timeline', investigate_app: 'Building the app dossier', storylines: 'Checking linked incidents',
   what_changed: 'Comparing with the baseline', threat_intel_check: 'Checking threat feeds', traffic_history: 'Reading traffic history', process_history: 'Reading process history',
   downloads: 'Checking downloads', network_safety: 'Checking this network', exposed_secrets: 'Looking for exposed keys', app_trust: 'Checking app signatures',
-  storage_report: 'Measuring storage', uploads_report: 'Reading what was uploaded',
+  storage_report: 'Measuring storage', uploads_report: 'Reading what was uploaded', risky_projects: 'Checking your project folders',
 };
 
 export function listThreads(limit = 30) {

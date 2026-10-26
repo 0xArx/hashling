@@ -349,7 +349,7 @@ const MATRIX = [
 ];
 
 views.agents = async () => {
-  const d = await api('/api/agents');
+  const [d, proj] = await Promise.all([api('/api/agents'), api('/api/projects').catch(() => null)]);
   const agents = (d.agents ?? []).sort((x, y) => RANK[y.risk] - RANK[x.risk]);
   if (!agents.length) return statusBar('agents') + '<div class="empty">No AI agents found on this Mac.</div>';
   const sel = agents.find((a) => a.id === state.agentOpen) ?? agents[0];
@@ -364,8 +364,30 @@ views.agents = async () => {
     }).join('')}</tr>`).join('')}</tbody>
   </table></div>
   <p class="tiny faint" style="margin:8px 2px 0">Orange means real damage is possible if the agent is tricked, for example by a prompt injection hidden in a web page, email or file it reads. Click any square to ask why.</p>
-  <div class="mt">${agentCard(sel)}</div>`;
+  <div class="mt">${agentCard(sel)}</div>
+  ${projectsCard(proj)}`;
 };
+
+/** Project folders the agents opened: what in them can make an agent act by itself, and who put it there. */
+function projectsCard(p) {
+  if (!p?.checked) return '';
+  const RANKS = { high: 3, medium: 2, low: 1, info: 0 };
+  const warn = (p.projects ?? []).filter((x) => RANKS[x.severity] >= 2);
+  const mine = (p.projects ?? []).filter((x) => RANKS[x.severity] < 2);
+  const row = (x) => {
+    const items = x.issues.filter((i) => warn.includes(x) ? RANKS[i.severity] >= 1 : true).slice(0, 6);
+    return `<div class="item"><span class="dot ${x.severity === 'info' ? 'low' : x.severity}" style="margin-top:7px"></span><div class="body">
+      <div class="t">${esc(x.name)} <span class="tiny faint">${esc(x.path)}</span></div>
+      ${items.map((i) => `<div class="s">${esc(i.file)} ${esc(i.what)}${i.origin && i.origin !== 'you' ? ` <span class="chip warn">${esc(/^downloaded/.test(i.origin) ? 'downloaded' : /^hidden/.test(i.origin) ? 'hidden' : `from ${i.origin}`)}</span>` : ''}${i.detail && state.mode !== 'simple' ? `<code class="tiny" style="display:block;margin-top:2px;white-space:pre-wrap;word-break:break-all">${esc(i.detail)}</code>` : ''}</div>`).join('')}
+    </div>${askBtn({ kind: 'risky-project', project: x.path, issues: items.map((i) => `${i.file} ${i.what} (from ${i.origin})`) }, 'Explain')}</div>`;
+  };
+  return `<section class="card mt">
+    <div class="pad"><p class="h2">Project folders your AI agents opened</p>
+      <p class="small muted" style="margin:4px 0 0;max-width:72ch">Some files inside a project tell an AI agent what to run by itself: the project’s own MCP servers, hooks, git settings and shortcuts into your keys. In 2026 researchers showed how a stranger’s repo can use them to run code on your Mac. I checked ${plural(p.checked, 'folder')}${warn.length ? `, and ${warn.length} ${warn.length === 1 ? 'needs' : 'need'} a look.` : ', and nothing in them came from anyone else.'}</p></div>
+    ${warn.length ? `<div class="list">${warn.map(row).join('')}</div>` : ''}
+    ${mine.length ? `<details class="pad" style="padding-top:0"><summary class="small muted" style="cursor:pointer">${plural(mine.length, 'folder')} with settings you set up yourself</summary><div class="list mt">${mine.map(row).join('')}</div></details>` : ''}
+  </section>`;
+}
 
 function agentCard(a) {
   // Simple mode lists only abilities that matter, without the raw settings behind them.
@@ -828,6 +850,7 @@ function ctxLabel(ctx) {
 
 const DEFAULT_PROMPT = {
   finding: 'Explain this finding simply: what is it, is it dangerous on my Mac, and what should I do?',
+  'risky-project': 'Is this project folder safe to open in my AI agent? Explain what these files make the agent do by itself, who put them there, and what I should do.',
   'network-app': 'What is this app doing on the network? Who is it talking to, is that normal, and is anything suspicious?',
   connection: 'Who is on the other end of this connection, and is it normal for this app to talk to them?',
   'new-destination': 'Who is this new destination and is it normal for this app to contact it?',
@@ -1513,7 +1536,7 @@ window.addEventListener('hashchange', route);
 // Reopen the assistant if it was open last time.
 if (dockPrefs.open) setTimeout(() => { if (state.view !== 'assistant') openAssistant(); }, 0);
 
-const LIVE = { ignored: ['findings', 'posture', 'network', 'agents', 'persistence', 'permissions', 'trackers', 'location', 'malware'], network: ['network'], overview: null, agents: ['agents', 'network'], approvals: ['action', 'scan'], scans: ['scan', 'malware', 'attackPacks'], findings: ['findings'], timeline: ['event'], startup: ['persistence'], permissions: ['permissions'], tracking: ['trackers', 'location'], system: ['posture', 'status'] };
+const LIVE = { ignored: ['findings', 'posture', 'network', 'agents', 'persistence', 'permissions', 'trackers', 'location', 'malware'], network: ['network'], overview: null, agents: ['agents', 'network', 'projects'], approvals: ['action', 'scan'], scans: ['scan', 'malware', 'attackPacks'], findings: ['findings'], timeline: ['event'], startup: ['persistence'], permissions: ['permissions'], tracking: ['trackers', 'location'], system: ['posture', 'status'] };
 /** After Hashling comes back: reload if the dashboard was updated, otherwise just refresh the view. */
 async function onReconnect() {
   try {

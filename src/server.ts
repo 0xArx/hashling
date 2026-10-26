@@ -222,6 +222,7 @@ route('GET', '/api/permissions', snap('permissions'));
 route('GET', '/api/location', snap('location'));
 route('GET', '/api/trackers', snap('trackers'));
 route('GET', '/api/agents', snap('agents'));
+route('GET', '/api/projects', snap('projects'));
 route('GET', '/api/attack-packs', snap('attackPacks'));
 route('GET', '/api/events', (_q, res, _p, _w, url) => send(res, 200, listEvents(Number(url.searchParams.get('limit') ?? 100), Number(url.searchParams.get('since') ?? 0))));
 route('GET', '/api/status', (_q, res) => send(res, 200, { collectors: status, engines: engines() }));

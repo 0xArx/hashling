@@ -22,7 +22,7 @@ Hashling lives on your Mac and teams up with the AI you already use, like Claude
 
 ## Why Hashling
 
-- **AI agents now run on your Mac.** Claude Code, Codex and Cursor can run programs, read your files and push code. Hashling shows what each one is allowed to do and tells you when one acts strangely.
+- **AI agents now run on your Mac.** Claude Code, Codex and Cursor can run programs, read your files and push code. Hashling shows what each one is allowed to do, tells you when one acts strangely, and warns you when a project folder you opened could make one run a stranger's code.
 - **Scammers use AI too.** Fake delivery texts, cloned voices and poisoned links are cheap to make now. Hashling checks a message, link or screenshot before you click, call or pay.
 - **Your own AI can be your security engineer.** Connect Claude or any MCP agent, or run a free model fully on your Mac, and ask "Am I safe?". It looks at your Mac through Hashling and answers in plain words, but it can only look and suggest: every change waits for your Touch ID.
 
@@ -111,7 +111,7 @@ Built on free, open-source tools it installs when you first need them, with no p
 | Area | What Hashling checks |
 |---|---|
 | **Internet** | Every app's connections, upload and download rate, who owns each destination, first-contact destinations and ports open to your network. Flags unsigned programs, programs in Downloads, temporary or hidden folders that talk to the internet, and known scam and malware sites you visited. |
-| **AI apps** | Claude Code, Claude Desktop, Codex, Cursor, VS Code, Windsurf, Gemini CLI and OpenCode: permission mode, rules, MCP servers and what they can do, hooks, skills, macOS permissions, passwords or keys in their settings (counted, never copied) and live network use. |
+| **AI apps** | Claude Code, Claude Desktop, Codex, Cursor, VS Code, Windsurf, Gemini CLI and OpenCode: permission mode, rules, MCP servers and what they can do, hooks, skills, macOS permissions, passwords or keys in their settings (counted, never copied) and live network use. Plus the project folders they opened: a repo's own MCP servers, settings that switch off safety questions, add hooks or redirect API traffic, git settings that run commands, and shortcuts into `~/.ssh`. It tells apart what you set up from what came from someone else, and only warns about the second. |
 | **Malware** | ClamAV signatures, YARA-X with Apple's XProtect rules and Elastic's macOS rules, your own YARA rules, osquery hunting packs, a weekly full scan, a ransomware tripwire, and a check of any file before you open it. |
 | **Startup items** | Launch agents and daemons, system extensions, cron and browser extensions, with signatures, scripts that download and run code, and anything new. |
 | **Privacy** | Who can use your camera, microphone, screen, keyboard, files and location, plus first-use alerts for the camera, microphone and screen recording. |

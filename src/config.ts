@@ -59,6 +59,7 @@ export const SCHEDULE = {
   trackers: 3 * 60,
   attackPacks: 60 * 60,
   agents: 5 * 60,
+  projects: 30 * 60,
   processes: 2,
   behavior: 5 * 60,
   intel: 6 * 60 * 60,

@@ -99,6 +99,8 @@ const HARDENING_KEYS = /^(tcc-leftover:|phone:[^:]+:tip:|posture:(guest|stealth|
 export function tierOf(f: { key: string; severity: string; category: string }): Tier {
   if (SUSPICIOUS_KEYS.test(f.key)) return 'suspicious';
   if (f.key.startsWith('net:unsigned:')) return f.severity === 'high' ? 'suspicious' : 'risk';
+  // A stranger's project that can run code through your AI agent is suspicious; one that only changes settings is worth fixing.
+  if (f.key.startsWith('project:')) return f.severity === 'high' ? 'suspicious' : 'risk';
   if (HARDENING_KEYS.test(f.key)) return 'hardening';
   if ((f.key.startsWith('persist:unsigned:') || f.key.startsWith('tcc:')) && SEVERITY_RANK[f.severity] <= SEVERITY_RANK.low) return 'hardening';
   if (f.severity === 'info') return 'hardening';

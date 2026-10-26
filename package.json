@@ -15,7 +15,7 @@
     "mcp": "node --no-warnings src/mcp.ts",
     "helpers": "sh scripts/build-helpers.sh",
     "check": "tsc --noEmit -p .",
-    "test": "node scripts/test-seal.mjs && node scripts/smoke.mjs && node scripts/test-features.mjs",
+    "test": "node scripts/test-seal.mjs && node scripts/smoke.mjs && node scripts/test-features.mjs && node scripts/test-projects.mjs",
     "changelog": "node scripts/changelog.mjs"
   },
   "dependencies": {

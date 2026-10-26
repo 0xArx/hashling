@@ -45,3 +45,5 @@ jobs:
         run: node scripts/smoke.mjs
       - name: Updates and fully local AI, against stand-in servers
         run: node scripts/test-features.mjs
+      - name: Booby-trapped project folders are caught, your own setups stay quiet
+        run: node scripts/test-projects.mjs

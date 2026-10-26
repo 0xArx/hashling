@@ -342,5 +342,6 @@ export async function collectAgents(): Promise<void> {
   }
 
   putSnapshot('agents', { at: Date.now(), agents: result });
-  syncFindings('agents', findings);
+  // Booby-trapped project folders share this category (collectors/projects.ts), under their own keys.
+  syncFindings('agents', findings, 'agent:');
 }

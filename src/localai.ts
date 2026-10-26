@@ -45,10 +45,11 @@ const PREFETCH: [RegExp, string][] = [
   [/\b(changed?|new since|since yesterday|what'?s new|anything new)\b/i, 'what_changed'],
   [/\b(upload|uploaded|sent out|left my mac)\b/i, 'uploads_report'],
   [/\b(ai apps?|agents?|claude code|cursor|codex)\b/i, 'agent_inventory'],
+  [/\b(repo|repos|repository|project|projects|folder|clone[d]?)\b/i, 'risky_projects'],
 ];
 
 /** The tools a local model gets: the ones that answer most questions, so a small model is not swamped. */
-const LOCAL_TOOLS = new Set(['security_overview', 'list_findings', 'explain_finding', 'scam_check', 'investigate_app', 'what_changed', 'network_activity', 'agent_inventory', 'uploads_report', 'storage_report', 'system_posture', 'permissions', 'persistence_items', 'hashling_health', 'propose_action', 'list_actions']);
+const LOCAL_TOOLS = new Set(['risky_projects', 'security_overview', 'list_findings', 'explain_finding', 'scam_check', 'investigate_app', 'what_changed', 'network_activity', 'agent_inventory', 'uploads_report', 'storage_report', 'system_posture', 'permissions', 'persistence_items', 'hashling_health', 'propose_action', 'list_actions']);
 
 export interface LocalConfig {
   /** 'auto' picks by memory; a catalog id; 'custom' (a Hugging Face model or a .gguf file); 'server' (a model server already running on this Mac). */

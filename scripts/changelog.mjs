@@ -27,6 +27,15 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Booby-trapped project folders:': {
+    tag: 'new feature',
+    title: 'I now catch project folders booby-trapped for your AI agents',
+    bullets: [
+      'I check the folders Claude Code, Cursor, VS Code, Codex and Gemini CLI opened for files that make an agent act by itself: a project’s own MCP servers, settings that switch off safety questions, add hooks or send your API traffic elsewhere, git settings that run commands, hidden git repositories, and shortcuts into ~/.ssh.',
+      'I only warn when those came from someone else (another commit author, or a download). What you set up yourself stays quiet.',
+      'Ask your AI about it: the new risky_projects tool shows the same list.',
+    ],
+  },
   // null leaves a commit out of the changelog (housekeeping nobody using Hashling would notice).
   'Launch materials: mark the repo description': null,
   'Changelog: leave housekeeping commits out': null,
