@@ -29,12 +29,23 @@ const GB = 1e9;
 
 /** Open-weight models (Apache 2.0), smallest first. minRamGB is the Mac memory each one is comfortable with. */
 export const LOCAL_MODELS = [
-  { id: 'qwen3-1.7b', label: 'Qwen3 1.7B', repo: 'Qwen/Qwen3-1.7B-GGUF', file: 'Qwen3-1.7B-Q8_0.gguf', sizeGB: 1.8, minRamGB: 8, note: 'Small and quick. Fine for short questions.' },
-  { id: 'qwen3-4b', label: 'Qwen3 4B', repo: 'unsloth/Qwen3-4B-Instruct-2507-GGUF', file: 'Qwen3-4B-Instruct-2507-Q4_K_M.gguf', sizeGB: 2.5, minRamGB: 16, note: 'A good everyday helper for most Macs.' },
+  { id: 'qwen3-1.7b', label: 'Qwen3 1.7B', repo: 'Qwen/Qwen3-1.7B-GGUF', file: 'Qwen3-1.7B-Q8_0.gguf', sizeGB: 1.8, minRamGB: 4, note: 'Tiny and quick. Good for scam checks, but it can get details about your Mac wrong.' },
+  { id: 'qwen3-4b', label: 'Qwen3 4B', repo: 'unsloth/Qwen3-4B-Instruct-2507-GGUF', file: 'Qwen3-4B-Instruct-2507-Q4_K_M.gguf', sizeGB: 2.5, minRamGB: 8, note: 'A good everyday helper for most Macs.' },
   { id: 'qwen3-8b', label: 'Qwen3 8B', repo: 'Qwen/Qwen3-8B-GGUF', file: 'Qwen3-8B-Q4_K_M.gguf', sizeGB: 5.0, minRamGB: 24, note: 'Clearer answers, a little slower.' },
   { id: 'gpt-oss-20b', label: 'gpt-oss 20B', repo: 'ggml-org/gpt-oss-20b-GGUF', file: 'gpt-oss-20b-MXFP4.gguf', sizeGB: 12.1, minRamGB: 36, note: 'Strong at using my tools. Needs plenty of memory.' },
   { id: 'qwen3-30b', label: 'Qwen3 30B-A3B', repo: 'Qwen/Qwen3-30B-A3B-GGUF', file: 'Qwen3-30B-A3B-Q4_K_M.gguf', sizeGB: 18.6, minRamGB: 64, note: 'The most capable here, and still quick on big Macs.' },
 ] as const;
+
+/**
+ * Common questions whose data Hashling fetches before the model answers. Very small models sometimes
+ * describe a tool instead of calling it, so these answers never depend on that.
+ */
+const PREFETCH: [RegExp, string][] = [
+  [/\b(space|storage|disk|slow|clean ?up|free up|full)\b/i, 'storage_report'],
+  [/\b(changed?|new since|since yesterday|what'?s new|anything new)\b/i, 'what_changed'],
+  [/\b(upload|uploaded|sent out|left my mac)\b/i, 'uploads_report'],
+  [/\b(ai apps?|agents?|claude code|cursor|codex)\b/i, 'agent_inventory'],
+];
 
 /** The tools a local model gets: the ones that answer most questions, so a small model is not swamped. */
 const LOCAL_TOOLS = new Set(['security_overview', 'list_findings', 'explain_finding', 'scam_check', 'investigate_app', 'what_changed', 'network_activity', 'agent_inventory', 'uploads_report', 'storage_report', 'system_posture', 'permissions', 'persistence_items', 'hashling_health', 'propose_action', 'list_actions']);
@@ -101,7 +112,8 @@ export function macSpecs(): { ramGB: number; chip: string } {
 }
 
 export function recommendedModel(ramGB = macSpecs().ramGB) {
-  return [...LOCAL_MODELS].reverse().find((m) => ramGB >= m.minRamGB) ?? LOCAL_MODELS[0];
+  // The tiny model is only ever a manual choice: automatic picks start at the 4B, which gets details right.
+  return [...LOCAL_MODELS].reverse().find((m) => m.id !== 'qwen3-1.7b' && ramGB >= m.minRamGB) ?? LOCAL_MODELS[1];
 }
 
 function freeGB(): number {
@@ -168,27 +180,52 @@ async function sha256File(path: string): Promise<string> {
   return h.digest('hex');
 }
 
-/** Download with resume (a .part file), then check the SHA-256 Hugging Face publishes for it. */
+/**
+ * Download with resume (a .part file), then check the SHA-256 Hugging Face publishes for it. A connection
+ * that drops or stalls (no data for 45 s) is picked up again where it stopped, up to 5 times.
+ */
 async function download(t: Target): Promise<void> {
   const d = t.download!;
   mkdirSync(MODELS_DIR, { recursive: true, mode: 0o700 });
   const part = `${t.path}.part`;
-  const have = existsSync(part) ? statSync(part).size : 0;
-  if (freeGB() < d.sizeGB - have / GB + 2) throw new Error(`there isn’t enough free space: ${t.label} needs about ${Math.ceil(d.sizeGB)} GB plus 2 GB to spare`);
+  const size = () => (existsSync(part) ? statSync(part).size : 0);
+  if (freeGB() < d.sizeGB - size() / GB + 2) throw new Error(`there isn’t enough free space: ${t.label} needs about ${Math.ceil(d.sizeGB)} GB plus 2 GB to spare`);
   setPhase('downloading');
-  const r = await fetch(d.url, { headers: have ? { range: `bytes=${have}-` } : {}, signal: AbortSignal.timeout(6 * 3600_000) });
-  if (!r.ok || !r.body) throw new Error(`the model download failed (${r.status})`);
-  const resumed = r.status === 206;
   st.total = Math.round(d.sizeGB * GB);
-  st.done = resumed ? have : 0;
-  const out = createWriteStream(part, { flags: resumed ? 'a' : 'w' });
-  let lastEmit = 0;
-  for await (const chunk of r.body as unknown as AsyncIterable<Uint8Array>) {
-    if (!out.write(chunk)) await new Promise<void>((res) => out.once('drain', () => res()));
-    st.done += chunk.length;
-    if (Date.now() - lastEmit > 1000) { lastEmit = Date.now(); bus.emit('change', { type: 'localai' }); }
+  for (let attempt = 1; ; attempt++) {
+    const have = size();
+    st.done = have;
+    const ac = new AbortController();
+    let stall = setTimeout(() => ac.abort(), 45_000);
+    try {
+      const r = await fetch(d.url, { headers: have ? { range: `bytes=${have}-` } : {}, signal: ac.signal });
+      if (r.status === 416) break; // already complete
+      if (!r.ok || !r.body) throw new Error(`the model download failed (${r.status})`);
+      const resumed = r.status === 206;
+      if (!resumed) st.done = 0;
+      const out = createWriteStream(part, { flags: resumed ? 'a' : 'w' });
+      let lastEmit = 0;
+      try {
+        for await (const chunk of r.body as unknown as AsyncIterable<Uint8Array>) {
+          clearTimeout(stall);
+          stall = setTimeout(() => ac.abort(), 45_000);
+          if (!out.write(chunk)) await new Promise<void>((res) => out.once('drain', () => res()));
+          st.done += chunk.length;
+          if (Date.now() - lastEmit > 1000) { lastEmit = Date.now(); bus.emit('change', { type: 'localai' }); }
+        }
+      } finally {
+        await new Promise<void>((res) => out.end(() => res()));
+      }
+      break;
+    } catch (e) {
+      if (/download failed \(4/.test((e as Error).message) || attempt >= 5) {
+        throw new Error(/download failed/.test((e as Error).message) ? (e as Error).message : 'the download was interrupted. Press Try again to continue where it stopped');
+      }
+      await new Promise((res) => setTimeout(res, 3000 * attempt));
+    } finally {
+      clearTimeout(stall);
+    }
   }
-  await new Promise<void>((res, rej) => out.end((e?: Error | null) => (e ? rej(e) : res())));
   setPhase('verifying');
   if (d.sha256 && (await sha256File(part)) !== d.sha256) {
     rmSync(part, { force: true });
@@ -241,6 +278,9 @@ function stopServer(): void {
   server = null;
   serverModelPath = null;
 }
+
+// The model server belongs to Hashling: when Hashling stops, so does it.
+process.on('exit', () => { server?.kill('SIGTERM'); });
 
 function touchIdle(): void {
   if (idleTimer) clearTimeout(idleTimer);
@@ -318,6 +358,21 @@ export function resumeLocalSetup(provider: string): void {
 export interface LocalEvent { type: 'text' | 'tool' | 'tool_done' | 'action'; text?: string; name?: string; input?: unknown; action?: unknown }
 export interface ChatTurn { role: 'user' | 'assistant'; text: string }
 
+/**
+ * A short, factual summary of Hashling's overview. Small models answer from what is in front of them,
+ * so they always get the real picture first instead of guessing.
+ */
+function overviewBrief(raw: string): string {
+  let o: any;
+  try { o = JSON.parse(raw); } catch { return raw.slice(0, 2500); }
+  const counts = Object.entries(o.openFindings ?? {}).filter(([, n]) => Number(n) > 0).map(([k, n]) => `${n} ${k}`).join(', ') || 'none';
+  const top = (o.topFindings ?? []).slice(0, 10).map((f: any) => `- [${f.severity}] ${f.title}${f.summary ? `: ${String(f.summary).slice(0, 160)}` : ''}`).join('\n') || '- nothing open';
+  const blind = (o.limitations ?? []).slice(0, 3).map((l: string) => `- ${l}`).join('\n');
+  return [`Score: ${o.score}/100 (${o.verdict}).`, `Open findings by severity: ${counts}.`, `The open issues that matter (do not mention any issue that is not in this list or in a tool result):\n${top}`,
+    o.pendingActions ? `Fixes already waiting for the user's Touch ID: ${o.pendingActions}.` : 'No fixes are waiting for approval.',
+    blind ? `What Hashling cannot see yet:\n${blind}` : ''].filter(Boolean).join('\n');
+}
+
 /** Remove a model's private reasoning (<think>…</think>) from streamed text, even when tags split across chunks. */
 function thinkFilter() {
   let inside = false;
@@ -357,13 +412,30 @@ export async function localChat(system: string, history: ChatTurn[], message: st
   try {
     const tools = (await mcp.listTools()).tools.filter((x) => LOCAL_TOOLS.has(x.name))
       .map((x) => ({ type: 'function', function: { name: x.name, description: (x.description ?? '').slice(0, 600), parameters: x.inputSchema } }));
+    const prefetched: string[] = [];
+    // Ground every answer in the real state of this Mac before the model says anything.
+    onEvent({ type: 'tool', name: 'security_overview', text: toolLabel('security_overview'), input: {} });
+    const ov = await mcp.callTool({ name: 'security_overview', arguments: {} }).catch(() => null);
+    onEvent({ type: 'tool_done', name: 'security_overview' });
+    const brief = ov ? overviewBrief(((ov.content as { text?: string }[]) ?? []).map((p) => p.text ?? '').join('\n')) : 'Hashling’s overview could not be read just now.';
+    let extra = '';
+    for (const [re, name] of PREFETCH) {
+      if (!re.test(message)) continue;
+      onEvent({ type: 'tool', name, text: toolLabel(name), input: {} });
+      const r = await mcp.callTool({ name, arguments: {} }).catch(() => null);
+      onEvent({ type: 'tool_done', name });
+      const text = r ? ((r.content as { text?: string }[]) ?? []).map((p) => p.text ?? '').join('\n') : '';
+      if (text) { extra += `\n\n${name.replace(/_/g, ' ')}, checked just now:\n${text.slice(0, 5000)}`; prefetched.push(name); }
+    }
     const messages: Record<string, unknown>[] = [
-      { role: 'system', content: system },
+      { role: 'system', content: extra
+        ? `${system}\n\nThe facts for this question, checked just now. Answer from these first:${extra}\n\nThe overall summary of this Mac, for background only:\n${brief}`
+        : `${system}\n\nHashling’s live summary of this Mac, checked just now (these are the facts; use them, never invent others):\n${brief}` },
       ...history.slice(-12).map((m) => ({ role: m.role, content: m.text.slice(0, 4000) })),
       { role: 'user', content: message },
     ];
     let answer = '';
-    const used: string[] = [];
+    const used: string[] = ['security_overview', ...prefetched];
     const actions: unknown[] = [];
 
     for (let round = 0; round < 10; round++) {
@@ -392,7 +464,7 @@ export async function localChat(system: string, history: ChatTurn[], message: st
           try { j = JSON.parse(data); } catch { continue; }
           const d = j.choices?.[0]?.delta ?? {};
           if (typeof d.content === 'string' && d.content) {
-            const out = clean(d.content);
+            const out = clean(d.content).replace(/\s*—\s*/g, ', ');
             if (out) { text += out; onEvent({ type: 'text', text: out }); }
           }
           for (const tc of d.tool_calls ?? []) {

@@ -182,8 +182,9 @@ export function refreshScanFindings(): void {
   const rows = db.prepare(`SELECT id, detections FROM scans WHERE status = 'done' AND detections != '[]' ORDER BY started_at DESC LIMIT 50`).all() as { id: string; detections: string }[];
   const byPath = new Map<string, Detection[]>();
   for (const r of rows) for (const d of parseJson<Detection[]>(r.detections, [])) {
-    // Copies checked from the dashboard are deleted right after; they are a check, not an infection.
-    if (!existsSync(d.path) || d.path.startsWith(join(DATA_DIR, 'inbox'))) continue;
+    // Hashling's own folder holds its rule files (which contain malware patterns by design), quarantined
+    // files and copies checked from the dashboard: none of that is an infection.
+    if (!existsSync(d.path) || d.path.startsWith(DATA_DIR + '/')) continue;
     const list = byPath.get(d.path) ?? [];
     if (!list.some((x) => x.signature === d.signature)) list.push(d);
     byPath.set(d.path, list);

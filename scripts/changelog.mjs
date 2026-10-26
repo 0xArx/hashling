@@ -27,6 +27,16 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Local AI, tested with real models:': {
+    tag: 'improvement',
+    title: 'Sharper answers from the AI on your Mac',
+    bullets: [
+      'Before the AI on your Mac answers, I hand it the real facts first (your score, open warnings, and the data your question needs), so it never has to guess.',
+      'Automatic now picks a model that gets details right (Qwen3 4B or bigger). The tiny model stays available if you choose it.',
+      'Model downloads that stall or drop pick up where they stopped.',
+      'My own rule files are no longer mistaken for malware when my data folder sits somewhere I scan.',
+    ],
+  },
   'Hashling 0.2.0:': {
     tag: 'new feature',
     title: 'Update now, and an AI that runs fully on your Mac',
