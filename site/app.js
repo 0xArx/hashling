@@ -199,7 +199,7 @@
   var say = document.getElementById('hero-say');
   if (!btn || !say) return;
   var lines = [
-    'Hi! I’m Hashling, your personal AI cybersecurity agent.',
+    'Hi! I’m Hashling, your own cybersecurity engineer.',
     'I keep watch over your Mac day and night, so you don’t have to.',
     'Got a strange text or email? Paste it into my Scam check.',
     'Psst: never paste a command a website gives you into Terminal.',

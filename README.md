@@ -4,9 +4,9 @@
 
 # Hashling
 
-**Your personal cybersecurity engineer for the age of AI.**
+**Your own cybersecurity engineer, watching over you 24/7.**
 
-Hashling lives on your Mac and teams up with the AI you already use, like Claude, Cursor or Codex. It watches for scams, malware and AI agents that overstep, explains everything in plain words, and changes nothing until you approve with Touch ID.
+Big companies have security teams. With AI, now you can look after your own security, even if you've never thought about it before. Hashling watches over your Mac around the clock, explains everything in plain words, and helps you fix it. Nothing changes until you approve with Touch ID.
 
 [Get started](https://gethashling.com/start) · [Watch the 75-second demo](https://gethashling.com/#demo) · [Install guide](INSTALL.md) · [How it compares](https://gethashling.com/compare) · [What's new](https://gethashling.com/changelog) · [For AI agents](SKILL.md)
 
@@ -22,9 +22,10 @@ Hashling lives on your Mac and teams up with the AI you already use, like Claude
 
 ## Why Hashling
 
-- **AI agents now run on your Mac.** Claude Code, Codex and Cursor can run programs, read your files and push code. Hashling shows what each one is allowed to do, tells you when one acts strangely, and warns you when a project folder you opened could make one run a stranger's code.
+- **Staying safe used to take an expert.** Now AI can be that expert for you. Connect Claude or any MCP agent, or run a free model fully on your Mac, and ask "Am I safe?". It looks at your Mac through Hashling and answers in plain words. It can only look and suggest: every change waits for your Touch ID.
+- **It watches over you 24/7.** Hashling runs on your Mac around the clock, checking your apps, downloads, network and settings against fresh lists of known threats, and tells you when something needs you.
 - **Scammers use AI too.** Fake delivery texts, cloned voices and poisoned links are cheap to make now. Hashling checks a message, link or screenshot before you click, call or pay.
-- **Your own AI can be your security engineer.** Connect Claude or any MCP agent, or run a free model fully on your Mac, and ask "Am I safe?". It looks at your Mac through Hashling and answers in plain words, but it can only look and suggest: every change waits for your Touch ID.
+- **It keeps your AI tools in check, too.** If you use Claude Code, Codex or Cursor, Hashling shows what each one is allowed to do, tells you when one acts strangely, and warns you when a project folder could make one run a stranger's code.
 
 ---
 

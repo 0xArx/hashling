@@ -5,12 +5,12 @@ This sub lists Mac apps for everyday users. Check the sidebar: it usually asks d
 **Title:**
 
 ```
-Hashling: a free, open-source security helper for Mac that explains everything in plain words (and fixes nothing without your Touch ID)
+Hashling: your own cybersecurity engineer, watching over your Mac 24/7. Free, open source, plain words, and it fixes nothing without your Touch ID
 ```
 
 **Body:**
 
-Hi r/macapps, I'm the developer. Hashling is a free security helper for your Mac that lives in the menu bar and a local dashboard.
+Hi r/macapps, I'm the developer. Most of us have nobody to ask about Mac security. Hashling uses AI to change that: it's a free security engineer that watches over your Mac 24/7 from the menu bar and a local dashboard, and you don't need to know anything about security.
 
 **What it does for you**
 

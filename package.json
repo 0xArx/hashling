@@ -1,7 +1,7 @@
 {
   "name": "hashling",
   "version": "0.3.0",
-  "description": "Your personal cybersecurity engineer for the age of AI: a free, open-source Mac security agent that teams up with the AI you already use, watches for scams, malware and AI agents that overstep, and changes nothing until you approve with Touch ID.",
+  "description": "Your own cybersecurity engineer, watching over you 24/7: a free, open-source Mac security agent that uses AI to explain what it finds in plain words and changes nothing without your Touch ID.",
   "type": "module",
   "license": "MIT",
   "bin": {

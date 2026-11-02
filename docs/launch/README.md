@@ -10,7 +10,7 @@ Everything for launching Hashling on Hacker News, Reddit, X and Product Hunt. No
 | `reddit-localllama.md` | r/LocalLLaMA. The local AI story and what small models taught us |
 | `reddit-claudeai.md` | r/ClaudeAI. Auditing Claude Code and connecting Claude through MCP |
 | `reddit-macapps.md` | r/macapps. Friendly, non-technical |
-| `x-thread.md` | X. Eight posts, video first |
+| `x-thread.md` | X. Nine posts, video first |
 | `product-hunt.md` | Product Hunt. Every form field, the maker comment and ready answers |
 | `assets/ph-1…5-*.png` | Product Hunt gallery, 1270 × 760. They also work as X and Reddit images |
 | `assets/ph-thumbnail.png` | Product Hunt thumbnail, 240 × 240 |

@@ -10,7 +10,7 @@ I built a free MCP server that lets Claude Code audit your Mac's security, inclu
 
 **Body:**
 
-I'm the developer of Hashling, a free, open-source (MIT) security agent for macOS. Sharing it here because it was built for people who run Claude Code.
+I'm the developer of Hashling, a free, open-source (MIT) security agent for macOS. The idea is that Claude can be anyone's own cybersecurity engineer, watching over their Mac 24/7 and answering in plain words. Sharing it here because Claude is the best way to use it, and it audits Claude Code too.
 
 **The problem.** Claude Code can run commands, read and write files and push code. Once you've clicked "always allow" a few times, most of us can't say exactly what it's allowed to do, which MCP servers are switched on, or how many API keys are sitting in config files.
 

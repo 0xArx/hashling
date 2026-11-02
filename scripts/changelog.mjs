@@ -80,6 +80,7 @@ const ENTRIES = {
   'Launch drafts: 0.3.0': null,
   'Site: share preview': null,
   'How it works: ': null,
+  'New message:': null,
   'Launch materials: 0.2.0 drafts': {
     tag: 'docs',
     title: 'Ready to share',

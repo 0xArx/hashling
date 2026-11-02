@@ -1,9 +1,9 @@
 # Show HN
 
-**Title** (80 characters max, this one is 76):
+**Title** (80 characters max, this one is 71):
 
 ```
-Show HN: Hashling, an open-source Mac security agent your own AI can talk to
+Show HN: Hashling, your own AI security engineer watching your Mac 24/7
 ```
 
 **URL to submit:** https://github.com/0xArx/hashling
@@ -13,15 +13,16 @@ Show HN: Hashling, an open-source Mac security agent your own AI can talk to
 
 ## First comment (post it right after submitting)
 
-Hi HN, I'm Abdulrahman. Hashling is a free, MIT-licensed security agent for macOS. It started with one question: Claude Code, Codex and Cursor can run programs, read files and push code on my Mac, so what exactly is each one allowed to do?
+Hi HN, I'm Abdulrahman. Hashling is a free, MIT-licensed security agent for macOS. The idea: most people can't read a firewall alert or tell whether a startup item is dangerous, and they've never had anyone to ask. AI changes that. Hashling gives a normal person their own cybersecurity engineer, watching their Mac 24/7 and answering in plain words.
 
 What it does:
 
-- **Audits the AI agents on your Mac.** For Claude Code, Codex, Cursor, Claude Desktop, VS Code, Windsurf, Gemini CLI and OpenCode it reads permission modes, allow rules, hooks, MCP servers and skills, counts API keys left in their config files (never copies them), and watches their live network use.
-- **Catches booby-trapped repos.** It checks the folders your agents opened for the 2026 attack patterns: a committed `.mcp.json` that starts a server once you trust the folder (TrustFall), project settings that switch off safety questions, add hooks or redirect `ANTHROPIC_BASE_URL`, git config that runs commands (GitSpawn), hidden bare repos, and symlinks into `~/.ssh` (GhostApproval). It uses git authorship and macOS's download marker to separate your own setups from a stranger's, so your own `.mcp.json` files don't nag.
-- **Is an MCP server.** Connect Claude Code (one command) and ask "is my Mac safe?". The agent calls Hashling's tools (overview, findings, network, uploads, storage, osquery and more) and answers from real data. Agents can only read and propose: every change waits for Touch ID through a small Swift helper, so an agent holding the API token still can't approve its own proposal.
+- **Becomes your security engineer, with your own AI.** Connect Claude Code (one command) or any MCP client and ask "is my Mac safe?". The AI calls Hashling's tools (overview, findings, network, uploads, storage, osquery and more) and answers from real data, not guesses. AI can only read and propose: every change waits for Touch ID through a small Swift helper, so an agent holding the API token still can't approve its own proposal.
 - **Or runs fully local.** Pick "Fully local" and it installs llama.cpp, chooses a model by RAM (Qwen3 4B on a 16 GB Mac, up to Qwen3 30B-A3B), checks the download's SHA-256 and runs it only while you're asking. Testing small models taught me they confidently guess, so Hashling now hands the model the live facts (score, open findings, plus storage or what-changed data when the question needs it) before it says a word.
-- **The usual checks, in plain words.** Per-app network connections, startup items, TCC permissions, ClamAV + YARA-X with Apple's XProtect and Elastic's macOS rules, a ransomware tripwire, scam check for texts, links and screenshots, breach watch, AirTag-style trackers, and a read-only phone check-up over USB.
+- **Watches 24/7, in plain words.** Per-app network connections, startup items, TCC permissions, ClamAV + YARA-X with Apple's XProtect and Elastic's macOS rules, a ransomware tripwire, breach watch, AirTag-style trackers, and a read-only phone check-up over USB.
+- **Checks scams before you click.** Paste a text, email or link, or drop in a screenshot.
+- **Watches what goes in and out.** How much each app uploaded and to where, first contact with new destinations, where every download came from and who signed it, and API keys or secrets left in plain text.
+- **Keeps AI coding agents in check, too.** For Claude Code, Codex, Cursor, Claude Desktop, VS Code, Windsurf, Gemini CLI and OpenCode it reads permission modes, allow rules, hooks and MCP servers, and catches booby-trapped repos (TrustFall, GitSpawn and GhostApproval patterns). It uses git authorship and macOS's download marker to separate your own setups from a stranger's.
 
 Honest limits:
 
@@ -39,4 +40,4 @@ The first time I ran it on my own Mac, it found API keys sitting in plain text i
 Demo (75 s): https://gethashling.com/#demo
 Compared with Little Snitch, LuLu, Malwarebytes, Bitdefender and Snyk: https://gethashling.com/compare
 
-I'm around all day for questions, especially about the agent audit and the local-model grounding.
+I'm around all day for questions, especially about the local-model grounding and the MCP design.
