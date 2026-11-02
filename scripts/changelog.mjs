@@ -27,6 +27,11 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Hashling 0.3.1:': {
+    title: 'Hashling 0.3.1',
+    bullets: ['A new version with the scanner fixes below: fewer false malware alarms, and scans that really run.'],
+    tag: 'release',
+  },
   'Scanner: stop false malware alarms': {
     title: 'Fewer false malware alarms, and scans that really run',
     bullets: [
