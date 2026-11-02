@@ -27,6 +27,15 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Scanner: stop false malware alarms': {
+    title: 'Fewer false malware alarms, and scans that really run',
+    bullets: [
+      'Normal developer packages, intact signed apps and old emails no longer raise malware alarms. Known malware still warns wherever it is, even inside a package folder.',
+      'A general pattern in a file you downloaded still warns. In your own files it now reads "Worth a look", and only known malware is ever moved to quarantine automatically.',
+      'Fixed two scan problems: checking one file skipped the pattern rules, and an engine update could stop Apple\u2019s rules from loading. Both now work, and scan errors are shown instead of hidden.',
+    ],
+    tag: 'fix',
+  },
   'Dashboard: the score explanation stays open': {
     tag: 'fix',
     title: 'Two small fixes on the home page',

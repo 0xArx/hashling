@@ -271,17 +271,19 @@ export async function checkFile(path: string): Promise<{ kind: string; verdict: 
     reputation(path).catch(() => null),
   ]);
   const scan = requestScan([path], 'You (check before opening)');
-  let detections: string[] = [];
+  let detections: { signature: string; kind?: string }[] = [];
   if ('id' in scan) {
     for (let i = 0; i < 120; i++) {
       await new Promise((r) => setTimeout(r, 1500));
       const s = getScan(scan.id);
-      if (s && (s.status === 'done' || s.status === 'failed')) { detections = (s.detections ?? []).map((d) => d.signature); break; }
+      if (s && (s.status === 'done' || s.status === 'failed')) { detections = s.detections ?? []; break; }
     }
   }
   const reasons: string[] = [];
   let verdict: 'danger' | 'caution' | 'ok' = 'ok';
-  if (detections.length) { verdict = 'danger'; reasons.push(`Matches known malware: ${detections.slice(0, 3).join(', ')}.`); }
+  const known = detections.filter((d) => d.kind === 'known');
+  if (known.length) { verdict = 'danger'; reasons.push(`Matches known malware: ${known.slice(0, 3).map((d) => d.signature).join(', ')}.`); }
+  else if (detections.length) { verdict = 'caution'; reasons.push('It matches a general pattern sometimes used to hide malware, but not known malware. Only open it if you trust who sent it.'); }
   if (rep?.knownMalicious) { verdict = 'danger'; reasons.push(`Listed as malware by ${rep.knownMalicious}.`); }
   if (rep?.avDetectionPct && rep.avDetectionPct >= 10) { verdict = 'danger'; reasons.push(`${Math.round(rep.avDetectionPct)}% of antivirus engines flag it.`); }
   if (apple === 'rejected') { if (verdict === 'ok') verdict = 'caution'; reasons.push('Apple has not checked it (not notarized). macOS would warn you before opening it.'); }
@@ -290,5 +292,5 @@ export async function checkFile(path: string): Promise<{ kind: string; verdict: 
   if (rep?.knownGood) reasons.push(`Recognised as a genuine file${rep.knownName ? ` (${rep.knownName})` : ''}.`);
   if (!reasons.length) reasons.push('No malware found, and nothing about it looks unusual.');
   if (apple === 'notarized' || apple === 'apple') reasons.push('Apple checked it for malware (notarized).');
-  return { kind, verdict, reasons, signer: sign ? describeSigner(sign) : null, apple, detections };
+  return { kind, verdict, reasons, signer: sign ? describeSigner(sign) : null, apple, detections: detections.map((d) => d.signature) };
 }

@@ -50,6 +50,8 @@ jobs:
         run: node scripts/test-features.mjs
       - name: Booby-trapped project folders are caught, your own setups stay quiet
         run: node scripts/test-projects.mjs
+      - name: Scan judgement tests
+        run: node scripts/test-scan.mjs
 
   package:
     runs-on: macos-latest
