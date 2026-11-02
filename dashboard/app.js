@@ -249,6 +249,9 @@ const views = {};
 
 const AREA_META = { network: ['Network', 'globe'], agents: ['AI agents', 'bot'], scans: ['Malware', 'bug'], startup: ['Startup items', 'power'], permissions: ['Permissions', 'key'], tracking: ['Tracking', 'radar'], system: ['System settings', 'sliders'] };
 
+// The dashboard redraws itself as new data arrives, so remember whether the score explanation is open.
+document.addEventListener('toggle', (e) => { if (e.target.matches?.('.score-why')) state.scoreWhyOpen = e.target.open; }, true);
+
 /** Plain explanation of the score: the seven areas, any cap holding it down, and the fixes worth the most. */
 function scoreExplain(o) {
   const b = o.scoreBreakdown;
@@ -266,7 +269,7 @@ function scoreExplain(o) {
       ? `Held at ${c.at} until ${many ? `the ${c.count} serious risks are` : 'the serious risk is'} fixed. Without that it would be ${b.beforeCap}.`
       : `Held at ${c.at} until ${many ? `the ${c.count} things worth fixing are` : 'the thing worth fixing is'} fixed. Without that it would be ${b.beforeCap}.`;
   const gains = b.topGains.slice(0, 3).map((g) => `<li><a href="${g.id ? `#/findings?id=${encodeURIComponent(g.id)}` : '#/system'}">${esc(g.title)}</a> <span class="faint">+${g.points}</span></li>`).join('');
-  return `<details class="score-why"><summary>How is this score worked out?</summary>
+  return `<details class="score-why"${state.scoreWhyOpen ? ' open' : ''}><summary>How is this score worked out?</summary>
     <p><b>${o.score}, ${esc(o.grade ?? b.grade)}.</b> I score seven parts of your Mac out of 100 and combine them. The parts that matter most count more, and the weakest part pulls the total down.</p>
     <ul class="sw-areas">${areas}</ul>
     ${capLine ? `<p class="sw-cap">${capLine}</p>` : ''}

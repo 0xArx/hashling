@@ -27,6 +27,14 @@ const ROOT = resolve(__dirname, '..');
 // Edit this map to improve how an entry reads. Unknown hashes fall back to
 // the commit subject line plus a generic bullet.
 const ENTRIES = {
+  'Dashboard: the score explanation stays open': {
+    tag: 'fix',
+    title: 'Two small fixes on the home page',
+    bullets: [
+      'How is this score worked out? stays open while the page updates itself.',
+      'I no longer say "All clear" when something is worth fixing.',
+    ],
+  },
   'Smarter security score:': {
     tag: 'new feature',
     title: 'A smarter security score',
@@ -81,6 +89,7 @@ const ENTRIES = {
   'Site: share preview': null,
   'How it works: ': null,
   'New message:': null,
+  'Demo video:': null,
   'Launch materials: 0.2.0 drafts': {
     tag: 'docs',
     title: 'Ready to share',

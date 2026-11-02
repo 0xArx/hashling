@@ -202,11 +202,12 @@ async function onView() {
     return;
   }
   if (v === 'overview' && o) {
-    const bad = (o.openFindings?.critical ?? 0) + (o.openFindings?.high ?? 0);
-    const id = `home:${bad ? 'bad' : 'ok'}`;
+    const bad = o.tiers?.suspicious ?? 0;
+    const fix = o.tiers?.risk ?? 0;
+    const id = `home:${bad ? 'bad' : fix ? 'fix' : 'ok'}`;
     if (seenToday(id)) return;
     if (bad) { if (say(bad === 1 ? 'One thing looks suspicious. Want me to show you?' : `${bad} things look suspicious. Want me to show you?`, { mood: 'point', actions: [{ label: 'Show me', primary: true, run: () => document.querySelector('.home .item, .finding, [data-act="finding"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' }) }, { label: 'Later' }] })) markSeen(id); }
-    else if (say('All clear right now. I’ll keep watching.', { mood: 'happy' })) markSeen(id);
+    else if (say(fix ? `Nothing suspicious right now. ${fix === 1 ? 'One thing is' : `${fix} things are`} worth fixing when you have a minute.` : 'All clear right now. I’ll keep watching.', { mood: 'happy' })) markSeen(id);
     return;
   }
   if (v === 'approvals' && !(o?.pendingActions)) return;
